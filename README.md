@@ -19,13 +19,15 @@ A batalha final, o Har Megido, começou, e as suas escolhas irão influenciar se
 **Estética**
 
 O jogo utilizará gráficos 2D, principalmente interpolados sobre a imagem da câmera. 
+A interação com o jogo visa misturar a realidade com o mundo do jogo onde ele poderá interagir (através da câmera) com objetos reais. 
+Efeitos sonoros serão explorados como parte integrante da mecânica, e também para auxiliar na imersão.
 
 
 **História**
 
 O Har Megido (Armageddon) é a batalha final entre o bem e o mal, os seres de luz e de trevas. 
-O palco de batalha é o planeta Terra, e as forças já começaram e se enfrentar. Para aumentar o seu poder
-de exército, ambos os lados estão buscando guerreiros, que compartilhem a visão de sua causa. 
+O palco de batalha é o planeta Terra, e as forças já começaram a se enfrentar. 
+Para aumentar o seu poder de exército, ambos os lados estão buscando guerreiros, que compartilhem a visão de sua causa. 
 
 Os Anjos querem guerreiros para transformar o planeta em uma fonte perpétua de luz e expurgar de 
 uma vez por todas a mácula das trevas.
@@ -44,21 +46,26 @@ O jogo utilizará o middleware uOS para, mas não limitado a:
 - Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.);
 - Possibilitar o controle de áudio de dispostivios dentro da rede do middleware.
 
-O jogo utilizará visão computacional como parte fundamental de sua mecânica.
+O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos reais.
 
 Com relação a dispositivos necessários para funcionar, são necessários no mínimo:
 - n jogadores (n > 1);
-- n dispositivos onde o uOS possa ser executado, com recurso de câmera e som (um dispositivo para cada jogador);
+- n dispositivos onde o uOS possa ser executado, com recurso de câmera, tela e áudio (um dispositivo para cada jogador);
 - 1 dispositivo onde o uOS possa ser executado, para servir como servidor central.
 
-Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo.
+Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo. Os recursos neutros de audio e vídeo serão utilizados para prover ambiência, reproduzindo sons e imagens que te remetem a atual situação da partida.
+
+O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima (se houver um recurso de áudio neutro é bom, se não pode-se jogar sem aquela experiência extra).
+
+Os aplicações que executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
+
 
 **Mecânica**
 
 Antes de iniciar a partida o grupo de jogadores se divide em dois grupos (de Anjos e de Demônios), que se enfrentarão.
 O objetivo de ambos os grupos é *encantar* o maior número possível de objetos, ao mesmo tempo que evita o grupo inimigo de fazer o mesmo.
 
-Para um jogador encantar um objeto, basta ele tirar uma foto do objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também *todos* os objetos que possuem aquela mesma *forma*².
+Para um jogador encantar um objeto, basta ele apontar seu *recurso câmera* ao objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também objetos similares que possuem aquela mesma *forma*².
 
 Depois que um objeto for encantando, os jogadores da equipe inimiga terão uma "clarividência" do objeto que foi encantado, com uma visão distorcida daquilo que o jogador encantou.
 
@@ -75,7 +82,7 @@ A pontuação de cada jogador será mostrada, como também das equipes como um t
 
 ¹: Inicialmente, o único encantamento possível será bênção ou maldição. O custo em tempo dele deve ser em torno de 5 segundos (tanto para desencantar como para encantar).
 
-²: Isso significa que a *forma* do objeto é capturada, e não o objeto especificamente. Um outras palavras, se uma cadeira foi encantada, então qualquer cadeira com aquela mesma forma pode ser utilizada para desencantar.
+²: Isso significa que a *forma* do objeto é capturada, e não o objeto especificamente. Em outras palavras, se uma cadeira foi encantada, então qualquer cadeira parecida, com aquela mesma forma, pode ser utilizada para desencantar. Isso incentivará os jogares a buscarem objetos únicos para encantar, visto que objetos comuns serão mais facilmente desencantados.
 
 ³: Quanto mais tempo um objeto estiver encantado, mais "forte" aquele objeto ficará, e mais pontos ele concede por intervalo de tempo (até um limite máximo).
 

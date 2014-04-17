@@ -86,6 +86,6 @@ A pontuação de cada jogador será mostrada, como também das equipes como um t
 
 ³: Quanto mais tempo um objeto estiver encantado, mais "forte" aquele objeto ficará, e mais pontos ele concede por intervalo de tempo (até um limite máximo).
 
-[Detalhamento da Mecânica](https://github.com/vvgaming/HarMegido/blob/master/mecanica.md) 
+[Detalhamento da Mecânica](https://github.com/vvgaming/HarMegido/blob/master/docs/mecanica.md) 
 
-[Ideias](https://github.com/vvgaming/HarMegido/blob/master/ideias.md)
+[Ideias](https://github.com/vvgaming/HarMegido/blob/master/docs/ideias.md)

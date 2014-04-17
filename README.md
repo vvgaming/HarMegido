@@ -27,7 +27,7 @@ O Har Megido (Armageddon) é a batalha final entre o bem e o mal, os seres de lu
 O palco de batalha é o planeta Terra, e as forças já começaram e se enfrentar. Para aumentar o seu poder
 de exército, ambos os lados estão buscando guerreiros, que compartilhem a visão de sua causa. 
 
-Os Anjos querem guerreiros para transformar o planeta em uma fonte perpétua de luz, para expurgar de 
+Os Anjos querem guerreiros para transformar o planeta em uma fonte perpétua de luz e expurgar de 
 uma vez por todas a mácula das trevas.
 
 Já os Demônios querem guerreiros para transformar o mundo na completa escuridão, onde apenas o caos e o desespero

@@ -45,7 +45,7 @@ etc.
 
 
 
-### Mudanças no Mundo:
+#### Mudanças no Mundo:
 
 Quando o jogo estiver estável e bem jogado, o mapa do mundo real pode ir se tornando mais escuro nas áreas que os 
 demônios dominam, e mais claro nas outras. Isso pode começar a influenciar no próprio jogo, ex: as telas dos dispositivos dos Anjos e as telas comuns ficam com um brilho mais baixo se a área é pesadamente influenciada pelos demônios.

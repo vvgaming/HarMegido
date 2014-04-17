@@ -40,8 +40,8 @@ O conflito entre essas forças no nosso mundo perturba o equilíbrio, transforma
 **Tecnologia**
 
 O jogo utilizará o middleware uOS para, mas não limitado a:
-- Promover conectividade entre os dispositivos através de rede Wi-Fi, usando um controlador central
-- Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.)
+- Promover conectividade entre os dispositivos através de rede Wi-Fi, usando um controlador central;
+- Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.);
 - Possibilitar o controle de áudio de dispostivios dentro da rede do middleware
 
 O jogo utilizará visão computacional como parte fundamental de sua mecânica
@@ -77,3 +77,6 @@ A pontuação de cada jogador será mostrada, como também das equipes como um t
 
 ³: Quanto mais tempo um objeto estiver encantado, mais "forte" aquele objeto ficará, e mais pontos ele concede por intervalo de tempo (até um limite máximo).
 
+[Detalhamento da Mecânica](https://github.com/vvgaming/HarMegido/blob/master/iteracoes.md) 
+
+[Projeção de Entregáveis](https://github.com/vvgaming/HarMegido/blob/master/iteracoes.md)

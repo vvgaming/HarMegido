@@ -44,9 +44,9 @@ O jogo utilizará o middleware uOS para, mas não limitado a:
 O jogo utilizará visão computacional como parte fundamental de sua mecânica
 
 Com relação a dispositivos necessários para funcionar,são necessários (no mínimo):
-- n Jogadores (n > 1);
+- n jogadores (n > 1);
 - n dispositivos onde o uOS possa ser executado, com recurso de câmera e som (um dispositivo para cada jogador);
-- 1 dispositivo onde o uOS possa ser execitado, para servir como servidor central.
+- 1 dispositivo onde o uOS possa ser executado, para servir como servidor central.
 
 Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo.
 

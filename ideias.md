@@ -3,7 +3,7 @@
 A seguir são listadas ideias que, possivelmente, serão incorporadas, para enriquecer a experiência de jogo.
 
 
-Poderes:
+### **Poderes**:
 
 **Anjos**:
 

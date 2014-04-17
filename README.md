@@ -26,10 +26,13 @@ O jogo utilizará gráficos 2D, principalmente interpolados sobre a imagem da c�
 O Har Megido (Armageddon) é a batalha final entre o bem e o mal, os seres de luz e de trevas. 
 O palco de batalha é o planeta Terra, e as forças já começaram e se enfrentar. Para aumentar o seu poder
 de exército, ambos os lados estão buscando guerreiros, que compartilhem a visão de sua causa. 
+
 Os Anjos querem guerreiros para transformar o planeta em uma fonte perpétua de luz, para expurgar de 
 uma vez por todas a mácula das trevas.
+
 Já os Demônios querem guerreiros para transformar o mundo na completa escuridão, onde apenas o caos e o desespero
-imperam. Eles estão a hora de sua vingança desde que Lúcifer foi espulso do paraíso.
+imperam. Eles estão aguardando a hora de sua vingança desde que Lúcifer foi espulso do paraíso.
+
 
 O conflito entre essas forças no nosso mundo perturba o equilíbrio, transformando a realidade.   
 
@@ -50,4 +53,19 @@ Com relação a dispositivos necessários para funcionar,são necessários (no m
 
 Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo.
 
+**Mecânica**
 
+Antes de iniciar a partida o grupo de jogadores se divide em dois grupos (de Anjos e de Demônios), que se enfrentarão.
+O objetivo de ambos os grupos é *encantar* o maior número possível de objetos, ao mesmo tempo que evita o grupo inimigo de fazer o mesmo.
+
+Para um jogador encantar um objeto, basta ele tirar uma foto do objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também *todos* os objetos que possuem aquela mesma forma².
+
+Para um jogador desencantar um objeto, ele deve apontar a câmera para o objeto que está encantado (essa ação também custa tempo¹)
+
+Os objetos encantados acumulam pontos de acordo com o tipo de encantamento, e do tempo em que estão encantados.
+
+O jogo termina quando o tempo limite terminar ou um grupo conseguir a pontuação necessária para vencer (o que ocorrer primeiro). É possível haver empate.
+
+
+
+Os jogadores devem retirar uma foto do objeto que ele está encantando. 

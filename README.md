@@ -42,11 +42,11 @@ O conflito entre essas forças no nosso mundo perturba o equilíbrio, transforma
 O jogo utilizará o middleware uOS para, mas não limitado a:
 - Promover conectividade entre os dispositivos através de rede Wi-Fi, usando um controlador central;
 - Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.);
-- Possibilitar o controle de áudio de dispostivios dentro da rede do middleware
+- Possibilitar o controle de áudio de dispostivios dentro da rede do middleware.
 
-O jogo utilizará visão computacional como parte fundamental de sua mecânica
+O jogo utilizará visão computacional como parte fundamental de sua mecânica.
 
-Com relação a dispositivos necessários para funcionar,são necessários (no mínimo):
+Com relação a dispositivos necessários para funcionar, são necessários no mínimo:
 - n jogadores (n > 1);
 - n dispositivos onde o uOS possa ser executado, com recurso de câmera e som (um dispositivo para cada jogador);
 - 1 dispositivo onde o uOS possa ser executado, para servir como servidor central.
@@ -58,7 +58,7 @@ Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restant
 Antes de iniciar a partida o grupo de jogadores se divide em dois grupos (de Anjos e de Demônios), que se enfrentarão.
 O objetivo de ambos os grupos é *encantar* o maior número possível de objetos, ao mesmo tempo que evita o grupo inimigo de fazer o mesmo.
 
-Para um jogador encantar um objeto, basta ele tirar uma foto do objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também *todos* os objetos que possuem aquela mesma forma².
+Para um jogador encantar um objeto, basta ele tirar uma foto do objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também *todos* os objetos que possuem aquela mesma *forma*².
 
 Depois que um objeto for encantando, os jogadores da equipe inimiga terão uma "clarividência" do objeto que foi encantado, com uma visão distorcida daquilo que o jogador encantou.
 
@@ -68,7 +68,7 @@ Os objetos encantados acumulam pontos de acordo com o tipo de encantamento, e do
 
 Os objetos desencantados acumulam pontos para aqueles que os desencantarem. O número de pontos recebido desta forma é fixo, independente do tempo que o objeto está encantado.
 
-O jogo termina quando o tempo limite terminar ou um grupo conseguir a pontuação necessária para vencer (o que ocorrer primeiro). É possível haver empate.
+O jogo termina quando o tempo limite expirar ou um grupo conseguir a pontuação necessária para vencer (o que ocorrer primeiro). É possível haver empate.
 
 A pontuação de cada jogador será mostrada, como também das equipes como um todo.
 

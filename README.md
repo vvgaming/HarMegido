@@ -46,7 +46,7 @@ O jogo utilizará o middleware uOS para, mas não limitado a:
 - Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.);
 - Possibilitar o controle de áudio de dispostivios dentro da rede do middleware.
 
-O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos reais.
+O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos reais [1].
 
 Com relação a dispositivos necessários para funcionar, são necessários no mínimo:
 - n jogadores (n > 1);
@@ -65,13 +65,13 @@ Os aplicações que executadas nos dispositivos pessoais proverão serviços equ
 Antes de iniciar a partida o grupo de jogadores se divide em dois grupos (de Anjos e de Demônios), que se enfrentarão.
 O objetivo de ambos os grupos é *encantar* o maior número possível de objetos, ao mesmo tempo que evita o grupo inimigo de fazer o mesmo.
 
-Para um jogador encantar um objeto, basta ele apontar seu *recurso câmera* ao objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também objetos similares que possuem aquela mesma *forma*². O objeto encantado deve ser estático/rígido, por exemplo, um monitor de computador que está passando imagens que mudam muito não poderá ser encantado.
+Para um jogador encantar um objeto, basta ele apontar seu *recurso câmera* ao objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento[2]). Essa ação encanta não somente aquele objeto, como também objetos similares que possuem aquela mesma *forma*[3]. O objeto encantado deve ser estático/rígido, por exemplo, um monitor de computador que está passando imagens que mudam muito não poderá ser encantado.
 
 Depois que um objeto for encantando, os jogadores da equipe inimiga terão uma "clarividência" do objeto que foi encantado, com uma visão distorcida daquilo que o jogador encantou.
 
-Para um jogador desencantar um objeto, ele deve apontar a câmera para o objeto que foi previamente encantado (essa ação também custa tempo¹).
+Para um jogador desencantar um objeto, ele deve apontar a câmera para o objeto que foi previamente encantado (essa ação também custa tempo[2]).
 
-Os objetos encantados acumulam pontos de acordo com o tipo de encantamento, e do tempo em que estão encantados³.
+Os objetos encantados acumulam pontos de acordo com o tipo de encantamento, e do tempo em que estão encantados[4].
 
 Os objetos desencantados acumulam pontos para aqueles que os desencantarem. O número de pontos recebido desta forma é fixo, independente do tempo que o objeto está encantado.
 
@@ -80,11 +80,14 @@ O jogo termina quando o tempo limite expirar ou um grupo conseguir a pontuação
 A pontuação de cada jogador será mostrada, como também das equipes como um todo.
 
 
-¹: Inicialmente, o único encantamento possível será bênção ou maldição. O custo em tempo dele deve ser em torno de 5 segundos (tanto para desencantar como para encantar).
+[1] Uma simples prova de conceito foi desenvolvida para verificar se será possível. Vídeo de demonstração: [Demonstração de detecção de objetos](https://github.com/vvgaming/HarMegido/blob/master/docs/demo.mp4) 
 
-²: Isso significa que a *forma* do objeto é capturada, e não o objeto especificamente. Em outras palavras, se uma cadeira foi encantada, então qualquer cadeira parecida, com aquela mesma forma, pode ser utilizada para desencantar. Isso incentivará os jogares a buscarem objetos únicos para encantar, visto que objetos comuns serão mais facilmente desencantados.
+[2] Inicialmente, o único encantamento possível será bênção ou maldição. O custo em tempo dele deve ser em torno de 5 segundos (tanto para desencantar como para encantar).
 
-³: Quanto mais tempo um objeto estiver encantado, mais "forte" aquele objeto ficará, e mais pontos ele concede por intervalo de tempo (até um limite máximo).
+[3] Isso significa que a *forma* do objeto é capturada, e não o objeto especificamente. Em outras palavras, se uma cadeira foi encantada, então qualquer cadeira parecida, com aquela mesma forma, pode ser utilizada para desencantar. Isso incentivará os jogares a buscarem objetos únicos para encantar, visto que objetos comuns serão mais facilmente desencantados.
+
+[4] Quanto mais tempo um objeto estiver encantado, mais "forte" aquele objeto ficará, e mais pontos ele concede por intervalo de tempo (até um limite máximo).
+
 
 [Detalhamento da Mecânica](https://github.com/vvgaming/HarMegido/blob/master/docs/mecanica.md) 
 

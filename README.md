@@ -60,17 +60,20 @@ O objetivo de ambos os grupos é *encantar* o maior número possível de objetos
 
 Para um jogador encantar um objeto, basta ele tirar uma foto do objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também *todos* os objetos que possuem aquela mesma forma².
 
-Para um jogador desencantar um objeto, ele deve apontar a câmera para o objeto que está encantado (essa ação também custa tempo¹)
+Para um jogador desencantar um objeto, ele deve apontar a câmera para o objeto que foi previamente encantado (essa ação também custa tempo¹).
 
 Os objetos encantados acumulam pontos de acordo com o tipo de encantamento, e do tempo em que estão encantados³.
-Os objetos desencantados acumulam pontos para aqueles que o encontraram.
+
+Os objetos desencantados acumulam pontos para aqueles que os desencantarem. O número de pontos recebido desta forma é fixo, independente do tempo que o objeto está encantado.
 
 O jogo termina quando o tempo limite terminar ou um grupo conseguir a pontuação necessária para vencer (o que ocorrer primeiro). É possível haver empate.
 
 A pontuação de cada jogador será mostrada, como também das equipes como um todo.
 
 
-¹: Inicialmente, o único encantamento possível será bênção ou maldição. Há previsão de serem adicionados outros.
+¹: Inicialmente, o único encantamento possível será bênção ou maldição. O custo em tempo dele deve ser em torno de 5 segundos (tanto para desencantar como para encantar).
+
 ²: Isso significa que a *forma* do objeto é capturada, e não o objeto especificamente. Um outras palavras, se uma cadeira foi encantada, então qualquer cadeira com aquela mesma forma pode ser utilizada para desencantar.
+
 ³: Quanto mais tempo um objeto estiver encantado, mais "forte" aquele objeto ficará, e mais pontos ele concede por intervalo de tempo (até um limite máximo).
 

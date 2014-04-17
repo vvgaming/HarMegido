@@ -65,7 +65,7 @@ Os aplicações que executadas nos dispositivos pessoais proverão serviços equ
 Antes de iniciar a partida o grupo de jogadores se divide em dois grupos (de Anjos e de Demônios), que se enfrentarão.
 O objetivo de ambos os grupos é *encantar* o maior número possível de objetos, ao mesmo tempo que evita o grupo inimigo de fazer o mesmo.
 
-Para um jogador encantar um objeto, basta ele apontar seu *recurso câmera* ao objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também objetos similares que possuem aquela mesma *forma*².
+Para um jogador encantar um objeto, basta ele apontar seu *recurso câmera* ao objeto (essa ação exige um custo em tempo, variável de acordo com o tipo de encantamento¹). Essa ação encanta não somente aquele objeto, como também objetos similares que possuem aquela mesma *forma*². O objeto encantado deve ser estático/rígido, por exemplo, um monitor de computador que está passando imagens que mudam muito não poderá ser encantado.
 
 Depois que um objeto for encantando, os jogadores da equipe inimiga terão uma "clarividência" do objeto que foi encantado, com uma visão distorcida daquilo que o jogador encantou.
 

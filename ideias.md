@@ -16,7 +16,6 @@ Amarração ->  Ao encantar um objeto, o encantamento torna-se uma "armadilha" p
 
 Expurgar -> Remove qualquer encantamento de um Anjo aliado.
 
-<br/>
 
 
 **Demônios**:
@@ -26,6 +25,12 @@ Maldição -> Amaldiçoa um objeto, promovendo o caos e a discórdia no ambiente
 Clarividência -> Possibilita ter "visões" do local onde foi feito um encantamento
 
 Praga -> Ao encantar um objeto, o encantamento torna-se uma "armadilha" para quem tentar desencantá-lo. Neste caso, o Anjo que caiu na armadilha ficará "infectado" com a praga, tendo um aumento no custo de invocação de feitiços até que seja curado por um outro Anjo.
+
+Expurgar -> Remove qualquer encantamento de um Demônio aliado.
+
+### Poderes especiais:
+
+Outros poderes especiais podem ser incorporados, como rituais de bençãos ou maldições que deverão seguir uma forma determinada, obviamente oferecerá um grande risco a quem tenta fazer, mas grande recompensa se o fizer.
 
 
 ### Nível:

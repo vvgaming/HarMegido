@@ -44,7 +44,7 @@ O conflito entre essas forças no nosso mundo perturba o equilíbrio, transforma
 O jogo utilizará o middleware uOS para, mas não limitado a:
 - Promover conectividade entre os dispositivos através de rede Wi-Fi, usando um controlador central;
 - Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.);
-- Possibilitar o controle de áudio de dispostivios dentro da rede do middleware.
+- Possibilitar o controle de áudio de dispostivos dentro da rede do middleware.
 
 O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos reais [1].
 
@@ -53,11 +53,11 @@ Com relação a dispositivos necessários para funcionar, são necessários no m
 - n dispositivos onde o uOS possa ser executado, com recurso de câmera, tela e áudio (um dispositivo para cada jogador);
 - 1 dispositivo onde o uOS possa ser executado, para servir como servidor central.
 
-Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo. Os recursos neutros de audio e vídeo serão utilizados para prover ambiência, reproduzindo sons e imagens que te remetem a atual situação da partida.
+Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo. Os recursos neutros de áudio e vídeo serão utilizados para prover ambiência, reproduzindo sons e imagens que te remetem a atual situação da partida.
 
 O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima (se houver um recurso de áudio neutro é bom, se não pode-se jogar sem aquela experiência extra).
 
-Os aplicações que executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
+Os aplicações executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
 
 
 **Mecânica**

@@ -80,7 +80,7 @@ O jogo termina quando o tempo limite expirar ou um grupo conseguir a pontuação
 A pontuação de cada jogador será mostrada, como também das equipes como um todo.
 
 
-[1] Uma simples prova de conceito foi desenvolvida para verificar se será possível. Vídeo de demonstração: [Demonstração de detecção de objetos](https://github.com/vvgaming/HarMegido/blob/master/docs/demo.mp4) 
+[1] Uma simples prova de conceito foi desenvolvida para verificar se será possível. Vídeo de demonstração: [Demonstração de detecção de objetos](http://youtu.be/w9FDezrSpI8) 
 
 [2] Inicialmente, o único encantamento possível será bênção ou maldição. O custo em tempo dele deve ser em torno de 5 segundos (tanto para desencantar como para encantar).
 

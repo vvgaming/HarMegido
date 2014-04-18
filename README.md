@@ -57,7 +57,7 @@ Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restant
 
 O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima (se houver um recurso de áudio neutro é bom, se não pode-se jogar sem aquela experiência extra).
 
-Os aplicações executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
+As aplicações executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
 
 
 **Mecânica**

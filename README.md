@@ -33,7 +33,7 @@ Os Anjos querem guerreiros para transformar o planeta em uma fonte perpétua de 
 uma vez por todas a mácula das trevas.
 
 Já os Demônios querem guerreiros para transformar o mundo na completa escuridão, onde apenas o caos e o desespero
-imperam. Eles estão aguardando a hora de sua vingança desde que Lúcifer foi espulso do paraíso.
+imperam. Eles estão aguardando a hora de sua vingança desde que Lúcifer foi expulso do paraíso.
 
 
 O conflito entre essas forças no nosso mundo perturba o equilíbrio, transformando a realidade.   

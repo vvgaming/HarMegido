@@ -48,14 +48,13 @@ O jogo utilizará o middleware uOS para, mas não limitado a:
 
 O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos reais [1].
 
-Com relação a dispositivos necessários para funcionar, são necessários no mínimo:
-- n jogadores (n > 1);
+Sendo n jogadores, com n > 1, são necessários no mínimo:
 - n dispositivos onde o uOS possa ser executado, com recurso de câmera, tela e áudio (um dispositivo para cada jogador);
 - 1 dispositivo onde o uOS possa ser executado, para servir como servidor central.
 
 Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo. Os recursos neutros de áudio e vídeo serão utilizados para prover ambiência, reproduzindo sons e imagens que te remetem a atual situação da partida.
 
-O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima (se houver um recurso de áudio neutro é bom, se não pode-se jogar sem aquela experiência extra).
+O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima.
 
 As aplicações executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
 

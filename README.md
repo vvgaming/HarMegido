@@ -1,9 +1,9 @@
 Har Megido
 ==========
-
- "E vi três espíritos malignos semelhantes a rãs; eles saíram da boca do dragão, da boca da besta, e da boca do falso profeta. Eles são espíritos de demônios, que fazem prodígios; os quais vão à procura dos reis da terra e de todo o mundo, para os congregar para a batalha, naquele grande dia do Deus Todo-Poderoso.    
+    
+ *"E vi três espíritos malignos semelhantes a rãs; eles saíram da boca do dragão, da boca da besta, e da boca do falso profeta. Eles são espíritos de demônios, que fazem prodígios; os quais vão à procura dos reis da terra e de todo o mundo, para os congregar para a batalha, naquele grande dia do Deus Todo-Poderoso.    
   ...    
-  Eles então se congregaram num lugar que em hebreu chama-se Har Megido."    
+  Eles então se congregaram num lugar que em hebreu chama-se Har Megido."*    
       Apocalise 16:13-16
 
 

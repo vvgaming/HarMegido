@@ -60,25 +60,14 @@ public class ObjDetectTestCam implements CvCameraViewListener2 {
 
 	@Override
 	public void onCameraViewStopped() {
-		releaseMat(empty);
-
-		releaseMat(toShow);
-		releaseMat(marcada);
-		releaseMat(red);
-		releaseMat(green);
-		releaseMat(last);
-
-		releaseMat(histMarcada);
-		releaseMat(histLast);
-
-		releaseMat(channels);
-		releaseMat(histSize);
-		releaseMat(ranges);
+		OCVUtil.releaseMat(empty, toShow, marcada, red, green, last);
+		OCVUtil.releaseMat(histMarcada, histLast);
+		OCVUtil.releaseMat(channels, histSize, ranges);
 	}
 
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 
-		releaseMat(last);
+		OCVUtil.releaseMat(last);
 
 		last = inputFrame.rgba();
 		toShow = last.clone();
@@ -110,9 +99,7 @@ public class ObjDetectTestCam implements CvCameraViewListener2 {
 	}
 
 	public void catchImg() {
-		releaseMat(marcada);
-		releaseMat(red);
-		releaseMat(green);
+		OCVUtil.releaseMat(marcada, red, green);
 
 		marcada = last.clone();
 		red = last.clone();
@@ -130,11 +117,6 @@ public class ObjDetectTestCam implements CvCameraViewListener2 {
 
 		// borrando um pouco a imagem para ficar "menos visível"
 		Imgproc.blur(marcada, marcada, new Size(5, 5));
-	}
-
-	private void releaseMat(Mat mat) {
-		if (mat != null)
-			mat.release();
 	}
 
 }

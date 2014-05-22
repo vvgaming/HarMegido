@@ -27,7 +27,7 @@ public class BubbleGame extends AbstractGame {
 		if (acc > 2000) {
 			acc -= 2000;
 		}
-		texto.text = "bubbles: " + bubbles.size();
+		texto.text = "bolhas: " + bubbles.size();
 	}
 
 	@Override

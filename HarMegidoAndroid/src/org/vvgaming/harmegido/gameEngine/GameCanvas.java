@@ -77,16 +77,21 @@ public class GameCanvas extends SurfaceView implements Callback {
 			Paint preto = new Paint();
 			preto.setARGB(255, 0, 0, 0);
 
+			// criando um retangulo do tamanho máximo para limpar a tela
+			Canvas canvas = theHolder.lockCanvas();
+			Rect retanguloMaximo = new Rect(0, 0, canvas.getWidth(),
+					canvas.getHeight());
+			theHolder.unlockCanvasAndPost(canvas);
+
 			long delta = 0;
 
 			while (!shouldQuit) {
 
 				long initFrame = System.currentTimeMillis();
 
-				Canvas canvas = theHolder.lockCanvas();
-				canvas.drawRect(
-						new Rect(0, 0, canvas.getWidth(), canvas.getHeight()),
-						preto);
+				canvas = theHolder.lockCanvas();
+				// pinta tudo de preto
+				canvas.drawRect(retanguloMaximo, preto);
 
 				theGame.realUpdate(delta);
 				theGame.realRender(canvas);

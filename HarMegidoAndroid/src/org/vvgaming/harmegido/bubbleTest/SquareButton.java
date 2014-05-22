@@ -1,7 +1,8 @@
-package org.vvgaming.harmegido.gameEngine;
+package org.vvgaming.harmegido.bubbleTest;
 
+import org.vvgaming.harmegido.gameEngine.GameObject;
 import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
-import org.vvgaming.harmegido.gameEngine.geometry.Vetor2d;
+import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -19,14 +20,24 @@ public class SquareButton implements GameObject {
 		black.setARGB(255, 0, 0, 0);
 		black.setTextSize(20);
 
-		ret = new Retangulo(new Vetor2d(x, y), w, h);
+		ret = new Retangulo(new Ponto(x, y), w, h);
 		this.text = text;
 
 	}
 
 	@Override
-	public void update(long delta, Canvas canvas) {
+	public void update(long delta) {
+
+	}
+
+	@Override
+	public void render(Canvas canvas) {
 		canvas.drawRect(ret.toAndCanvasRect(), white);
-		canvas.drawText(text, ret.origem.x, ret.origem.y + ret.h/2, black);
+		canvas.drawText(text, ret.origem.x, ret.origem.y + ret.h / 2, black);
+	}
+
+	@Override
+	public boolean isDead() {
+		return false;
 	}
 }

@@ -4,10 +4,10 @@ import android.graphics.Rect;
 
 public class Retangulo {
 
-	public final Vetor2d origem;
+	public final Ponto origem;
 	public final float w, h;
 
-	public Retangulo(Vetor2d origem, float w, float h) {
+	public Retangulo(Ponto origem, float w, float h) {
 		super();
 		this.origem = origem;
 		this.w = w;
@@ -19,7 +19,7 @@ public class Retangulo {
 				(int) (origem.y + h));
 	}
 
-	public boolean contem(Vetor2d ponto){
+	public boolean contem(Ponto ponto){
 		return (ponto.x >= origem.x && 
 				ponto.x <= (origem.x + w) &&	
 				ponto.y >= origem.y && 

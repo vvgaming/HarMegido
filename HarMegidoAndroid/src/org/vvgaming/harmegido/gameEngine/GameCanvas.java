@@ -14,9 +14,9 @@ public class GameCanvas extends SurfaceView implements Callback {
 	private MyThread myThread;
 	private int fpsLock = 30;
 	private boolean showFps = false;
-	private final Game theGame;
+	private final AbstractGame theGame;
 
-	public GameCanvas(Context context, Game theGame) {
+	public GameCanvas(Context context, AbstractGame theGame) {
 		super(context);
 		getHolder().addCallback(this);
 		this.theGame = theGame;
@@ -41,7 +41,9 @@ public class GameCanvas extends SurfaceView implements Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-
+		myThread.setTheHolder(holder);
+		theGame.setWidth(getWidth());
+		theGame.setHeight(getHeight());
 	}
 
 	@Override
@@ -52,11 +54,15 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 	private class MyThread extends Thread {
 
-		private final SurfaceHolder theHolder;
+		private SurfaceHolder theHolder;
 		private boolean shouldQuit = false;
 
 		public MyThread(SurfaceHolder theHolder) {
 			super();
+			this.theHolder = theHolder;
+		}
+
+		public void setTheHolder(SurfaceHolder theHolder) {
 			this.theHolder = theHolder;
 		}
 
@@ -82,7 +88,8 @@ public class GameCanvas extends SurfaceView implements Callback {
 						new Rect(0, 0, canvas.getWidth(), canvas.getHeight()),
 						preto);
 
-				theGame.update(delta, canvas);
+				theGame.realUpdate(delta);
+				theGame.realRender(canvas);
 
 				if (showFps) {
 					canvas.drawText("fps: "

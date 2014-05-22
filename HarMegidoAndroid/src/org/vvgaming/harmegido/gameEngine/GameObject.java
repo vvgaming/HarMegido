@@ -4,6 +4,10 @@ import android.graphics.Canvas;
 
 public interface GameObject {
 
-	void update(long delta, Canvas canvas);
+	void render(final Canvas canvas);
 
+	void update(long delta);
+
+	boolean isDead();
+	
 }

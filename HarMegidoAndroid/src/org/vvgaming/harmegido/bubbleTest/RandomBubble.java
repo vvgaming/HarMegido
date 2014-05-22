@@ -1,6 +1,8 @@
-package org.vvgaming.harmegido.gameEngine;
+package org.vvgaming.harmegido.bubbleTest;
 
 import java.util.Random;
+
+import org.vvgaming.harmegido.gameEngine.GameObject;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -15,6 +17,7 @@ public class RandomBubble implements GameObject {
 
 	private long accu = ANIMATION_DURATION / 2;
 	private boolean faseAbre = true;
+	private long raio = 0;
 
 	public RandomBubble(int screenWidth, int screenHeight) {
 		final Random r = new Random();
@@ -27,20 +30,27 @@ public class RandomBubble implements GameObject {
 	}
 
 	@Override
-	public void update(long delta, Canvas canvas) {
+	public void render(Canvas canvas) {
+		canvas.drawCircle(px, py, (int) raio, randomColor);
+	}
 
+	@Override
+	public void update(long delta) {
 		accu += delta;
 		if (accu > ANIMATION_DURATION) {
 			accu -= ANIMATION_DURATION;
 			faseAbre = !faseAbre;
 		}
 
-		long raio = (long) (((double) maxRaio / (double) ANIMATION_DURATION) * accu);
+		raio = (long) (((double) maxRaio / (double) ANIMATION_DURATION) * accu);
 		if (!faseAbre) {
 			raio = maxRaio - raio;
 		}
+	}
 
-		canvas.drawCircle(px, py, (int) raio, randomColor);
+	@Override
+	public boolean isDead() {
+		return false;
 	}
 
 }

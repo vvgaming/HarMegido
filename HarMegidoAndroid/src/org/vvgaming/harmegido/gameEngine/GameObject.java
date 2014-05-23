@@ -11,14 +11,6 @@ import android.graphics.Canvas;
 public interface GameObject {
 
 	/**
-	 * Método invocado a cada frame para desenhar (ou renderizar) o objeto na
-	 * tela. Deve se valer do canvas do parâmetro, para realizar o desenho
-	 * 
-	 * @param canvas
-	 */
-	void render(final Canvas canvas);
-
-	/**
 	 * Método invocado a cada frame para que o objeto faça suas atualizações
 	 * necessárias
 	 * 
@@ -28,6 +20,14 @@ public interface GameObject {
 	 *            de tempo
 	 */
 	void update(final long delta);
+	
+	/**
+	 * Método invocado a cada frame para desenhar (ou renderizar) o objeto na
+	 * tela. Deve se valer do canvas do parâmetro, para realizar o desenho
+	 * 
+	 * @param canvas
+	 */
+	void render(final Canvas canvas);
 
 	boolean isDead();
 

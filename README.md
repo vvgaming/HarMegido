@@ -20,13 +20,6 @@ A batalha final, o Har Megido, começou, e as suas escolhas irão influenciar se
 
 <br/>
 
-**Estética**
-
-O jogo utilizará gráficos 2D, principalmente interpolados sobre a imagem da câmera. 
-A interação com o jogo visa misturar a realidade com o mundo do jogo onde ele poderá interagir (através da câmera) com objetos reais. 
-Efeitos sonoros serão explorados como parte integrante da mecânica, e também para auxiliar na imersão.
-
-
 **História**
 
 O Har Megido (Armageddon) é a batalha final entre o bem e o mal, os seres de luz e de trevas. 
@@ -39,8 +32,15 @@ uma vez por todas a mácula das trevas.
 Já os Demônios querem guerreiros para transformar o mundo na completa escuridão, onde apenas o caos e o desespero
 imperam. Eles estão aguardando a hora de sua vingança desde que Lúcifer foi expulso do paraíso.
 
-
 O conflito entre essas forças no nosso mundo perturba o equilíbrio, transformando a realidade.   
+
+
+**Estética**
+
+O jogo utilizará gráficos 2D, principalmente interpolados sobre a imagem da câmera. 
+A interação com o jogo visa misturar a realidade com o mundo do jogo onde ele poderá interagir (através da câmera) com objetos reais. 
+
+Efeitos sonoros serão explorados como parte integrante da mecânica, e também para auxiliar na imersão.
 
 
 **Tecnologia**

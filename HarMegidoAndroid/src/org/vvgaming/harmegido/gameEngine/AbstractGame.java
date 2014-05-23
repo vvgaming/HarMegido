@@ -10,6 +10,12 @@ import java.util.TreeMap;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
+/**
+ * Implementação default de um Jogo (ou parte de um). Quando for implementar um
+ * Jogo para ser rodado pelo {@link GameCanvas}, deve-se estender essa classe.
+ * 
+ * @author Vinicius Nogueira
+ */
 public abstract class AbstractGame {
 
 	private int width = 0;
@@ -30,6 +36,7 @@ public abstract class AbstractGame {
 				go.update(delta);
 			}
 		}
+		// invoca o update do game
 		update(delta);
 	}
 
@@ -45,17 +52,70 @@ public abstract class AbstractGame {
 		}
 	}
 
+	/**
+	 * Método padrão que deve ser implementado pelos filhos de
+	 * {@link AbstractGame}. Este método é invocado a cada frame e dá a
+	 * possibilidade de atualizar as informações necessárias do jogo.
+	 * 
+	 * @param delta
+	 *            é a variação de tempo (em ms) do último frame, particularmente
+	 *            útil quando se deseja fazer atualizações que dependam de tempo
+	 */
 	abstract public void update(long delta);
 
 	abstract public void onTouch(MotionEvent event);
 
+	/**
+	 * Adiciona um objeto na camada 0. Veja {@link #addObject(GameObject, int)}
+	 * para mais detalhes
+	 * 
+	 * @param object
+	 * @return
+	 */
 	public boolean addObject(GameObject object) {
 		return addObject(object, 0);
 	}
 
+	/**
+	 * Adiciona um objeto da lista de objetos controlados por este jogo. Os
+	 * objetos desta lista são gerenciados automaticamente sendo atualizados
+	 * {@link GameObject#update(long)} a cada frame e renderizados
+	 * {@link GameObject#render(Canvas)} também.
+	 * 
+	 * @param object
+	 *            o objeto a ser adicionado
+	 * @param layerIndex
+	 *            o índice da camada de renderização (serve para sobrepor
+	 *            objetos)
+	 * @return retorna <code>true</code> se conseguiu adicionar
+	 */
 	public boolean addObject(GameObject object, int layerIndex) {
 		List<GameObject> layer = getLayer(layerIndex);
 		return layer.add(object);
+	}
+
+	/**
+	 * Limpa todos os objetos que estão sendo controlado por este game. Veja
+	 * {@link #addObject(GameObject, int)} para mais detalhes.
+	 */
+	public void clearObjects() {
+		for (Entry<Integer, List<GameObject>> entry : objectsPerLayer
+				.entrySet()) {
+			entry.getValue().clear();
+		}
+	}
+
+	/**
+	 * Remove um objeto de uma camada. Veja {@link #addObject(GameObject, int)}
+	 * para mais detalhes.
+	 * 
+	 * @param object
+	 *            o objeto a ser removido
+	 * @param layerIndex
+	 * @return <code>true</code> se removeu
+	 */
+	public boolean removeObject(GameObject object, int layerIndex) {
+		return getLayer(layerIndex).remove(object);
 	}
 
 	private List<GameObject> getLayer(int layerIndex) {
@@ -65,17 +125,6 @@ public abstract class AbstractGame {
 			objectsPerLayer.put(layerIndex, retorno);
 		}
 		return retorno;
-	}
-
-	public void clearObjects() {
-		for (Entry<Integer, List<GameObject>> entry : objectsPerLayer
-				.entrySet()) {
-			entry.getValue().clear();
-		}
-	}
-
-	public boolean removeObject(GameObject object, int layerIndex) {
-		return getLayer(layerIndex).remove(object);
 	}
 
 	public int getWidth() {

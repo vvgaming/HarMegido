@@ -9,6 +9,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
+/**
+ * Implementação de um canvas para jogos. Este canvas implementa uma Thread e
+ * recebe um {@link AbstractGame} para renderizar seus objetos controlando o
+ * loop.
+ * 
+ * @author Vinicius Nogueira
+ */
 public class GameCanvas extends SurfaceView implements Callback {
 
 	private MyThread myThread;
@@ -104,8 +111,11 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 				theHolder.unlockCanvasAndPost(canvas);
 
+				// cálculo parcial do delta
 				delta = System.currentTimeMillis() - initFrame;
+				// espera um pouco por causa do fpslock
 				delay(MIN_DELAY - delta);
+				// cálculo definitivo do tempo gasto neste frame
 				delta = System.currentTimeMillis() - initFrame;
 
 			}

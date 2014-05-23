@@ -9,8 +9,6 @@ import android.view.MotionEvent;
 
 public class BubbleGame extends AbstractGame {
 
-	private long acc = 0;
-
 	private List<RandomBubble> bubbles = new ArrayList<>();
 	// private final SquareButton btn = new SquareButton(0, 100, 200, 120,
 	// "Testar ObjDetect");
@@ -23,10 +21,6 @@ public class BubbleGame extends AbstractGame {
 
 	@Override
 	public void update(long delta) {
-		acc += delta;
-		if (acc > 2000) {
-			acc -= 2000;
-		}
 		texto.text = "bolhas: " + bubbles.size();
 	}
 

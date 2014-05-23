@@ -13,10 +13,12 @@ public class BubbleGame extends AbstractGame {
 	// private final SquareButton btn = new SquareButton(0, 100, 200, 120,
 	// "Testar ObjDetect");
 	private final Text texto = new Text(100, 10, "");
+	private final OCVCamObjTest cam = new OCVCamObjTest();
 
 	public BubbleGame() {
 		// addObject(btn, 100);
 		addObject(texto, 100);
+		addObject(cam);
 	}
 
 	@Override

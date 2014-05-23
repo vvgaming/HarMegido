@@ -7,6 +7,11 @@ import org.vvgaming.harmegido.vision.OCVUtil;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+/**
+ * Teste de GameObject que recupera imagens da camera OpenCV e desenha no Canvas
+ * 
+ * @author Vinicius Nogueira
+ */
 public class OCVCamObjTest implements GameObject {
 
 	private Cam cam;

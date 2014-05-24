@@ -39,8 +39,12 @@ public class SimilarityCam {
 	}
 
 	public void stopObservar() {
-		OCVUtil.getInstance().releaseMat(histogramaEmObservacao);
-		histogramaEmObservacao = null;
+		if (histogramaEmObservacao != null) {
+			synchronized (histogramaEmObservacao) {
+				OCVUtil.getInstance().releaseMat(histogramaEmObservacao);
+				histogramaEmObservacao = null;
+			}
+		}
 	}
 
 	public boolean emObservacao() {

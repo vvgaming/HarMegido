@@ -41,9 +41,10 @@ public class GameCanvas extends SurfaceView implements Callback {
 		theGame.setWidth(getWidth());
 		theGame.setHeight(getHeight());
 
+		theGame.realInit();
+		
 		loopThread = new LoopThread(getHolder());
 		loopThread.start();
-		theGame.realInit();
 	}
 
 	@Override

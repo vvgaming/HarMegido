@@ -2,7 +2,7 @@ package org.vvgaming.harmegido.test;
 
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.bubbleTest.BubbleTestActivity;
-import org.vvgaming.harmegido.vision.ObjDetectTestActivity;
+import org.vvgaming.harmegido.vision.test.ObjDetectTestActivity;
 
 import android.app.Activity;
 import android.content.Intent;

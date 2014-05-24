@@ -33,6 +33,16 @@ Expurgar -> Remove qualquer encantamento de um Demônio aliado.
 Outros poderes especiais podem ser incorporados, como rituais de bençãos ou maldições que deverão seguir uma forma determinada, obviamente oferecerá um grande risco a quem tenta fazer, mas grande recompensa se o fizer.
 
 
+**Hora da Escuridão** -> Feito pelos demônios, requer a sincronia de quatro jogadores. As telas devem ficar pareadas. Então, um desenho (tipo um pentagrama) vai aparecer desenhado através das quatro telas. Após o tempo de conjuração, todos os dispositivos que não sejam demoníacos ficarão apagados (sim, os dispositivos dos anjos ficarão apagados por um período de tempo).    
+
+P.S.: Como ideia, pode haver uma leve animação sobre a tela escura, bem difícil de enxergar. Ao perceber um rosto se aproximando, a tela pode dar um grito estridente, para assustar o jogador.
+
+**Hora da Luz** -> A versão dos Anjos
+
+**Tetragrammaton** -> O ritual mais poderoso dos anjos, invoca o nome divino. Requer, obviamente, quatro jogadores 
+com celulares pareados. Em cada celular uma das letras será mostrada, e, após um tempo de conjuração, o poder será liberado.
+
+
 ### Nível:
 
 Como a contagem de pontos é individualizada, então uma recompensa seria o jogador subir de nível. Com isso, ele seria capaz de ir galgando "posições" na hierarquia de anjos e demônios. Cada "ranking" teria uma mensagem associada, que começaria em nível de deboche.

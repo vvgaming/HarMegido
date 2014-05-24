@@ -60,8 +60,6 @@ public class CamGO implements GameObject {
 				cam.getRealCam().getLastFrame().rgba());
 
 		resultado = cam.isObservacaoOk();
-		System.out.println(resultado);
-
 	}
 
 	@Override

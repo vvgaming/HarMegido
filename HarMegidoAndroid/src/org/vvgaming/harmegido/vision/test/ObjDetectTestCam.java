@@ -77,12 +77,16 @@ public class ObjDetectTestCam implements CvCameraViewListener2 {
 
 			// calculo do histograma para o frame atual
 			Mat toHist = last.clone();
+			// converte para hsv
+			Imgproc.cvtColor(toHist, toHist, Imgproc.COLOR_RGBA2RGB);
+			Imgproc.cvtColor(toHist, toHist, Imgproc.COLOR_RGB2HSV);
 			Imgproc.calcHist(Arrays.asList(toHist), channels, empty, histLast,
 					histSize, ranges);
+			toHist.release();
+
 			// normalizando o histograma para comparar grandezas de mesmo range
 			Core.normalize(histLast, histLast, 0, 1, Core.NORM_MINMAX, -1,
 					empty);
-			toHist.release();
 
 			// sobrepondo as imagens (blending)
 			Core.addWeighted(marcada, 0.35d, last, 0.65d, 0.0d, toShow);
@@ -110,9 +114,16 @@ public class ObjDetectTestCam implements CvCameraViewListener2 {
 		red.setTo(RED_SCALAR);
 		green.setTo(GREEN_SCALAR);
 
+		Mat marcadaCalc = marcada.clone();
+		// converte para hsv
+		Imgproc.cvtColor(marcadaCalc, marcadaCalc, Imgproc.COLOR_RGBA2RGB);
+		Imgproc.cvtColor(marcadaCalc, marcadaCalc, Imgproc.COLOR_RGB2HSV);
+
 		// calculando o guardando o histograma da imagem que foi marcada
-		Imgproc.calcHist(Arrays.asList(marcada), channels, empty, histMarcada,
-				histSize, ranges);
+		Imgproc.calcHist(Arrays.asList(marcadaCalc), channels, empty,
+				histMarcada, histSize, ranges);
+		marcadaCalc.release();
+
 		// normalizando o histograma para comparar grandezas de mesmo range
 		Core.normalize(histMarcada, histMarcada, 0, 1, Core.NORM_MINMAX, -1,
 				empty);

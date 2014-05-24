@@ -53,4 +53,14 @@ public class RandomBubble implements GameObject {
 		return false;
 	}
 
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void end() {
+		// TODO Auto-generated method stub
+	}
+
 }

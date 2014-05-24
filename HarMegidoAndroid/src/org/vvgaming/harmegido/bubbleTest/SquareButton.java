@@ -40,4 +40,14 @@ public class SquareButton implements GameObject {
 	public boolean isDead() {
 		return false;
 	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void end() {
+		// TODO Auto-generated method stub
+	}
 }

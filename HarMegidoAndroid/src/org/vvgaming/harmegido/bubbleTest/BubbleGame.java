@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.vvgaming.harmegido.gameEngine.AbstractGame;
+import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.view.MotionEvent;
 
@@ -13,10 +14,12 @@ public class BubbleGame extends AbstractGame {
 	// private final SquareButton btn = new SquareButton(0, 100, 200, 120,
 	// "Testar ObjDetect");
 	private final Text texto = new Text(100, 10, "");
-	private final OCVCamObjTest cam = new OCVCamObjTest();
+	private final OCVCamObjTest cam = new OCVCamObjTest(new Ponto(0, 0));
 
-	public BubbleGame() {
-		// addObject(btn, 100);
+	@Override
+	public void init() {
+		super.init();
+		cam.setCenter(new Ponto(getWidth() / 2, getHeight() / 2));
 		addObject(texto, 100);
 		addObject(cam);
 	}

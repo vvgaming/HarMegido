@@ -15,14 +15,13 @@ public class BubbleTestActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		gameCanvas = new GameCanvas(this, new BubbleGame());
-		gameCanvas.setShowFps(true);
-		setContentView(gameCanvas);
+
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this,
 				mLoaderCallback);
 	}
@@ -32,6 +31,10 @@ public class BubbleTestActivity extends Activity {
 		public void onManagerConnected(int status) {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
+				gameCanvas = new GameCanvas(BubbleTestActivity.this,
+						new BubbleGame());
+				gameCanvas.setShowFps(true);
+				setContentView(gameCanvas);
 			}
 				break;
 			default: {

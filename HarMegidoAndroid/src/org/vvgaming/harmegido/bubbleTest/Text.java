@@ -16,7 +16,6 @@ public class Text implements GameObject {
 		cinza.setARGB(255, 200, 200, 200);
 		pos = new Ponto(x, y);
 		this.text = text;
-
 	}
 
 	@Override
@@ -32,5 +31,15 @@ public class Text implements GameObject {
 	@Override
 	public boolean isDead() {
 		return false;
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void end() {
+		// TODO Auto-generated method stub
 	}
 }

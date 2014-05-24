@@ -64,7 +64,9 @@ public abstract class AbstractGame {
 			// criando uma nova para evitar problemas de acesso concorrente
 			List<GameObject> curLayerList = new ArrayList<>(entry.getValue());
 			for (GameObject go : curLayerList) {
-				go.render(canvas);
+				if (go.isVisible()) {
+					go.render(canvas);
+				}
 			}
 		}
 	}
@@ -90,7 +92,6 @@ public abstract class AbstractGame {
 	 * @return
 	 */
 	public boolean addObject(GameObject object) {
-		object.init();
 		return addObject(object, 0);
 	}
 
@@ -118,6 +119,7 @@ public abstract class AbstractGame {
 		// .getClass().getClassLoader(), new Class[] { GameObject.class },
 		// new GameObjectProxy(object));
 
+		object.init();
 		List<GameObject> layer = getLayer(layerIndex);
 		return layer.add(object);
 	}

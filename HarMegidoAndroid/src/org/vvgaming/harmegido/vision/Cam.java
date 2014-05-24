@@ -15,6 +15,9 @@ import org.opencv.highgui.VideoCapture;
  */
 public class Cam {
 
+	private NativeCameraFrame lastFrame = NativeCameraFrame.empty;
+	private boolean running = false;
+
 	private boolean stopGrabbing;
 	private Thread grabbingThread;
 	private int width;
@@ -94,11 +97,10 @@ public class Cam {
 		}
 	}
 
-	private NativeCameraFrame lastFrame = NativeCameraFrame.empty;
-
 	private class CameraWorker implements Runnable {
 
 		public void run() {
+			running = true;
 			do {
 				if (!mCamera.grab()) {
 					break;
@@ -113,6 +115,7 @@ public class Cam {
 				} catch (InterruptedException ignored) {
 				}
 			} while (!stopGrabbing);
+			running = false;
 		}
 	}
 
@@ -182,6 +185,10 @@ public class Cam {
 		// capturada invertida e após rodar temos a inversão de width e height
 		// TODO arrumar isso
 		return height;
+	}
+
+	public boolean isRunning() {
+		return running;
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.vision;
+package org.vvgaming.harmegido.vision.test;
 
 import java.util.Arrays;
 
@@ -11,6 +11,7 @@ import org.opencv.core.MatOfInt;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.vvgaming.harmegido.vision.OCVUtil;
 
 public class ObjDetectTestCam implements CvCameraViewListener2 {
 

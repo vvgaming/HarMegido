@@ -41,7 +41,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="org.vvgaming.harmegido.vision.ObjDetectTestActivity"
+            android:name="org.vvgaming.harmegido.vision.test.ObjDetectTestActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name"
             android:screenOrientation="landscape" >

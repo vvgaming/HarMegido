@@ -14,7 +14,7 @@ public class Retangulo {
 		this.h = h;
 	}
 
-	public Rect toAndCanvasRect() {
+	public Rect toAndroidCanvasRect() {
 		return new Rect((int) origem.x, (int) origem.y, (int) (origem.x + w),
 				(int) (origem.y + h));
 	}

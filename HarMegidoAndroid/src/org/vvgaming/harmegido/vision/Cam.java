@@ -1,45 +1,56 @@
 package org.vvgaming.harmegido.vision;
 
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
+/**
+ * Wrapper para captura de frames da camera. Essa classe é capaz de rodar uma
+ * Thread e ficar capturando frames e deixando-os disponíveis quando necessários
+ * 
+ * @author Vinicius Nogueira
+ */
 public class Cam {
 
-	private boolean mStopThread;
-	private Thread mThread;
-
+	private boolean stopGrabbing;
+	private Thread grabbingThread;
+	private int width;
+	private int height;
 	private VideoCapture mCamera;
 
 	public boolean connectCamera(int width, int height) {
 
-		if (!initializeCamera(width, height))
+		this.width = width;
+		this.height = height;
+
+		if (!initializeCamera())
 			return false;
 
-		mThread = new Thread(new CameraWorker());
-		mThread.start();
+		grabbingThread = new Thread(new CameraWorker());
+		grabbingThread.start();
 
 		return true;
 	}
 
 	public void disconnectCamera() {
-		if (mThread != null) {
+		if (grabbingThread != null) {
 			try {
-				mStopThread = true;
-				mThread.join();
+				stopGrabbing = true;
+				grabbingThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} finally {
-				mThread = null;
-				mStopThread = false;
+				grabbingThread = null;
+				stopGrabbing = false;
 			}
 		}
 		releaseCamera();
 	}
 
-	private boolean initializeCamera(int width, int height) {
+	private boolean initializeCamera() {
 		synchronized (this) {
 
 			mCamera = new VideoCapture(Highgui.CV_CAP_ANDROID);
@@ -93,7 +104,15 @@ public class Cam {
 					break;
 				}
 				lastFrame = (new NativeCameraFrame(mCamera));
-			} while (!mStopThread);
+				try {
+					// TODO esse sleep é só uma gambiarra para diminuir o
+					// consumo, dado que a camera só pega em no máximo 30 fps,
+					// não adianta ficar indo tão rápido. O ideal é ajustar isso
+					// aqui depois para ficar mais inteligente
+					Thread.sleep(20);
+				} catch (InterruptedException ignored) {
+				}
+			} while (!stopGrabbing);
 		}
 	}
 
@@ -106,12 +125,16 @@ public class Cam {
 		@Override
 		public Mat rgba() {
 			mCapture.retrieve(mRgba, Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA);
+			// não sei pq estão sendo capturadas giradas
+			Core.flip(mRgba.t(), mRgba, 1);
 			return mRgba;
 		}
 
 		@Override
 		public Mat gray() {
 			mCapture.retrieve(mGray, Highgui.CV_CAP_ANDROID_GREY_FRAME);
+			// não sei pq estão sendo capturadas giradas
+			Core.flip(mGray.t(), mGray, 1);
 			return mGray;
 		}
 
@@ -145,6 +168,20 @@ public class Cam {
 			}
 		};
 
-	};
+	}
+
+	public int getHeight() {
+		// retorna invertido INTENCIONALMENTE, pois a imagem está sendo
+		// capturada invertida e após rodar temos a inversão de width e height
+		// TODO arrumar isso
+		return width;
+	}
+
+	public int getWidth() {
+		// retorna invertido INTENCIONALMENTE, pois a imagem está sendo
+		// capturada invertida e após rodar temos a inversão de width e height
+		// TODO arrumar isso
+		return height;
+	}
 
 }

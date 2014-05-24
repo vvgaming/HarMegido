@@ -18,7 +18,7 @@ import android.view.SurfaceView;
  */
 public class GameCanvas extends SurfaceView implements Callback {
 
-	private MyThread myThread;
+	private LoopThread loopThread;
 	private int fpsLock = 30;
 	private boolean showFps = false;
 	private final AbstractGame theGame;
@@ -27,7 +27,6 @@ public class GameCanvas extends SurfaceView implements Callback {
 		super(context);
 		getHolder().addCallback(this);
 		this.theGame = theGame;
-
 		setKeepScreenOn(true);
 	}
 
@@ -39,32 +38,36 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		myThread = new MyThread(getHolder());
 		theGame.setWidth(getWidth());
 		theGame.setHeight(getHeight());
-		myThread.start();
+
+		loopThread = new LoopThread(getHolder());
+		loopThread.start();
+		theGame.realInit();
 	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-		myThread.setTheHolder(holder);
-		theGame.setWidth(getWidth());
-		theGame.setHeight(getHeight());
+
+		loopThread.setTheHolder(holder);
+		theGame.setWidth(width);
+		theGame.setHeight(height);
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		myThread.setShouldQuit(true);
-		myThread = null;
+		loopThread.setShouldQuit(true);
+		loopThread = null;
+		theGame.realEnd();
 	}
 
-	private class MyThread extends Thread {
+	private class LoopThread extends Thread {
 
 		private SurfaceHolder theHolder;
 		private boolean shouldQuit = false;
 
-		public MyThread(SurfaceHolder theHolder) {
+		public LoopThread(SurfaceHolder theHolder) {
 			super();
 			this.theHolder = theHolder;
 		}
@@ -97,6 +100,15 @@ public class GameCanvas extends SurfaceView implements Callback {
 				long initFrame = System.currentTimeMillis();
 
 				canvas = theHolder.lockCanvas();
+				if (canvas == null) {
+					// se não tiver canvas, pula pra próxima passada
+					// (provavelmente vai abortar)
+					// isso é para resolver uma NPE quando surfaceDestroyed é
+					// chamado e vai provavelmente abortar na próxima passada
+					// TODO verificar se essa solução é boa mesmo, ou se não,
+					// bolar uma melhor
+					continue;
+				}
 				// pinta tudo de preto
 				canvas.drawRect(retanguloMaximo, preto);
 

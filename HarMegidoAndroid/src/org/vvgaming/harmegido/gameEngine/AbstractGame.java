@@ -22,6 +22,23 @@ public abstract class AbstractGame {
 	private int height = 0;
 	private Map<Integer, List<GameObject>> objectsPerLayer = new TreeMap<>();
 
+	protected final void realInit() {
+		init();
+	}
+
+	protected final void realEnd() {
+		clearObjects();
+		end();
+	}
+
+	public void init() {
+
+	}
+
+	public void end() {
+
+	}
+
 	public final void realUpdate(long delta) {
 		for (Entry<Integer, List<GameObject>> entry : objectsPerLayer
 				.entrySet()) {
@@ -73,6 +90,7 @@ public abstract class AbstractGame {
 	 * @return
 	 */
 	public boolean addObject(GameObject object) {
+		object.init();
 		return addObject(object, 0);
 	}
 
@@ -89,7 +107,17 @@ public abstract class AbstractGame {
 	 *            objetos)
 	 * @return retorna <code>true</code> se conseguiu adicionar
 	 */
-	public boolean addObject(GameObject object, int layerIndex) {
+	public boolean addObject(final GameObject object, int layerIndex) {
+
+		// TODO esse proxy é uma maneira de evitar aqueles INITS e ENDS
+		// explicitos no objeto, para fazer um controle de estados automáticos.
+		// vou reavaliar isso aqui depois para ver se vale a pena mudar e
+		// implementar dessa maneira
+
+		// GameObject realObject = (GameObject) Proxy.newProxyInstance(object
+		// .getClass().getClassLoader(), new Class[] { GameObject.class },
+		// new GameObjectProxy(object));
+
 		List<GameObject> layer = getLayer(layerIndex);
 		return layer.add(object);
 	}
@@ -101,9 +129,37 @@ public abstract class AbstractGame {
 	public void clearObjects() {
 		for (Entry<Integer, List<GameObject>> entry : objectsPerLayer
 				.entrySet()) {
+			for (GameObject go : entry.getValue()) {
+				go.end();
+			}
 			entry.getValue().clear();
 		}
 	}
+
+	// TODO esse proxy abaixo é uma maneira de evitar aqueles INITS e ENDS
+	// explicitos no objeto, para fazer um controle de estados automáticos.
+	// vou reavaliar isso aqui depois para ver se vale a pena mudar e
+	// implementar dessa maneira
+
+	// private class GameObjectProxy implements InvocationHandler {
+	//
+	// private GameObject delegate;
+	//
+	// public GameObjectProxy(GameObject delegate) {
+	// this.delegate = delegate;
+	// }
+	//
+	// @Override
+	// public Object invoke(Object proxy, Method method, Object[] args)
+	// throws Throwable {
+	// System.out.println("Inside the invocation handler");
+	// try {
+	// return method.invoke(delegate, args);
+	// } catch (InvocationTargetException e) {
+	// throw e.getCause();
+	// }
+	// }
+	// }
 
 	/**
 	 * Remove um objeto de uma camada. Veja {@link #addObject(GameObject, int)}
@@ -115,6 +171,7 @@ public abstract class AbstractGame {
 	 * @return <code>true</code> se removeu
 	 */
 	public boolean removeObject(GameObject object, int layerIndex) {
+		object.end();
 		return getLayer(layerIndex).remove(object);
 	}
 

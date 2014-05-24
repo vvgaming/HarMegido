@@ -20,7 +20,7 @@ public interface GameObject {
 	 *            de tempo
 	 */
 	void update(final long delta);
-	
+
 	/**
 	 * Método invocado a cada frame para desenhar (ou renderizar) o objeto na
 	 * tela. Deve se valer do canvas do parâmetro, para realizar o desenho
@@ -30,5 +30,9 @@ public interface GameObject {
 	void render(final Canvas canvas);
 
 	boolean isDead();
+
+	void init();
+
+	void end();
 
 }

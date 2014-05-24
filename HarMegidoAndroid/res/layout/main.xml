@@ -6,12 +6,17 @@
     android:orientation="vertical" >
 
     <Button
+        android:id="@+id/btnHarMegido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HarMegido" />
+
+    <Button
         android:id="@+id/btnBubblesTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Teste das Bolhas" />
-    
-    
+
     <Button
         android:id="@+id/btnCameraTest"
         android:layout_width="wrap_content"

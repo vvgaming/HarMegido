@@ -31,6 +31,8 @@ public interface GameObject {
 
 	boolean isDead();
 
+	boolean isVisible();
+
 	void init();
 
 	void end();

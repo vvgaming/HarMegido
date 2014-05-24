@@ -1,8 +1,8 @@
 package org.vvgaming.harmegido.bubbleTest;
 
 import org.vvgaming.harmegido.gameEngine.GameObject;
-import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -32,7 +32,7 @@ public class SquareButton implements GameObject {
 
 	@Override
 	public void render(Canvas canvas) {
-		canvas.drawRect(ret.toAndCanvasRect(), white);
+		canvas.drawRect(ret.toAndroidCanvasRect(), white);
 		canvas.drawText(text, ret.origem.x, ret.origem.y + ret.h / 2, black);
 	}
 
@@ -49,5 +49,10 @@ public class SquareButton implements GameObject {
 	@Override
 	public void end() {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean isVisible() {
+		return true;
 	}
 }

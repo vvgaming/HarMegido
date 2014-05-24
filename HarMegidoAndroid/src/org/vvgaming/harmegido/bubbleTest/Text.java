@@ -42,4 +42,9 @@ public class Text implements GameObject {
 	public void end() {
 		// TODO Auto-generated method stub
 	}
+
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
 }

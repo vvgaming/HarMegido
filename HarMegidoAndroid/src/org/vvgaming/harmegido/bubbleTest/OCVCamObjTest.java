@@ -31,7 +31,7 @@ public class OCVCamObjTest implements GameObject {
 
 	@Override
 	public void update(long delta) {
-		lastFrame = OCVUtil.toBmp(cam.getLastFrame().rgba());
+		lastFrame = OCVUtil.getInstance().toBmp(cam.getLastFrame().rgba());
 	}
 
 	@Override
@@ -57,6 +57,11 @@ public class OCVCamObjTest implements GameObject {
 
 	public void setCenter(Ponto center) {
 		this.center = center;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return true;
 	}
 
 }

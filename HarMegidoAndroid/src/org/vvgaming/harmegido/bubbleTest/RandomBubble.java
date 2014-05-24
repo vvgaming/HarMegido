@@ -63,4 +63,9 @@ public class RandomBubble implements GameObject {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public boolean isVisible() {
+		return true;
+	}
+
 }

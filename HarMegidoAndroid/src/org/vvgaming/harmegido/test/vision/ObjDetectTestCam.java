@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.vision.test;
+package org.vvgaming.harmegido.test.vision;
 
 import java.util.Arrays;
 

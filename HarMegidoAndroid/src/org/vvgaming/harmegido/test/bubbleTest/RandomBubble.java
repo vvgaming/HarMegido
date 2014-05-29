@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.bubbleTest;
+package org.vvgaming.harmegido.test.bubbleTest;
 
 import java.util.Random;
 

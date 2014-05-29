@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.vision.test;
+package org.vvgaming.harmegido.test.vision;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;

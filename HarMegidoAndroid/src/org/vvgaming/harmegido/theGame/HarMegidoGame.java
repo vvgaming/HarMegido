@@ -14,10 +14,6 @@ public class HarMegidoGame extends AbstractGame {
 	private SimpleBoxGO redBox;
 	private SimpleBoxGO greenBox;
 
-	// private SimpleBoxGO btn1;
-	// private SimpleBoxGO btn2;
-	// private SimpleBoxGO btn3;
-
 	@Override
 	public void init() {
 		super.init();
@@ -25,9 +21,11 @@ public class HarMegidoGame extends AbstractGame {
 		cam.setCenter(new Ponto(getWidth() / 2, getHeight() / 3));
 
 		bg = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 130, 0, 0);
-		redBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 255, 0, 0, 100);
+		redBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 255, 0,
+				0, 100);
 		redBox.setVisible(false);
-		greenBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 0, 255, 0, 100);
+		greenBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 0,
+				255, 0, 100);
 		greenBox.setVisible(false);
 
 		addObject(bg, 0);

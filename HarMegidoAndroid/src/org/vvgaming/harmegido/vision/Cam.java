@@ -4,22 +4,38 @@ import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
 /**
- * Wrapper para captura de frames da camera. Essa classe é capaz de rodar uma
- * Thread e ficar capturando frames e deixando-os disponíveis quando necessários
+ * Wrapper para captura de frames da camera. Essa classe, captura frames da
+ * câmera.
  * 
  * @author Vinicius Nogueira
  */
 public class Cam {
 
-	private NativeCameraFrame lastFrame = NativeCameraFrame.empty;
-	private boolean running = false;
+	// limite de tempo entre capturas de frames da câmera
+	private static final int TIME_LIMIT = 30;
 
-	private boolean stopGrabbing;
-	private Thread grabbingThread;
+	// timestamp da última captura para saber se devemos capturar novo frame
+	private long lastCapture;
+
+	private VideoCapture camera;
+
+	private NativeCameraFrame lastFrame = NativeCameraFrame.empty;
+
 	private int width;
 	private int height;
-	private VideoCapture mCamera;
 
+	/**
+	 * Conecta à camera nativa
+	 * 
+	 * @param width
+	 *            largura da resolução
+	 * @param height
+	 *            altura da resolução
+	 * @param onFrameListener
+	 *            listener para ser notificado a cada frame coletado
+	 * 
+	 * @return <code>true</code> se houve sucesso na conexão
+	 */
 	public boolean connectCamera(int width, int height) {
 
 		this.width = width;
@@ -28,36 +44,25 @@ public class Cam {
 		if (!initializeCamera())
 			return false;
 
-		grabbingThread = new Thread(new CameraWorker());
-		grabbingThread.start();
-
 		return true;
 	}
 
+	/**
+	 * Libera a camera conectada
+	 */
 	public void disconnectCamera() {
-		if (grabbingThread != null) {
-			try {
-				stopGrabbing = true;
-				grabbingThread.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				grabbingThread = null;
-				stopGrabbing = false;
-			}
-		}
 		releaseCamera();
 	}
 
 	private boolean initializeCamera() {
 		synchronized (this) {
 
-			mCamera = new VideoCapture(Highgui.CV_CAP_ANDROID);
+			camera = new VideoCapture(Highgui.CV_CAP_ANDROID);
 
-			if (mCamera == null)
+			if (camera == null)
 				return false;
 
-			if (mCamera.isOpened() == false)
+			if (camera.isOpened() == false)
 				return false;
 
 			// java.util.List<Size> sizes = mCamera.getSupportedPreviewSizes();
@@ -78,48 +83,32 @@ public class Cam {
 			// mCamera.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, frameSize.width);
 			// mCamera.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, frameSize.height);
 
-			mCamera.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, width);
-			mCamera.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, height);
+			camera.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, width);
+			camera.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, height);
 		}
 
 		return true;
 	}
 
-	public void releaseCamera() {
+	private void releaseCamera() {
 		synchronized (this) {
-			if (mCamera != null) {
-				mCamera.release();
+			if (camera != null) {
+				camera.release();
 			}
 		}
 	}
 
-	private class CameraWorker implements Runnable {
-
-		public void run() {
-			running = true;
-			do {
-				if (!mCamera.grab()) {
-					break;
-				}
-				lastFrame = (new NativeCameraFrame(mCamera));
-				try {
-					// TODO esse sleep é só uma gambiarra para diminuir o
-					// consumo, dado que a camera só pega em no máximo 30 fps,
-					// não adianta ficar indo tão rápido. O ideal é ajustar isso
-					// aqui depois para ficar mais inteligente
-					Thread.sleep(20);
-				} catch (InterruptedException ignored) {
-				}
-			} while (!stopGrabbing);
-			running = false;
+	public NativeCameraFrame getFrame() {
+		// se o está dentro do limite, não precisa capturar de novo...
+		// ou se der algum problema na captura retorna a antiga também
+		if ((System.currentTimeMillis() - lastCapture) < TIME_LIMIT
+				|| !camera.grab()) {
+			return lastFrame;
 		}
-	}
 
-	public NativeCameraFrame getLastFrame() {
-		return lastFrame;
+		lastCapture = System.currentTimeMillis();
+		return lastFrame = (new NativeCameraFrame(camera));
 	}
-
-	
 
 	public int getHeight() {
 		// retorna invertido INTENCIONALMENTE, pois a imagem está sendo
@@ -133,10 +122,6 @@ public class Cam {
 		// capturada invertida e após rodar temos a inversão de width e height
 		// TODO arrumar isso
 		return height;
-	}
-
-	public boolean isRunning() {
-		return running;
 	}
 
 }

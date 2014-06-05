@@ -1,5 +1,6 @@
 package org.vvgaming.harmegido.test.bubbleTest;
 
+import org.opencv.core.Mat;
 import org.vvgaming.harmegido.gameEngine.GameObject;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.vision.Cam;
@@ -31,7 +32,9 @@ public class OCVCamObjTest implements GameObject {
 
 	@Override
 	public void update(long delta) {
-		lastFrame = OCVUtil.getInstance().toBmp(cam.getLastFrame().rgba());
+		final Mat lastFrameMatClone = cam.getFrame().rgba().clone();
+		lastFrame = OCVUtil.getInstance().toBmp(lastFrameMatClone);
+		OCVUtil.getInstance().releaseMat(lastFrameMatClone);
 	}
 
 	@Override

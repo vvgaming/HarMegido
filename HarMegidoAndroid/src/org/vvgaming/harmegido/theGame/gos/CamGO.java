@@ -49,15 +49,15 @@ public class CamGO implements GameObject {
 		canvas.drawBitmap(lastFrame, pos.x, pos.y, natural);
 		if (!registrado.isEmpty()) {
 			final Bitmap regFrame = registrado.get().getVal2();
-			canvas.drawBitmap(regFrame, pos.x, pos.y,
-					alphed);
+			canvas.drawBitmap(regFrame, pos.x, pos.y, alphed);
 		}
 	}
 
 	@Override
 	public void update(long delta) {
-		lastFrame = OCVUtil.getInstance().toBmp(
-				cam.getRealCam().getLastFrame().rgba());
+		final Mat lastFrameMat = cam.getLastFrame().rgba().clone();
+		lastFrame = OCVUtil.getInstance().toBmp(lastFrameMat);
+		OCVUtil.getInstance().releaseMat(lastFrameMat);
 
 		resultado = cam.isObservacaoOk();
 	}
@@ -72,15 +72,15 @@ public class CamGO implements GameObject {
 		if (cam == null) {
 			cam = new SimilarityCam();
 		}
-		cam.getRealCam().connectCamera(640, 480);
-		pos = new Ponto(center.x - cam.getRealCam().getWidth() / 2, center.y
-				- cam.getRealCam().getHeight() / 2);
+		cam.connectCamera(640, 480);
+		pos = new Ponto(center.x - cam.getWidth() / 2, center.y
+				- cam.getHeight() / 2);
 
 	}
 
 	@Override
 	public void end() {
-		cam.getRealCam().disconnectCamera();
+		cam.disconnectCamera();
 	}
 
 	public void setCenter(Ponto center) {

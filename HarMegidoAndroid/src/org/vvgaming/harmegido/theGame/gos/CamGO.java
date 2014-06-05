@@ -88,7 +88,7 @@ public class CamGO implements GameObject {
 	}
 
 	public void onClick() {
-		registrado = cam.register();
+		registrado = Option.from(cam.register());
 		if (!registrado.isEmpty()) {
 			cam.initObservar(registrado.get().getVal1());
 		}

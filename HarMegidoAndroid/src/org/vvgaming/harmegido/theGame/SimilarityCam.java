@@ -8,7 +8,6 @@ import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.graphics.Bitmap;
 
-import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
@@ -25,31 +24,42 @@ public class SimilarityCam {
 
 	private Mat histogramaEmObservacao;
 
-	public Option<Tuple2<Mat, Bitmap>> register() {
+	public Tuple2<Mat, Bitmap> register() {
 
-		final OCVUtil ocvUtil = OCVUtil.getInstance();
+		// sincronizando a classe para garantir o acesso apenas de uma Thread
+		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// mais de uma Thread
+		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// ficar trancando o acesso
+		synchronized (this) {
+			final OCVUtil ocvUtil = OCVUtil.getInstance();
 
-		final Mat rgba = getLastFrame().rgba().clone();
+			final Mat rgba = getLastFrame().rgba().clone();
 
-		Bitmap bmp = ocvUtil.toBmp(rgba);
-		final Mat hist = ocvUtil.calcHistHS(rgba);
+			Bitmap bmp = ocvUtil.toBmp(rgba);
+			final Mat hist = ocvUtil.calcHistHS(rgba);
 
-		ocvUtil.releaseMat(rgba);
-		return Option.from(Tuple2.from(hist, bmp));
-
+			ocvUtil.releaseMat(rgba);
+			return Tuple2.from(hist, bmp);
+		}
 	}
 
 	public void initObservar(Mat histograma) {
-		stopObservar();
-		histogramaEmObservacao = histograma;
+		synchronized (this) {
+			stopObservar();
+			histogramaEmObservacao = histograma;
+		}
 	}
 
 	public void stopObservar() {
-		if (histogramaEmObservacao != null) {
-			synchronized (histogramaEmObservacao) {
-				OCVUtil.getInstance().releaseMat(histogramaEmObservacao);
-				histogramaEmObservacao = null;
-			}
+		// sincronizando a classe para garantir o acesso apenas de uma Thread
+		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// mais de uma Thread
+		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// ficar trancando o acesso
+		synchronized (this) {
+			OCVUtil.getInstance().releaseMat(histogramaEmObservacao);
+			histogramaEmObservacao = null;
 		}
 	}
 
@@ -58,6 +68,7 @@ public class SimilarityCam {
 	}
 
 	public boolean isObservacaoOk() {
+
 		if (histogramaEmObservacao != null) {
 			final OCVUtil ocvUtil = OCVUtil.getInstance();
 
@@ -84,7 +95,15 @@ public class SimilarityCam {
 	}
 
 	public NativeCameraFrame getLastFrame() {
-		return realCam.getFrame();
+
+		// sincronizando a classe para garantir o acesso apenas de uma Thread
+		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// mais de uma Thread
+		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// ficar trancando o acesso
+		synchronized (this) {
+			return realCam.getFrame();
+		}
 	}
 
 	public int getHeight() {

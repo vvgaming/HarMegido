@@ -15,7 +15,6 @@ public class HarMegidoActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 	}
 
 	@Override
@@ -31,8 +30,9 @@ public class HarMegidoActivity extends Activity {
 		public void onManagerConnected(int status) {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
-				gameCanvas = new GameCanvas(HarMegidoActivity.this,
-						new HarMegidoGame());
+				gameCanvas = new GameCanvas(
+						HarMegidoActivity.this,
+						new HarMegidoGame(HarMegidoActivity.this.getResources()));
 				gameCanvas.setShowFps(true);
 				setContentView(gameCanvas);
 			}

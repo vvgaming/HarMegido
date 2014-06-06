@@ -1,18 +1,28 @@
 package org.vvgaming.harmegido.theGame;
 
+import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.AbstractGame;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
 import org.vvgaming.harmegido.theGame.gos.CamGO;
+import org.vvgaming.harmegido.theGame.gos.ImageGO;
 import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;
 
+import android.content.res.Resources;
 import android.view.MotionEvent;
 
 public class HarMegidoGame extends AbstractGame {
+
+	public HarMegidoGame(Resources res) {
+		super(res);
+	}
 
 	private CamGO cam;
 	private SimpleBoxGO bg;
 	private SimpleBoxGO redBox;
 	private SimpleBoxGO greenBox;
+
+	private ImageGO compass;
 
 	@Override
 	public void init() {
@@ -28,11 +38,14 @@ public class HarMegidoGame extends AbstractGame {
 				255, 0, 100);
 		greenBox.setVisible(false);
 
+		compass = new ImageGO(Retangulo.fromCenter(new Ponto(getWidth() / 2,
+				getHeight() - 200), 250, 250), getRes(), R.drawable.compass);
+
 		addObject(bg, 0);
 		addObject(cam, 1);
 		addObject(redBox, 2);
 		addObject(greenBox, 2);
-
+		addObject(compass, 3);
 	}
 
 	@Override

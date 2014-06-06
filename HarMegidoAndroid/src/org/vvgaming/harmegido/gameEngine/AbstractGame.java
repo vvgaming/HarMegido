@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
@@ -21,6 +22,17 @@ public abstract class AbstractGame {
 	private int width = 0;
 	private int height = 0;
 	private Map<Integer, List<GameObject>> objectsPerLayer = new TreeMap<>();
+
+	private final Resources res;
+
+	protected Resources getRes() {
+		return res;
+	}
+
+	public AbstractGame(Resources res) {
+		super();
+		this.res = res;
+	}
 
 	protected final void realInit() {
 		init();

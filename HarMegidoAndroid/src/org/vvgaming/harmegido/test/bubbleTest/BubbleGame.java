@@ -6,9 +6,14 @@ import java.util.List;
 import org.vvgaming.harmegido.gameEngine.AbstractGame;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
+import android.content.res.Resources;
 import android.view.MotionEvent;
 
 public class BubbleGame extends AbstractGame {
+
+	public BubbleGame(Resources res) {
+		super(res);
+	}
 
 	private List<RandomBubble> bubbles = new ArrayList<>();
 	// private final SquareButton btn = new SquareButton(0, 100, 200, 120,

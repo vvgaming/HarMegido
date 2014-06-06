@@ -32,7 +32,7 @@ public class BubbleTestActivity extends Activity {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
 				gameCanvas = new GameCanvas(BubbleTestActivity.this,
-						new BubbleGame());
+						new BubbleGame(getResources()));
 				gameCanvas.setShowFps(true);
 				setContentView(gameCanvas);
 			}

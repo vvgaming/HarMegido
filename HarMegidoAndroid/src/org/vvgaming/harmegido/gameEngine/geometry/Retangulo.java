@@ -28,4 +28,9 @@ public class Retangulo {
 		return new Ponto(origem.x + w / 2, origem.y + h / 2);
 	}
 
+	public static Retangulo fromCenter(Ponto centro, float w, float h) {
+		return new Retangulo(new Ponto(centro.x - w / 2, centro.y - h / 2), w,
+				h);
+	}
+
 }

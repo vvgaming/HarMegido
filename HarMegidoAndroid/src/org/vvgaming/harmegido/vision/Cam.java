@@ -51,7 +51,11 @@ public class Cam {
 	 * Libera a camera conectada
 	 */
 	public void disconnectCamera() {
-		releaseCamera();
+		synchronized (this) {
+			if (camera != null) {
+				camera.release();
+			}
+		}
 	}
 
 	private boolean initializeCamera() {
@@ -88,14 +92,6 @@ public class Cam {
 		}
 
 		return true;
-	}
-
-	private void releaseCamera() {
-		synchronized (this) {
-			if (camera != null) {
-				camera.release();
-			}
-		}
 	}
 
 	public NativeCameraFrame getFrame() {

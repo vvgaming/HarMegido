@@ -19,8 +19,7 @@ public class HarMegidoGame extends AbstractGame {
 
 	private CamGO cam;
 	private SimpleBoxGO bg;
-	private SimpleBoxGO redBox;
-	private SimpleBoxGO greenBox;
+	private SimpleBoxGO resultBox;
 
 	private ImageGO compass;
 
@@ -31,32 +30,35 @@ public class HarMegidoGame extends AbstractGame {
 		cam.setCenter(new Ponto(getWidth() / 2, getHeight() / 3));
 
 		bg = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 130, 0, 0);
-		redBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 255, 0,
-				0, 100);
-		redBox.setVisible(false);
-		greenBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 0,
-				255, 0, 100);
-		greenBox.setVisible(false);
+		resultBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 255,
+				0, 0, 100);
+		resultBox.setVisible(true);
 
-		compass = new ImageGO(Retangulo.fromCenter(new Ponto(getWidth() / 2,
-				getHeight() - 200), 250, 250), getRes(), R.drawable.compass);
+		compass = new ImageGO(new Ponto(getWidth() / 2, getHeight() - 200),
+				getRes(), R.drawable.compass);
+		compass.setScale(0.5f);
 
 		addObject(bg, 0);
 		addObject(cam, 1);
-		addObject(redBox, 2);
-		addObject(greenBox, 2);
+		addObject(resultBox, 2);
 		addObject(compass, 3);
 	}
 
 	@Override
 	public void update(long delta) {
-		if (cam.isResultado()) {
-			greenBox.setVisible(true);
-			redBox.setVisible(false);
+		if (cam.isOkResultado()) {
+			resultBox.setColor(0, 255, 0);
 		} else {
-			greenBox.setVisible(false);
-			redBox.setVisible(true);
+			resultBox.setColor(255, 0, 0);
 		}
+
+		float comparacao = (float) cam.getComparacao();
+		if (comparacao > 250) {
+			comparacao = 180;
+		} else {
+			comparacao = (180.0f * comparacao) / 250.0f;
+		}
+		compass.setRotation(comparacao+180);
 	}
 
 	@Override

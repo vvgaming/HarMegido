@@ -61,4 +61,8 @@ public class SimpleBoxGO implements GameObject {
 		this.visible = visible;
 	}
 
+	public void setColor(int r, int g, int b){
+		color.setARGB(255, r, g, b);
+	}
+	
 }

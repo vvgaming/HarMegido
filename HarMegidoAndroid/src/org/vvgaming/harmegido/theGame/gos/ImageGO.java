@@ -1,55 +1,53 @@
 package org.vvgaming.harmegido.theGame.gos;
 
 import org.vvgaming.harmegido.gameEngine.GameObject;
-import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
+import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 
 public class ImageGO implements GameObject {
 
 	private boolean visible = true;
 
 	private Bitmap bmp;
-	private Rect dstRect;
-	private Rect srcRect;
+	private Ponto center;
 	// matriz de transformações
 	private Matrix matrix;
 
 	private float rotation = 0;
+	private float scaleX = 1;
+	private float scaleY = 1;
 
 	private final Resources res;
 	private final int resourceId;
 
-	public ImageGO(int x, int y, int w, int h, Resources res, int resourceId) {
-		dstRect = new Rect(x, y, x + w, y + h);
-		this.res = res;
-		this.resourceId = resourceId;
-
+	public ImageGO(int x, int y, Resources res, int resourceId) {
+		this(new Ponto(x, y), res, resourceId);
 	}
 
-	public ImageGO(Retangulo ret, Resources res, int resourceId) {
-		this((int) ret.origem.x, (int) ret.origem.y, (int) ret.w, (int) ret.h,
-				res, resourceId);
+	public ImageGO(Ponto center, Resources res, int resourceId) {
+		this.center = center;
+		this.res = res;
+		this.resourceId = resourceId;
 	}
 
 	@Override
 	public void init() {
 		bmp = BitmapFactory.decodeResource(res, resourceId);
-		srcRect = new Rect(0, 0, bmp.getWidth(), bmp.getHeight());
 		matrix = new Matrix();
-		matrix.postScale((float)dstRect.width() / (float)srcRect.width(), (float)dstRect.height()
-				/ (float)srcRect.height());
-		matrix.postTranslate(dstRect.left, dstRect.top);
 	}
 
 	@Override
 	public void update(long delta) {
-		matrix.postRotate(delta, dstRect.centerX(), dstRect.centerY());
+		matrix.reset();
+		matrix.postScale(scaleX, scaleY);
+		matrix.postTranslate(center.x - (bmp.getWidth() * scaleX)/2,
+				center.y - (bmp.getHeight() * scaleY)/2);
+		matrix.postRotate(rotation, center.x, center.y);
 	}
 
 	@Override
@@ -83,6 +81,27 @@ public class ImageGO implements GameObject {
 
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
+	}
+
+	public float getScaleX() {
+		return scaleX;
+	}
+
+	public void setScaleX(float scaleX) {
+		this.scaleX = scaleX;
+	}
+
+	public float getScaleY() {
+		return scaleY;
+	}
+
+	public void setScaleY(float scaleY) {
+		this.scaleY = scaleY;
+	}
+	
+	public void setScale(float scale) {
+		setScaleX(scale);
+		setScaleY(scale);
 	}
 
 }

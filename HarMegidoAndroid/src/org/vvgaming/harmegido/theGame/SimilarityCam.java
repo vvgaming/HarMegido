@@ -20,6 +20,8 @@ import com.github.detentor.codex.product.Tuple2;
  */
 public class SimilarityCam {
 
+	public static final int EQUALITY_THRESHOLD = 20;
+
 	private Cam realCam = new Cam();
 
 	private Mat histogramaEmObservacao;
@@ -78,12 +80,30 @@ public class SimilarityCam {
 			// compara o histograma
 			final int METODO_COMPARACAO = 1;
 			boolean result = Imgproc.compareHist(histAtual,
-					histogramaEmObservacao, METODO_COMPARACAO) < 20;
+					histogramaEmObservacao, METODO_COMPARACAO) < EQUALITY_THRESHOLD;
 
 			ocvUtil.releaseMat(atual, histAtual);
 			return result;
 		}
 		return false;
+	}
+
+	public double compara() {
+		if (histogramaEmObservacao != null) {
+			final OCVUtil ocvUtil = OCVUtil.getInstance();
+
+			final Mat atual = getLastFrame().rgba().clone();
+			final Mat histAtual = ocvUtil.calcHistHS(atual);
+
+			// compara o histograma
+			final int METODO_COMPARACAO = 1;
+			double result = Imgproc.compareHist(histAtual,
+					histogramaEmObservacao, METODO_COMPARACAO);
+
+			ocvUtil.releaseMat(atual, histAtual);
+			return result;
+		}
+		return Double.MAX_VALUE;
 	}
 
 	public boolean connectCamera(int width, int height) {

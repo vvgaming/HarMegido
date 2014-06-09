@@ -29,7 +29,7 @@ public class CamGO implements GameObject {
 	private Ponto center;
 
 	private Option<Tuple2<Mat, Bitmap>> registrado = Option.empty();
-	private boolean resultado = false;
+	private double comparacao = Double.MAX_VALUE;
 
 	public CamGO() {
 		this.center = new Ponto(0, 0);
@@ -59,7 +59,7 @@ public class CamGO implements GameObject {
 		lastFrame = OCVUtil.getInstance().toBmp(lastFrameMat);
 		OCVUtil.getInstance().releaseMat(lastFrameMat);
 
-		resultado = cam.isObservacaoOk();
+		comparacao = cam.compara();
 	}
 
 	@Override
@@ -95,8 +95,12 @@ public class CamGO implements GameObject {
 
 	}
 
-	public boolean isResultado() {
-		return resultado;
+	public boolean isOkResultado() {
+		return comparacao < SimilarityCam.EQUALITY_THRESHOLD;
+	}
+
+	public double getComparacao() {
+		return comparacao;
 	}
 
 	@Override

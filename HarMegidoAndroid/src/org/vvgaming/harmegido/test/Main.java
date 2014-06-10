@@ -1,8 +1,17 @@
 package org.vvgaming.harmegido.test;
 
+import java.util.List;
+
 import org.unbiquitous.uos.core.ClassLoaderUtils;
 import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.UOS;
+import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
+import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
+import org.unbiquitous.uos.core.driverManager.DriverData;
+import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
+import org.unbiquitous.uos.core.messageEngine.dataType.UpService;
+import org.unbiquitous.uos.core.messageEngine.messages.Call;
+import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.unbiquitous.uos.network.socket.connectionManager.TCPConnectionManager;
 import org.unbiquitous.uos.network.socket.radar.MulticastRadar;
 import org.vvgaming.harmegido.R;
@@ -65,6 +74,35 @@ public class Main extends Activity {
 					}
 				});
 
+		
+		((Button) findViewById(R.id.btnMessageTest))
+		.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v)
+			{
+				final Gateway gateway = uos.getGateway();
+				final List<DriverData> drivers = gateway.listDrivers("uos.console");
+				
+				for (DriverData curDriver : gateway.listDrivers(null))
+				{
+					System.out.println("driver: " + curDriver.getInstanceID());
+					System.out.println("driver: " + curDriver.getDriver().getName());
+				}
+				
+				final UpDevice device = drivers.get(0).getDevice();
+				
+				Call call = new Call("uos.console","showMessage");
+				call.addParameter("message", "Mensagem Teste");
+				Response response;
+				try {
+					response = gateway.callService(device, call);
+					System.out.println(response);
+				} catch (ServiceCallException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
 		startUos();
 	}
 
@@ -76,12 +114,22 @@ public class Main extends Activity {
 			protected Void doInBackground(Void... params) {
 
 				InitialProperties props = new InitialProperties();
+				
+//	             {"ubiquitos.connectionManager", TCPConnectionManager.class.getName()},
+//	              {"ubiquitos.radar", MulticastRadar.class.getName()},
+//	              {"ubiquitos.eth.tcp.port", "14984"},
+//	              {"ubiquitos.eth.tcp.passivePortRange", "14985-15000"},
+//	              {"ubiquitos.eth.udp.port", "15001"},
+//	              {"ubiquitos.eth.udp.passivePortRange", "15002-15017"},
+//	              {"ubiquitos.driver.deploylist", KeyboardDriver.class.getName()}
 
 				props.put("ubiquitos.radar", MulticastRadar.class.getName());
-				props.put("ubiquitos.connectionManager",
-						TCPConnectionManager.class.getName());
+				props.put("ubiquitos.connectionManager", TCPConnectionManager.class.getName());
 				props.put("ubiquitos.eth.tcp.port", "14984");
-
+				props.put("ubiquitos.eth.tcp.passivePortRange", "14985-15000");
+				props.put("ubiquitos.eth.udp.port", "15001");
+				props.put("ubiquitos.eth.udp.passivePortRange", "15002-15017");
+				
 				uos.start(props);
 
 				return null;

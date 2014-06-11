@@ -22,5 +22,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Teste da Câmera" />
+    
+    <Button
+        android:id="@+id/btnMessageTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enviar msg uOS" />
+    
 
 </LinearLayout>

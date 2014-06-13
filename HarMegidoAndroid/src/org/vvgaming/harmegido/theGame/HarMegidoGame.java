@@ -3,7 +3,6 @@ package org.vvgaming.harmegido.theGame;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.AbstractGame;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
 import org.vvgaming.harmegido.theGame.gos.CamGO;
 import org.vvgaming.harmegido.theGame.gos.ImageGO;
 import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;
@@ -58,7 +57,7 @@ public class HarMegidoGame extends AbstractGame {
 		} else {
 			comparacao = (180.0f * comparacao) / 250.0f;
 		}
-		compass.setRotation(comparacao+180);
+		compass.setRotation(comparacao + 180);
 	}
 
 	@Override

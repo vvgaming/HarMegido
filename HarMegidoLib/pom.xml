@@ -6,4 +6,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>HarMegido Lib</name>
 	<description>Implementação de códigos comuns do HarMegido, que devem ser reusados nas diversas implementações: Server, Client ou outros</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.detentor</groupId>
+			<artifactId>codexCollections</artifactId>
+			<version>0.0.21</version>
+		</dependency>
+	</dependencies>
+
 </project>

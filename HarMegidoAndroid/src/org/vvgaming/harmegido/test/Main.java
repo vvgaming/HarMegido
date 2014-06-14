@@ -1,10 +1,14 @@
 package org.vvgaming.harmegido.test;
 
 import java.util.List;
+import java.util.logging.Level;
 
+import org.unbiquitous.json.JSONObject;
+import org.unbiquitous.network.http.connection.ClientMode;
 import org.unbiquitous.uos.core.ClassLoaderUtils;
 import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.UOS;
+import org.unbiquitous.uos.core.UOSLogging;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
 import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
 import org.unbiquitous.uos.core.driverManager.DriverData;
@@ -91,6 +95,7 @@ public class Main extends Activity {
 								Call call = new Call("uos.harmegido.server",
 										"sendMsg");
 								call.addParameter("msg", "Mensagem Teste");
+								
 								Response response;
 								String responseStr;
 								try {
@@ -114,24 +119,26 @@ public class Main extends Activity {
 	}
 
 	private void startUos() {
-		// UOSLogging.setLevel(Level.ALL);
+		 UOSLogging.setLevel(Level.ALL);
 		if (uos != null)
 			return;
 		uos = new UOS();
 		new AsyncTask<Void, Void, Void>() {
 			protected Void doInBackground(Void... params) {
 
-				InitialProperties props = new InitialProperties();
-
-				props.put("ubiquitos.radar", MulticastRadar.class.getName());
-				props.put("ubiquitos.connectionManager",
-						TCPConnectionManager.class.getName());
-				props.put("ubiquitos.eth.tcp.port", "14984");
-				props.put("ubiquitos.eth.tcp.passivePortRange", "14985-15000");
-				props.put("ubiquitos.eth.udp.port", "15001");
-				props.put("ubiquitos.eth.udp.passivePortRange", "15002-15017");
-
-				uos.start(props);
+//				InitialProperties props = new InitialProperties();
+//
+//				props.put("ubiquitos.radar", MulticastRadar.class.getName());
+//				props.put("ubiquitos.connectionManager",
+//						TCPConnectionManager.class.getName());
+//				props.put("ubiquitos.eth.tcp.port", "14984");
+//				props.put("ubiquitos.eth.tcp.passivePortRange", "14985-15000");
+//				props.put("ubiquitos.eth.udp.port", "15001");
+//				props.put("ubiquitos.eth.udp.passivePortRange", "15002-15017");
+				
+				ClientMode.Properties props = new ClientMode.Properties();
+			    props.setServer("192.168.0.54");
+			    uos.start(props);
 
 				return null;
 			}

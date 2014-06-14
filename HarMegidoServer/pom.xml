@@ -8,6 +8,13 @@
 	<description>Implementação do Servidor do Jogo HarMegido</description>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.vvgaming</groupId>
+			<artifactId>HarMegidoLib</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.unbiquitous</groupId>
 			<artifactId>uos-core</artifactId>
@@ -18,11 +25,13 @@
 			<artifactId>uos-socket-plugin</artifactId>
 			<version>3.1.0-SNAPSHOT</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.github.detentor</groupId>
 			<artifactId>codexCollections</artifactId>
 			<version>0.0.21</version>
 		</dependency>
+
 	</dependencies>
 
 </project>

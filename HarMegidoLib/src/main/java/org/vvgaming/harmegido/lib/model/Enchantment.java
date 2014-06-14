@@ -13,7 +13,7 @@ public class Enchantment implements Copyable {
 	private final Player jogador;
 	private final Date timestamp;
 	private Option<Disenchantment> desencantamento;
-	private Object histogram; // Informação necessária para desencantar
+	private Object histogram; // Informaï¿½ï¿½o necessï¿½ria para desencantar
 
 	protected Enchantment(final Player enchanter, final Date enchantTime) {
 		super();
@@ -22,8 +22,8 @@ public class Enchantment implements Copyable {
 	}
 
 	/**
-	 * Cria um novo encantamento para o jogador e hora passados como parâmetro. <br/>
-	 * Em particular, será salvo o estado do jogador quando ele fez o
+	 * Cria um novo encantamento para o jogador e hora passados como parï¿½metro. <br/>
+	 * Em particular, serï¿½ salvo o estado do jogador quando ele fez o
 	 * encantamento. <br>
 	 * 
 	 * @param jogador
@@ -31,7 +31,7 @@ public class Enchantment implements Copyable {
 	 * @param timestamp
 	 *            A data/hora que o encantamento foi feito
 	 * @return O encantamento feito pelo jogador na data/hora passados como
-	 *         parâmetro
+	 *         parï¿½metro
 	 */
 	public static Enchantment from(Player jogador, Date timestamp) {
 		return new Enchantment(jogador, timestamp);
@@ -43,12 +43,12 @@ public class Enchantment implements Copyable {
 	 * @param oDesencantamento
 	 *            O desencantamento vinculado a este encantamento
 	 * @throws IllegalStateException
-	 *             Se o método for chamado mais de uma vez
+	 *             Se o mï¿½todo for chamado mais de uma vez
 	 */
 	public void desencantar(final Disenchantment oDesencantamento) {
 		if (desencantamento.notEmpty()) {
 			throw new IllegalStateException(
-					"Este encantamento já foi desencantado");
+					"Este encantamento jï¿½ foi desencantado");
 		}
 
 		this.desencantamento = Option.from(oDesencantamento);
@@ -63,11 +63,10 @@ public class Enchantment implements Copyable {
 	}
 
 	public int calcularPontuacao() {
-		// TODO: efetivar o cálculo
+		// TODO: efetivar o cï¿½lculo
 		return 0;
 	}
 
-	@Override
 	public Enchantment copy() {
 		final Enchantment enchantment = new Enchantment(this.jogador,
 				this.timestamp);

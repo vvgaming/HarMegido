@@ -21,7 +21,7 @@ public class Player implements Copyable {
 	}
 	
 	/**
-	 * Cria um encantamento a partir da data/hora passada como parâmetro
+	 * Cria um encantamento a partir da data/hora passada como parï¿½metro
 	 * @param timestamp A data/hora que o encantamento aconteceu
 	 * @return Um encantamento criado por este jogador
 	 */
@@ -31,8 +31,8 @@ public class Player implements Copyable {
 	}
 	
 	/**
-	 * Cria um desencantamento para o encantamento passado como parâmetro
-	 * @param encantamento O encantamento que está sendo desencantado
+	 * Cria um desencantamento para o encantamento passado como parï¿½metro
+	 * @param encantamento O encantamento que estï¿½ sendo desencantado
 	 * @param timestamp A data/hora que o desencantamento aconteceu
 	 * @return O desencantamento criado por este jogador
 	 */
@@ -41,7 +41,6 @@ public class Player implements Copyable {
 		return Disenchantment.from(this, timestamp, encantamento);
 	}
 	
-	@Override
 	public Player copy() {
 		final Player toReturn = new Player();
 		toReturn.dispositivo = this.dispositivo;

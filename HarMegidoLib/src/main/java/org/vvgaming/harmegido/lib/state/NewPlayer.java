@@ -12,8 +12,8 @@ public class NewPlayer implements StateChange {
 		this.player = player;
 	}
 
-	@Override
-	public void execute(Match match) {
-		match.adicionarJogador(player);
+	public void execute(Match state) {
+		state.adicionarJogador(player);
 	}
+
 }

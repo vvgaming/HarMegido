@@ -15,6 +15,8 @@ public class ServerDriver implements UosDriver {
 
 	private UpDriver definition;
 
+	private int counting = 0;
+
 	public ServerDriver() {
 		definition = new UpDriver("uos.harmegido.server");
 		definition.addService("sendMsg").addParameter("msg",
@@ -36,9 +38,9 @@ public class ServerDriver implements UosDriver {
 	public void destroy() {
 	}
 
-	public void sendMsg(Call call, Response response,
-			CallContext callContext) {
-		System.out.println(call.getParameterString("msg"));
+	public void sendMsg(Call call, Response response, CallContext callContext) {
+		System.out.println(call.getParameterString("msg") + " - "
+				+ (counting++));
 	}
 
 }

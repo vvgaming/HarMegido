@@ -5,16 +5,15 @@ import org.opencv.imgproc.Imgproc;
 import org.vvgaming.harmegido.vision.JavaCam;
 import org.vvgaming.harmegido.vision.JavaCameraFrame;
 import org.vvgaming.harmegido.vision.OCVUtil;
-import org.vvgaming.harmegido.vision.old.OldNativeCam;
 
 import android.graphics.Bitmap;
 
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Wrapper de {@link OldNativeCam} para conferir novas funcionalidades. É uma câmera que
- * fica comparando os frames com frames anteriores guardados. <br/>
- * Essencialmente é uma especialização de {@link OldNativeCam}, mas implementado como
+ * Wrapper de {@link JavaCam} para conferir novas funcionalidades. É uma câmera
+ * que fica comparando os frames com frames anteriores guardados. <br/>
+ * Essencialmente é uma especialização de {@link JavaCam}, mas implementado como
  * agregação ao em vez de herança
  * 
  * @author Vinicius Nogueira

@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.vision;
+package org.vvgaming.harmegido.vision.old;
 
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
@@ -9,7 +9,7 @@ import org.opencv.highgui.VideoCapture;
  * 
  * @author Vinicius Nogueira
  */
-public class Cam {
+public class OldNativeCam {
 
 	// limite de tempo entre capturas de frames da câmera
 	private static final int TIME_LIMIT = 30;
@@ -19,7 +19,7 @@ public class Cam {
 
 	private VideoCapture camera;
 
-	private NativeCameraFrame lastFrame = NativeCameraFrame.empty;
+	private OldNativeCameraFrame lastFrame = OldNativeCameraFrame.empty;
 
 	private int width;
 	private int height;
@@ -37,7 +37,6 @@ public class Cam {
 	 * @return <code>true</code> se houve sucesso na conexão
 	 */
 	public boolean connectCamera(int width, int height) {
-
 		this.width = width;
 		this.height = height;
 
@@ -94,7 +93,7 @@ public class Cam {
 		return true;
 	}
 
-	public NativeCameraFrame getFrame() {
+	public OldNativeCameraFrame getFrame() {
 		// se o está dentro do limite, não precisa capturar de novo...
 		// ou se der algum problema na captura retorna a antiga também
 		if ((System.currentTimeMillis() - lastCapture) < TIME_LIMIT
@@ -103,7 +102,7 @@ public class Cam {
 		}
 
 		lastCapture = System.currentTimeMillis();
-		return lastFrame = (new NativeCameraFrame(camera));
+		return lastFrame = (new OldNativeCameraFrame(camera));
 	}
 
 	public int getHeight() {

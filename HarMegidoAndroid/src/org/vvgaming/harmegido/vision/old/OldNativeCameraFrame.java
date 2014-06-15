@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.vision;
+package org.vvgaming.harmegido.vision.old;
 
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.core.Core;
@@ -7,7 +7,7 @@ import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.highgui.VideoCapture;
 
-public class NativeCameraFrame implements CvCameraViewFrame {
+public class OldNativeCameraFrame implements CvCameraViewFrame {
 
 	@Override
 	public Mat rgba() {
@@ -25,7 +25,7 @@ public class NativeCameraFrame implements CvCameraViewFrame {
 		return mGray;
 	}
 
-	public NativeCameraFrame(VideoCapture capture) {
+	public OldNativeCameraFrame(VideoCapture capture) {
 		mCapture = capture;
 		mGray = new Mat();
 		mRgba = new Mat();
@@ -35,7 +35,7 @@ public class NativeCameraFrame implements CvCameraViewFrame {
 	private Mat mRgba;
 	private Mat mGray;
 
-	public static NativeCameraFrame empty = new NativeCameraFrame(null) {
+	public static OldNativeCameraFrame empty = new OldNativeCameraFrame(null) {
 
 		private Mat empty;
 

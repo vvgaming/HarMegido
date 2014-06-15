@@ -1,3 +1,4 @@
+package org.vvgaming.harmegido.vision.old;
 //package org.vvgaming.harmegido.vision;
 //
 //import org.opencv.highgui.Highgui;

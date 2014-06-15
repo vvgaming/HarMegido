@@ -2,18 +2,19 @@ package org.vvgaming.harmegido.theGame;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-import org.vvgaming.harmegido.vision.Cam;
-import org.vvgaming.harmegido.vision.NativeCameraFrame;
+import org.vvgaming.harmegido.vision.JavaCam;
+import org.vvgaming.harmegido.vision.JavaCameraFrame;
 import org.vvgaming.harmegido.vision.OCVUtil;
+import org.vvgaming.harmegido.vision.old.OldNativeCam;
 
 import android.graphics.Bitmap;
 
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Wrapper de {@link Cam} para conferir novas funcionalidades. É uma câmera que
+ * Wrapper de {@link OldNativeCam} para conferir novas funcionalidades. É uma câmera que
  * fica comparando os frames com frames anteriores guardados. <br/>
- * Essencialmente é uma especialização de {@link Cam}, mas implementado como
+ * Essencialmente é uma especialização de {@link OldNativeCam}, mas implementado como
  * agregação ao em vez de herança
  * 
  * @author Vinicius Nogueira
@@ -22,7 +23,7 @@ public class SimilarityCam {
 
 	public static final int EQUALITY_THRESHOLD = 20;
 
-	private Cam realCam = new Cam();
+	private JavaCam realCam = new JavaCam();
 
 	private Mat histogramaEmObservacao;
 
@@ -106,15 +107,15 @@ public class SimilarityCam {
 		return Double.MAX_VALUE;
 	}
 
-	public boolean connectCamera(int width, int height) {
-		return realCam.connectCamera(width, height);
+	public void connectCamera(int width, int height) {
+		realCam.connectCamera(width, height);
 	}
 
 	public void disconnectCamera() {
 		realCam.disconnectCamera();
 	}
 
-	public NativeCameraFrame getLastFrame() {
+	public JavaCameraFrame getLastFrame() {
 
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
 		// o código nativo apresenta uns erros estranhos ao ser acessado por
@@ -122,7 +123,7 @@ public class SimilarityCam {
 		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
-			return realCam.getFrame();
+			return realCam.getLastFrame();
 		}
 	}
 

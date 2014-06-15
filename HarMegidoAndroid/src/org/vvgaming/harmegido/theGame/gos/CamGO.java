@@ -75,7 +75,6 @@ public class CamGO implements GameObject {
 		cam.connectCamera(640, 480);
 		pos = new Ponto(center.x - cam.getWidth() / 2, center.y
 				- cam.getHeight() / 2);
-
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package org.vvgaming.harmegido.test.bubbleTest;
 import org.opencv.core.Mat;
 import org.vvgaming.harmegido.gameEngine.GameObject;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.vision.Cam;
 import org.vvgaming.harmegido.vision.OCVUtil;
+import org.vvgaming.harmegido.vision.old.OldNativeCam;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -16,7 +16,7 @@ import android.graphics.Canvas;
  */
 public class OCVCamObjTest implements GameObject {
 
-	private Cam cam;
+	private OldNativeCam cam;
 	private Bitmap lastFrame;
 	private Ponto pos;
 	private Ponto center;
@@ -45,7 +45,7 @@ public class OCVCamObjTest implements GameObject {
 	@Override
 	public void init() {
 		if (cam == null) {
-			cam = new Cam();
+			cam = new OldNativeCam();
 		}
 		cam.connectCamera(640, 480);
 		pos = new Ponto(center.x - cam.getWidth() / 2, center.y

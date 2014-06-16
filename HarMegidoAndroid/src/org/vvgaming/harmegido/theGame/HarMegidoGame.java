@@ -3,8 +3,8 @@ package org.vvgaming.harmegido.theGame;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.AbstractGame;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.theGame.gos.CamGO;
 import org.vvgaming.harmegido.theGame.gos.ImageGO;
+import org.vvgaming.harmegido.theGame.gos.SimilarityCamGO;
 import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;
 
 import android.content.res.Resources;
@@ -16,39 +16,47 @@ public class HarMegidoGame extends AbstractGame {
 		super(res);
 	}
 
-	private CamGO cam;
+	private SimilarityCamGO cam;
 	private SimpleBoxGO bg;
 	private SimpleBoxGO resultBox;
 
 	private ImageGO compass;
 
+	private ImageGO bgImg;
+
 	@Override
 	public void init() {
 		super.init();
-		cam = new CamGO();
-		cam.setCenter(new Ponto(getWidth() / 2, getHeight() / 3));
+		cam = new SimilarityCamGO(new Ponto(getWidth() / 2, getHeight() / 3),
+				getWidth() * .75f, getHeight() * .7f);
 
-		bg = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 130, 0, 0);
-		resultBox = new SimpleBoxGO(0, getHeight() - 300, getWidth(), 300, 255,
-				0, 0, 100);
+		bg = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 0, 0, 0);
+		resultBox = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 100, 0, 0,
+				100);
 		resultBox.setVisible(true);
 
 		compass = new ImageGO(new Ponto(getWidth() / 2, getHeight() - 200),
 				getRes(), R.drawable.compass);
-		compass.setScale(0.5f);
+		compass.setScale(0.3f);
+
+		bgImg = new ImageGO(new Ponto(getWidth() / 2, getHeight() / 2),
+				getRes(), R.drawable.bg);
+		// bgImg.setScale(1f);
 
 		addObject(bg, 0);
 		addObject(cam, 1);
-		addObject(resultBox, 2);
-		addObject(compass, 3);
+		addObject(bgImg, 4);
+
+		addObject(resultBox, 3);
+		addObject(compass, 5);
 	}
 
 	@Override
 	public void update(long delta) {
 		if (cam.isOkResultado()) {
-			resultBox.setColor(0, 255, 0);
+			resultBox.setColor(30, 0, 255, 0);
 		} else {
-			resultBox.setColor(255, 0, 0);
+			resultBox.setColor(30, 255, 0, 0);
 		}
 
 		float comparacao = (float) cam.getComparacao();

@@ -12,7 +12,8 @@ import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Wrapper de {@link JavaCam} para conferir novas funcionalidades. É uma câmera
- * que fica comparando os frames com frames anteriores guardados. <br/>
+ * que fica comparando os frames com frames anteriores guardados, verificando
+ * sua similaridade. <br/>
  * Essencialmente é uma especialização de {@link JavaCam}, mas implementado como
  * agregação ao em vez de herança
  * 

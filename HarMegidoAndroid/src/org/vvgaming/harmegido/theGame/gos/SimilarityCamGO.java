@@ -1,44 +1,47 @@
 package org.vvgaming.harmegido.theGame.gos;
 
 import org.opencv.core.Mat;
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.LazyInitGameObject;
+import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.theGame.SimilarityCam;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 
+import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Teste de GameObject que recupera imagens da camera OpenCV e desenha no Canvas
+ * GameObject para plotar imagens da {@link SimilarityCam} em um jogo
  * 
  * @author Vinicius Nogueira
  */
-public class CamGO implements GameObject {
-
-	private Paint verde = new Paint();
-	private Paint vermelho = new Paint();
+public class SimilarityCamGO extends LazyInitGameObject {
 
 	private SimilarityCam cam;
 	private Bitmap lastFrame;
-	private Ponto pos;
-	private Ponto center;
+//	private Ponto center;
+
+	MatrizTransfAndroid matriz;
 
 	private Option<Tuple2<Mat, Bitmap>> registrado = Option.empty();
 	private double comparacao = Double.MAX_VALUE;
 
-	public CamGO() {
-		this.center = new Ponto(0, 0);
-	}
-
-	public CamGO(Ponto center) {
-		this.center = center;
-		verde.setARGB(100, 255, 0, 0);
-		vermelho.setARGB(100, 0, 255, 0);
+	public SimilarityCamGO(final Ponto center, final float width,
+			final float height) {
+		onInit(new Function0<Void>() {
+			@Override
+			public Void apply() {
+				SimilarityCamGO.this.matriz.setCenter(center);
+				SimilarityCamGO.this.matriz.setDimensions(width, height);
+				return null;
+			}
+		});
 	}
 
 	@Override
@@ -46,10 +49,11 @@ public class CamGO implements GameObject {
 		Paint alphed = new Paint();
 		alphed.setAlpha(100);
 		Paint natural = new Paint();
-		canvas.drawBitmap(lastFrame, pos.x, pos.y, natural);
+		final Matrix matrix = matriz.getMatrix();
+		canvas.drawBitmap(lastFrame, matrix, natural);
 		if (!registrado.isEmpty()) {
 			final Bitmap regFrame = registrado.get().getVal2();
-			canvas.drawBitmap(regFrame, pos.x, pos.y, alphed);
+			canvas.drawBitmap(regFrame, matrix, alphed);
 		}
 	}
 
@@ -68,22 +72,17 @@ public class CamGO implements GameObject {
 	}
 
 	@Override
-	public void init() {
+	public void preInit() {
 		if (cam == null) {
 			cam = new SimilarityCam();
 		}
 		cam.connectCamera(640, 480);
-		pos = new Ponto(center.x - cam.getWidth() / 2, center.y
-				- cam.getHeight() / 2);
+		matriz = new MatrizTransfAndroid(480, 640);
 	}
 
 	@Override
 	public void end() {
 		cam.disconnectCamera();
-	}
-
-	public void setCenter(Ponto center) {
-		this.center = center;
 	}
 
 	public void onClick() {

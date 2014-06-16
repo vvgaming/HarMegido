@@ -1,26 +1,25 @@
 package org.vvgaming.harmegido.theGame.gos;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.LazyInitGameObject;
+import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 
-public class ImageGO implements GameObject {
+import com.github.detentor.codex.function.Function0;
+
+public class ImageGO extends LazyInitGameObject {
 
 	private boolean visible = true;
 
 	private Bitmap bmp;
 	private Ponto center;
-	// matriz de transformações
-	private Matrix matrix;
 
-	private float rotation = 0;
-	private float scaleX = 1;
-	private float scaleY = 1;
+	// matriz de transformações
+	MatrizTransfAndroid matriz;
 
 	private final Resources res;
 	private final int resourceId;
@@ -36,23 +35,20 @@ public class ImageGO implements GameObject {
 	}
 
 	@Override
-	public void init() {
+	public void preInit() {
 		bmp = BitmapFactory.decodeResource(res, resourceId);
-		matrix = new Matrix();
+		matriz = new MatrizTransfAndroid(bmp.getWidth(), bmp.getHeight());
+		matriz.setCenter(center);
 	}
 
 	@Override
 	public void update(long delta) {
-		matrix.reset();
-		matrix.postScale(scaleX, scaleY);
-		matrix.postTranslate(center.x - (bmp.getWidth() * scaleX)/2,
-				center.y - (bmp.getHeight() * scaleY)/2);
-		matrix.postRotate(rotation, center.x, center.y);
+
 	}
 
 	@Override
 	public void render(Canvas canvas) {
-		canvas.drawBitmap(bmp, matrix, null);
+		canvas.drawBitmap(bmp, matriz.getMatrix(), null);
 	}
 
 	@Override
@@ -75,33 +71,63 @@ public class ImageGO implements GameObject {
 		this.visible = visible;
 	}
 
-	public float getRotation() {
-		return rotation;
+	public void setDimensions(final float width, final float height) {
+		if (matriz == null) {
+			onInit(new Function0<Void>() {
+				@Override
+				public Void apply() {
+					ImageGO.this.matriz.setDimensions(width, height);
+					return null;
+				}
+			});
+			return;
+		}
+		matriz.setDimensions(width, height);
 	}
 
-	public void setRotation(float rotation) {
-		this.rotation = rotation;
+	public void setRotation(final float rotation) {
+		if (matriz == null) {
+			onInit(new Function0<Void>() {
+
+				@Override
+				public Void apply() {
+					ImageGO.this.matriz.setRotation(rotation);
+					return null;
+				}
+			});
+			return;
+		}
+		matriz.setRotation(rotation);
 	}
 
-	public float getScaleX() {
-		return scaleX;
+	public void setCenter(final Ponto center) {
+		if (matriz == null) {
+			onInit(new Function0<Void>() {
+
+				@Override
+				public Void apply() {
+					ImageGO.this.matriz.setCenter(center);
+					return null;
+				}
+			});
+			return;
+		}
+		matriz.setCenter(center);
 	}
 
-	public void setScaleX(float scaleX) {
-		this.scaleX = scaleX;
-	}
+	public void setScale(final float scale) {
+		if (matriz == null) {
+			onInit(new Function0<Void>() {
 
-	public float getScaleY() {
-		return scaleY;
-	}
-
-	public void setScaleY(float scaleY) {
-		this.scaleY = scaleY;
-	}
-	
-	public void setScale(float scale) {
-		setScaleX(scale);
-		setScaleY(scale);
+				@Override
+				public Void apply() {
+					ImageGO.this.matriz.setScale(scale);
+					return null;
+				}
+			});
+			return;
+		}
+		matriz.setScale(scale);
 	}
 
 }

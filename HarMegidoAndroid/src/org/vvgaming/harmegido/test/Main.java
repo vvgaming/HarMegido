@@ -3,10 +3,8 @@ package org.vvgaming.harmegido.test;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.unbiquitous.json.JSONObject;
 import org.unbiquitous.network.http.connection.ClientMode;
 import org.unbiquitous.uos.core.ClassLoaderUtils;
-import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.UOS;
 import org.unbiquitous.uos.core.UOSLogging;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
@@ -15,8 +13,6 @@ import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
-import org.unbiquitous.uos.network.socket.connectionManager.TCPConnectionManager;
-import org.unbiquitous.uos.network.socket.radar.MulticastRadar;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.test.bubbleTest.BubbleTestActivity;
 import org.vvgaming.harmegido.test.vision.ObjDetectTestActivity;
@@ -31,6 +27,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 public class Main extends Activity {
+
+	private static final String SERVER_IP = "54.207.76.250"; // ip do servidor
+																// da Amazon
 
 	private UOS uos = null;
 
@@ -95,7 +94,7 @@ public class Main extends Activity {
 								Call call = new Call("uos.harmegido.server",
 										"sendMsg");
 								call.addParameter("msg", "Mensagem Teste");
-								
+
 								Response response;
 								String responseStr;
 								try {
@@ -119,26 +118,29 @@ public class Main extends Activity {
 	}
 
 	private void startUos() {
-		 UOSLogging.setLevel(Level.ALL);
+		UOSLogging.setLevel(Level.ALL);
 		if (uos != null)
 			return;
 		uos = new UOS();
 		new AsyncTask<Void, Void, Void>() {
 			protected Void doInBackground(Void... params) {
 
-//				InitialProperties props = new InitialProperties();
-//
-//				props.put("ubiquitos.radar", MulticastRadar.class.getName());
-//				props.put("ubiquitos.connectionManager",
-//						TCPConnectionManager.class.getName());
-//				props.put("ubiquitos.eth.tcp.port", "14984");
-//				props.put("ubiquitos.eth.tcp.passivePortRange", "14985-15000");
-//				props.put("ubiquitos.eth.udp.port", "15001");
-//				props.put("ubiquitos.eth.udp.passivePortRange", "15002-15017");
-				
+				// InitialProperties props = new InitialProperties();
+				//
+				// props.put("ubiquitos.radar", MulticastRadar.class.getName());
+				// props.put("ubiquitos.connectionManager",
+				// TCPConnectionManager.class.getName());
+				// props.put("ubiquitos.eth.tcp.port", "14984");
+				// props.put("ubiquitos.eth.tcp.passivePortRange",
+				// "14985-15000");
+				// props.put("ubiquitos.eth.udp.port", "15001");
+				// props.put("ubiquitos.eth.udp.passivePortRange",
+				// "15002-15017");
+
 				ClientMode.Properties props = new ClientMode.Properties();
-			    props.setServer("192.168.0.54");
-			    uos.start(props);
+
+				props.setServer(SERVER_IP);
+				uos.start(props);
 
 				return null;
 			}

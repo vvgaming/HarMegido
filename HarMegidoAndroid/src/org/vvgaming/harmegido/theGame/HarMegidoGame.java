@@ -41,14 +41,12 @@ public class HarMegidoGame extends AbstractGame {
 
 		bgImg = new ImageGO(new Ponto(getWidth() / 2, getHeight() / 2),
 				getRes(), R.drawable.bg);
-		// bgImg.setScale(1f);
 
 		addObject(bg, 0);
 		addObject(cam, 1);
-		addObject(bgImg, 4);
-
-		addObject(resultBox, 3);
-		addObject(compass, 5);
+		addObject(resultBox, 2);
+		addObject(bgImg, 3);
+		addObject(compass, 4);
 	}
 
 	@Override

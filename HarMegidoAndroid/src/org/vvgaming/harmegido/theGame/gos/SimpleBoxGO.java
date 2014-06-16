@@ -65,4 +65,8 @@ public class SimpleBoxGO implements GameObject {
 		color.setARGB(255, r, g, b);
 	}
 	
+	public void setColor(int a, int r, int g, int b){
+		color.setARGB(a, r, g, b);
+	}
+	
 }

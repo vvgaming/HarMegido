@@ -19,7 +19,7 @@ public class ImageGO extends LazyInitGameObject {
 	private Ponto center;
 
 	// matriz de transformações
-	MatrizTransfAndroid matriz;
+	private MatrizTransfAndroid matriz;
 
 	private final Resources res;
 	private final int resourceId;
@@ -73,7 +73,7 @@ public class ImageGO extends LazyInitGameObject {
 
 	public void setDimensions(final float width, final float height) {
 		if (matriz == null) {
-			onInit(new Function0<Void>() {
+			addToInit(new Function0<Void>() {
 				@Override
 				public Void apply() {
 					ImageGO.this.matriz.setDimensions(width, height);
@@ -87,7 +87,7 @@ public class ImageGO extends LazyInitGameObject {
 
 	public void setRotation(final float rotation) {
 		if (matriz == null) {
-			onInit(new Function0<Void>() {
+			addToInit(new Function0<Void>() {
 
 				@Override
 				public Void apply() {
@@ -102,7 +102,7 @@ public class ImageGO extends LazyInitGameObject {
 
 	public void setCenter(final Ponto center) {
 		if (matriz == null) {
-			onInit(new Function0<Void>() {
+			addToInit(new Function0<Void>() {
 
 				@Override
 				public Void apply() {
@@ -117,7 +117,7 @@ public class ImageGO extends LazyInitGameObject {
 
 	public void setScale(final float scale) {
 		if (matriz == null) {
-			onInit(new Function0<Void>() {
+			addToInit(new Function0<Void>() {
 
 				@Override
 				public Void apply() {

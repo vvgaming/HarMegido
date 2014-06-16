@@ -31,7 +31,7 @@ public abstract class LazyInitGameObject implements GameObject {
 
 	public abstract void preInit();
 
-	public final void onInit(Function0<Void> function) {
+	public final void addToInit(Function0<Void> function) {
 		functions.add(function);
 	}
 

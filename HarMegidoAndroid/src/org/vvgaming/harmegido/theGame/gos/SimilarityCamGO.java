@@ -34,7 +34,7 @@ public class SimilarityCamGO extends LazyInitGameObject {
 
 	public SimilarityCamGO(final Ponto center, final float width,
 			final float height) {
-		onInit(new Function0<Void>() {
+		addToInit(new Function0<Void>() {
 			@Override
 			public Void apply() {
 				SimilarityCamGO.this.matriz.setCenter(center);

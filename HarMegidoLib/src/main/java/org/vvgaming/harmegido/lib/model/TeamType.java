@@ -1,25 +1,27 @@
 package org.vvgaming.harmegido.lib.model;
 
 /**
- * Esse enum representa os tipos possíveis de time 
+ * Esse enum representa os tipos possï¿½veis de time
  */
-public enum TeamType 
+public enum TeamType
 {
 	LIGHT, DARK;
-	
-	public String toString() 
+
+	@Override
+	public String toString()
 	{
 		String toReturn = "";
 
-		switch (this){
-			case LIGHT: 
-				toReturn = "Light";
-				break;
-			case DARK: 
-				toReturn = "Dark";
-				break;
-			default:
-				throw new IllegalArgumentException("Tipo não reconhecido: " + this);	
+		switch (this)
+		{
+		case LIGHT:
+			toReturn = "Light";
+			break;
+		case DARK:
+			toReturn = "Dark";
+			break;
+		default:
+			throw new IllegalArgumentException("Tipo nÃ£o reconhecido: " + this);
 		}
 		return toReturn;
 	}

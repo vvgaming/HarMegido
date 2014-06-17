@@ -3,6 +3,7 @@ package org.vvgaming.harmegido.lib.model;
 import java.util.Date;
 
 import org.vvgaming.harmegido.lib.util.Copyable;
+import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 /**
  * Essa classe modela uma entidade jogador do jogo
@@ -12,14 +13,14 @@ public class Player implements Copyable
 	private final String playerName;
 	private final String dispositivo;
 	private TeamType time; // o time que o jogador pertence
-	
+
 	private Player(final String playerName, final String device, final TeamType time)
 	{
 		this.playerName = playerName;
 		this.dispositivo = device;
 		this.time = time;
 	}
-	
+
 	/**
 	 * Cria um novo jogador a partir de um nome e do seu identificador do dispositivo
 	 * 
@@ -31,10 +32,9 @@ public class Player implements Copyable
 	{
 		return from(playerName, device, null);
 	}
-	
+
 	/**
-	 * Cria um novo jogador a partir de um nome, identificador do dispositivo 
-	 * e qual time ele pertence.
+	 * Cria um novo jogador a partir de um nome, identificador do dispositivo e qual time ele pertence.
 	 * 
 	 * @param playerName O nome do jogador
 	 * @param device O identificador único do dispositivo do jogador
@@ -47,12 +47,12 @@ public class Player implements Copyable
 		{
 			throw new IllegalArgumentException("O nome do jogador não pode ser nulo nem vazio");
 		}
-		
+
 		if (device == null || device == "")
 		{
 			throw new IllegalArgumentException("O identificador do dispositivo do jogador não pode ser nulo nem vazio");
 		}
-		
+
 		return new Player(playerName, device, time);
 	}
 
@@ -60,7 +60,7 @@ public class Player implements Copyable
 	{
 		return time;
 	}
-	
+
 	public String getPlayerName()
 	{
 		return playerName;
@@ -75,11 +75,12 @@ public class Player implements Copyable
 	 * Cria um encantamento a partir da data/hora passada como par�metro
 	 * 
 	 * @param timestamp A data/hora que o encantamento aconteceu
+	 * @param imagem A imagem do objeto a ser encantado
 	 * @return Um encantamento criado por este jogador
 	 */
-	public Enchantment encantar(final Date timestamp)
+	public Enchantment encantar(final Date timestamp, final EnchantmentImage imagem)
 	{
-		return Enchantment.from(this, timestamp);
+		return Enchantment.from(this, timestamp, imagem);
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class Player implements Copyable
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dispositivo == null) ? 0 : dispositivo.hashCode());
+		result = prime * result + (dispositivo == null ? 0 : dispositivo.hashCode());
 		return result;
 	}
 

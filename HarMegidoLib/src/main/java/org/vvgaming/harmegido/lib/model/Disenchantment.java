@@ -15,7 +15,7 @@ public class Disenchantment
 	{
 		super();
 		this.jogador = jogador.copy(); // salva o estado do jogador na hora do desencantamento
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 		encantamento.desencantar(this); // faz o efeito colateral pra salvar o estado
 		this.encantamento = encantamento.copy(); // salva o estado do encantamento
 	}

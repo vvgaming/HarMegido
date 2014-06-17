@@ -14,14 +14,15 @@ public class Enchantment implements Copyable
 {
 	private final Player jogador;
 	private final Date timestamp;
+	private final EnchantmentImage histogram; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento;
-	private EnchantmentImage histogram; // Informação necessária para desencantar
 
-	protected Enchantment(final Player enchanter, final Date enchantTime)
+	protected Enchantment(final Player enchanter, final Date enchantTime, final EnchantmentImage histogram)
 	{
 		super();
-		this.jogador = enchanter.copy();
+		this.jogador = enchanter.copy(); //copia para guardar o estado do jogador no momento do encantamento
 		this.timestamp = enchantTime;
+		this.histogram = histogram;
 	}
 
 	/**
@@ -30,11 +31,12 @@ public class Enchantment implements Copyable
 	 * 
 	 * @param jogador O jogador que fez o encantamento
 	 * @param timestamp A data/hora que o encantamento foi feito
+	 * @param histogram O histograma que representa a imagem
 	 * @return O encantamento feito pelo jogador na data/hora passados como parâmetro
 	 */
-	public static Enchantment from(Player jogador, Date timestamp)
+	public static Enchantment from(final Player jogador, final Date timestamp, final EnchantmentImage histogram)
 	{
-		return new Enchantment(jogador, timestamp);
+		return new Enchantment(jogador, timestamp, histogram);
 	}
 
 	/**
@@ -70,9 +72,8 @@ public class Enchantment implements Copyable
 
 	public Enchantment copy()
 	{
-		final Enchantment enchantment = new Enchantment(this.jogador, this.timestamp);
-		enchantment.histogram = this.histogram;
-		enchantment.desencantamento = this.desencantamento;
+		final Enchantment enchantment = new Enchantment(this.jogador, this.timestamp, this.histogram);
+		enchantment.desencantamento = this.desencantamento; //seguro porque no desencantamento uma nova Option é criada
 		return enchantment;
 	}
 }

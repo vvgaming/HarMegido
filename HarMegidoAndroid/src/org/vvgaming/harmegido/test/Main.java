@@ -30,7 +30,6 @@ public class Main extends Activity {
 
 	private static final String SERVER_IP = "harmegido.servegame.com"; //servidor da amazon
 
-
 	private UOS uos = null;
 
 	@Override
@@ -134,18 +133,6 @@ public class Main extends Activity {
 		uos = new UOS();
 		new AsyncTask<Void, Void, Void>() {
 			protected Void doInBackground(Void... params) {
-
-				// InitialProperties props = new InitialProperties();
-				//
-				// props.put("ubiquitos.radar", MulticastRadar.class.getName());
-				// props.put("ubiquitos.connectionManager",
-				// TCPConnectionManager.class.getName());
-				// props.put("ubiquitos.eth.tcp.port", "14984");
-				// props.put("ubiquitos.eth.tcp.passivePortRange",
-				// "14985-15000");
-				// props.put("ubiquitos.eth.udp.port", "15001");
-				// props.put("ubiquitos.eth.udp.passivePortRange",
-				// "15002-15017");
 
 				ClientMode.Properties props = new ClientMode.Properties();
 

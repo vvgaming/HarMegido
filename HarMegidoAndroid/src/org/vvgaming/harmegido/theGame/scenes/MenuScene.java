@@ -12,8 +12,8 @@ import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.gos.Text;
-import org.vvgaming.harmegido.test.UOSFacade;
 import org.vvgaming.harmegido.theGame.HarMegidoActivity;
+import org.vvgaming.harmegido.theGame.UOSFacade;
 
 import android.app.Activity;
 import android.graphics.Paint.Align;
@@ -72,7 +72,9 @@ public class MenuScene extends AbstractGameScene {
 			final List<DriverData> drivers = gateway
 					.listDrivers("uos.harmegido.server");
 
-			if (drivers.size() == 0) {
+			if (!UOSFacade.isStarted()) {
+				serverName.text = "Nenhum servidor encontrado";
+			} else if (drivers == null || drivers.size() == 0) {
 				// nenhum hm server encontrado
 				serverName.text = "Nenhum servidor encontrado";
 			} else if (drivers.size() > 1) {

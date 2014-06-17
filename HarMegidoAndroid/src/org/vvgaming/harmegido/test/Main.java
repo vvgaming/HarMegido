@@ -1,23 +1,14 @@
 package org.vvgaming.harmegido.test;
 
-import java.util.List;
-
 import org.unbiquitous.uos.core.ClassLoaderUtils;
-import org.unbiquitous.uos.core.UOS;
-import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
-import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
-import org.unbiquitous.uos.core.driverManager.DriverData;
-import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
-import org.unbiquitous.uos.core.messageEngine.messages.Call;
-import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.test.bubbleTest.BubbleTestActivity;
 import org.vvgaming.harmegido.test.vision.ObjDetectTestActivity;
 import org.vvgaming.harmegido.theGame.HarMegidoActivity;
+import org.vvgaming.harmegido.theGame.UOSFacade;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;

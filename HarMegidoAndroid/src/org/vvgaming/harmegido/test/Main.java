@@ -1,12 +1,9 @@
 package org.vvgaming.harmegido.test;
 
 import java.util.List;
-import java.util.logging.Level;
 
-import org.unbiquitous.network.http.connection.ClientMode;
 import org.unbiquitous.uos.core.ClassLoaderUtils;
 import org.unbiquitous.uos.core.UOS;
-import org.unbiquitous.uos.core.UOSLogging;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
 import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
 import org.unbiquitous.uos.core.driverManager.DriverData;
@@ -27,10 +24,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 public class Main extends Activity {
-
-	private static final String SERVER_IP = "harmegido.servegame.com"; //servidor da amazon
-
-	private UOS uos = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,87 +67,24 @@ public class Main extends Activity {
 						startActivity(i);
 					}
 				});
-		
-		((Button) findViewById(R.id.btnMyTest))
-		.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent i = new Intent(getApplicationContext(),
-						MainGame.class);
-				startActivity(i);
-			}
-		});
 
-		((Button) findViewById(R.id.btnMessageTest))
+		((Button) findViewById(R.id.btnMyTest))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
-						new AsyncTask<Void, Void, String>() {
-							protected String doInBackground(Void... params) {
-
-								final Gateway gateway = uos.getGateway();
-								final List<DriverData> drivers = gateway
-										.listDrivers("uos.harmegido.server");
-
-								final UpDevice device = drivers.get(0)
-										.getDevice();
-
-								Call call = new Call("uos.harmegido.server",
-										"sendMsg");
-								call.addParameter("msg", "Mensagem Teste");
-
-								Response response;
-								String responseStr;
-								try {
-									response = gateway
-											.callService(device, call);
-									responseStr = response.toString();
-
-								} catch (ServiceCallException e) {
-									responseStr = e.getMessage();
-								}
-
-								System.out.println(responseStr);
-								return responseStr;
-							}
-						}.execute();
-
+						Intent i = new Intent(getApplicationContext(),
+								MainGame.class);
+						startActivity(i);
 					}
 				});
 
-		startUos();
-	}
-
-	private void startUos() {
-		UOSLogging.setLevel(Level.ALL);
-		if (uos != null)
-			return;
-		uos = new UOS();
-		new AsyncTask<Void, Void, Void>() {
-			protected Void doInBackground(Void... params) {
-
-				ClientMode.Properties props = new ClientMode.Properties();
-
-				props.setServer(SERVER_IP);
-				uos.start(props);
-
-				return null;
-			}
-		}.execute();
-	}
-
-	private void stopUos() {
-		if (uos == null)
-			return;
-		uos.stop();
-		uos = null;
+		UOSFacade.startUos();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		stopUos();
+		UOSFacade.stopUos();
 	}
 
 }

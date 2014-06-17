@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.test;
+package org.vvgaming.harmegido.theGame;
 
 import java.util.logging.Level;
 
@@ -12,6 +12,7 @@ public class UOSFacade {
 	private static final String SERVER_IP = "harmegido.servegame.com"; // servidor
 																		// amazon
 	private static UOS uos;
+	private static boolean started = false;
 
 	public static UOS getUos() {
 		if (uos == null) {
@@ -33,6 +34,7 @@ public class UOSFacade {
 
 				props.setServer(SERVER_IP);
 				uos.start(props);
+				started = true;
 
 				return null;
 			}
@@ -44,5 +46,11 @@ public class UOSFacade {
 			return;
 		uos.stop();
 		uos = null;
+		started = false;
 	}
+
+	public static boolean isStarted() {
+		return started;
+	}
+
 }

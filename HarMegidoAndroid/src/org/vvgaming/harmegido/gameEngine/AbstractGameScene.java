@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import android.content.res.Resources;
+import android.app.Activity;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
@@ -19,19 +19,14 @@ import android.view.MotionEvent;
  */
 public abstract class AbstractGameScene {
 
+	private final AssetManager assetManager;
 	private int width = 0;
 	private int height = 0;
 	private Map<Integer, List<GameObject>> objectsPerLayer = new TreeMap<>();
 
-	private final Resources res;
-
-	protected Resources getRes() {
-		return res;
-	}
-
-	public AbstractGameScene(Resources res) {
+	public AbstractGameScene(final Activity act) {
 		super();
-		this.res = res;
+		assetManager = new AssetManager(act);
 	}
 
 	protected final void realInit() {
@@ -40,6 +35,7 @@ public abstract class AbstractGameScene {
 
 	protected final void realEnd() {
 		clearObjects();
+		assetManager.release();
 		end();
 	}
 
@@ -213,6 +209,10 @@ public abstract class AbstractGameScene {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public AssetManager getAssetManager() {
+		return assetManager;
 	}
 
 }

@@ -2,6 +2,11 @@ package org.vvgaming.harmegido.gameEngine.geometry;
 
 import android.graphics.Rect;
 
+/**
+ * Classe geométrica que representa o retângulo e suas operações
+ * 
+ * @author Vinicius Nogueira
+ */
 public class Retangulo {
 
 	public final Ponto origem;

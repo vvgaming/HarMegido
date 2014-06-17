@@ -7,6 +7,11 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+/**
+ * Uma implementação de {@link GameObject} que dispõe e manipula imagens
+ * 
+ * @author Vinicius Nogueira
+ */
 public class ImageGO implements GameObject {
 
 	private boolean visible = true;

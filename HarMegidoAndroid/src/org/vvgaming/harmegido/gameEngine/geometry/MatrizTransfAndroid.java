@@ -3,7 +3,9 @@ package org.vvgaming.harmegido.gameEngine.geometry;
 import android.graphics.Matrix;
 
 /**
+ * Wrapper da {@link Matrix} do Android, provendo novas funcionalidades
  * 
+ * @author Vinicius Nogueira
  */
 public class MatrizTransfAndroid {
 

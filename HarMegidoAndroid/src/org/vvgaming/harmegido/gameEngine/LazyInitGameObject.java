@@ -7,6 +7,12 @@ import android.graphics.Canvas;
 
 import com.github.detentor.codex.function.Function0;
 
+/**
+ * Uma extensão de {@link GameObject} que suporta inicialição lazy. Devo
+ * verificar a real necessidade mesmo dessa implementação depois
+ * 
+ * @author Vinicius Nogueira
+ */
 public abstract class LazyInitGameObject implements GameObject {
 
 	private List<Function0<Void>> functions = new ArrayList<>();

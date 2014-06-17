@@ -7,6 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
+/**
+ * Uma implementação de {@link GameObject} que dispõe e manipula texto
+ * 
+ * @author Vinicius Nogueira
+ */
 public class Text implements GameObject {
 
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -21,7 +26,7 @@ public class Text implements GameObject {
 		paint.setARGB(255, 255, 255, 255);
 		pos = new Ponto(x, y);
 		paint.setTextSize(size);
-		
+
 		paint.setTypeface(face);
 		this.text = text;
 	}
@@ -62,7 +67,5 @@ public class Text implements GameObject {
 	public void setARGB(final int a, final int r, final int g, final int b) {
 		paint.setARGB(a, r, g, b);
 	}
-	
-	
 
 }

@@ -8,6 +8,12 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+/**
+ * Gerenciador de recursos que dá acesso aos nativos do Android e mantem alguns
+ * em seu domínio para evitar duplicidade em memória
+ * 
+ * @author Vinicius Nogueira
+ */
 public class AssetManager {
 
 	private final Activity act;

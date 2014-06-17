@@ -1,14 +1,14 @@
 package org.vvgaming.harmegido.lib.util;
 
 /**
- * Classes que implementam esta interface permitem a operação de cópia
+ * Classes que implementam esta interface permitem a operaÃ§Ã£o de cÃ³pia
  * 
  */
 public interface Copyable 
 {
 	/**
-	 * Retorna uma cópia profunda desta classe, ou seja, guarda retorna "foto" do estado desta classe.
-	 * @return Uma cópia profunda desta classe.
+	 * Retorna uma cÃ³pia profunda desta classe, ou seja, guarda retorna "foto" do estado desta classe.
+	 * @return Uma cÃ³pia profunda desta classe.
 	 */
 	Copyable copy();
 }

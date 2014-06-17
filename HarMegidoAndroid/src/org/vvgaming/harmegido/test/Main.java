@@ -75,6 +75,16 @@ public class Main extends Activity {
 						startActivity(i);
 					}
 				});
+		
+		((Button) findViewById(R.id.btnMyTest))
+		.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(),
+						MainGame.class);
+				startActivity(i);
+			}
+		});
 
 		((Button) findViewById(R.id.btnMessageTest))
 				.setOnClickListener(new View.OnClickListener() {

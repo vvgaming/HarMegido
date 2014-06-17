@@ -29,5 +29,11 @@
         android:layout_height="wrap_content"
         android:text="Enviar msg uOS" />
     
+     <Button
+        android:id="@+id/btnMyTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teste" />
+    
 
 </LinearLayout>

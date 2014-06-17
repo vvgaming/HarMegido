@@ -28,7 +28,7 @@ import android.widget.Button;
 
 public class Main extends Activity {
 
-	private static final String SERVER_IP = "54.207.76.250"; // ip do servidor
+	private static final String SERVER_IP = "54.207.95.160"; // ip do servidor
 																// da Amazon
 
 	private UOS uos = null;
@@ -75,6 +75,16 @@ public class Main extends Activity {
 						startActivity(i);
 					}
 				});
+		
+		((Button) findViewById(R.id.btnMyTest))
+		.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(),
+						MainGame.class);
+				startActivity(i);
+			}
+		});
 
 		((Button) findViewById(R.id.btnMessageTest))
 				.setOnClickListener(new View.OnClickListener() {

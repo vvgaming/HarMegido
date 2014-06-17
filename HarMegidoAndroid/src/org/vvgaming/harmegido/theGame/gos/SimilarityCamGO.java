@@ -25,20 +25,18 @@ public class SimilarityCamGO extends LazyInitGameObject {
 
 	private SimilarityCam cam;
 	private Bitmap lastFrame;
-//	private Ponto center;
 
 	MatrizTransfAndroid matriz;
 
 	private Option<Tuple2<Mat, Bitmap>> registrado = Option.empty();
 	private double comparacao = Double.MAX_VALUE;
 
-	public SimilarityCamGO(final Ponto center, final float width,
-			final float height) {
+	public SimilarityCamGO(final Ponto center, final float width) {
 		addToInit(new Function0<Void>() {
 			@Override
 			public Void apply() {
 				SimilarityCamGO.this.matriz.setCenter(center);
-				SimilarityCamGO.this.matriz.setDimensions(width, height);
+				SimilarityCamGO.this.matriz.setWidthKeepingRatio(width);
 				return null;
 			}
 		});

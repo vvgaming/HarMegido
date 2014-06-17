@@ -8,37 +8,82 @@ import java.util.Set;
 
 /**
  * Representa uma partida no HarMegido
- *
  */
 public class Match 
 {
-	final Date inicioPartida;
-	//Usando mapa porque o Set n�o tem m�todo get
-	final Map<Player, Player> jogadores = new HashMap<Player, Player>();
+	private final Date inicioPartida;
+	private final MatchDuration duracao;
 	
-	//
-	final Set<Enchantment> encantamentos = new HashSet<Enchantment>();
+	//Usando mapa porque o Set não tem método get
+	private final Map<Player, Player> jogadores = new HashMap<Player, Player>();
+	private final Set<Enchantment> encantamentos = new HashSet<Enchantment>();
 	
-	public Match()
+	
+	
+	
+	private Match(final Date inicio, final MatchDuration duracao)
 	{
-		this.inicioPartida = new Date();
+		this.inicioPartida = inicio;
+		this.duracao = duracao;
+	}
+	
+	/**
+	 * Cria uma nova partida, com o início e duração passados como parâmetro
+	 * @param inicio O instante no tempo que a partida teve/terá início
+	 * @param duracao A duração da partida
+	 * @return Uma partida com a duração e início passados como parâmetro
+	 */
+	public Match from(final Date inicio, final MatchDuration duracao)
+	{
+		if (inicio == null)
+		{
+			throw new IllegalArgumentException("O início não pode ser nulo");
+		}
+		
+		if (duracao == null)
+		{
+			throw new IllegalArgumentException("A duração da partida não pode ser nula");
+		}
+		
+		return new Match(inicio, duracao);
 	}
 
 	/**
-	 * Retorna a pontua��o dos time passado como par�metro
-	 * @param time O time cuja pontua��o deve ser retornada
-	 * @return Um inteiro positivo que cont�m a pontua��o do time passado como par�metro
+	 * Retorna a pontuação dos time passado como parâmetro
+	 * @param time O time cuja pontuação deve ser retornada
+	 * @return Um inteiro positivo que contém a pontuação do time passado como parâmetro
 	 */
 	public int getPontuacao(final TeamType time)
 	{
-		//TODO: calcular a pontua��o
+		//TODO: calcular a pontuação
 		return 0;
 	}
 	
 	/**
+	 * Retorna <tt>true</tt> se, e somente se, a partida ainda está ativa, ou seja,
+	 * se o tempo para ela terminar ainda não passou, e nenhum time atingiu a 
+	 * pontuação para terminá-la.
+	 * 
+	 * @return <tt>true</tt> se a partida está ativa, ou <tt>false</tt> do contrário
+	 */
+	public boolean isAtiva()
+	{
+		return getEndTime() < new Date().getTime();
+	}
+	
+	/**
+	 * Retorna, em milis, quando a partida terminará
+	 * @return Um long que representa, em milisegundos, o instante que a partida terminá
+	 */
+	private long getEndTime()
+	{
+		return (duracao.getInMilliseconds() + inicioPartida.getTime());
+	}
+	
+	/**
 	 * Adiciona o jogador na partida. <br/>
-	 * Em particular, ser� adicionada uma c�pia do jogador, ou seja, modifica��es
-	 * estruturais no jogador n�o refletir�o no jogador da partida.
+	 * Em particular, será adicionada uma cópia do jogador, ou seja, modificações
+	 * estruturais no jogador não refletirão no jogador da partida.
 	 * @param jogador O jogador a ser adicionado na partida
 	 */
 	public void adicionarJogador(final Player jogador)
@@ -47,9 +92,9 @@ public class Match
 	}
 
 	/**
-	 * Remove o jogador passado como par�metro da partida
+	 * Remove o jogador passado como parâmetro da partida
 	 * @param jogador O jogador a ser removido da partida
-	 * @return <tt>true</tt> se o jogador foi removido da partida, ou <tt>false</tt> do contr�rio
+	 * @return <tt>true</tt> se o jogador foi removido da partida, ou <tt>false</tt> do contrário
 	 */
 	public boolean removerJogador(final Player jogador)
 	{
@@ -57,11 +102,11 @@ public class Match
 	}
 	
 	/**
-	 * Troca de time o jogador passado como par�metro. <br/>
+	 * Troca de time o jogador passado como parâmetro. <br/>
 	 * 
-	 * @param jogador O jogador cujo time ser� trocado
+	 * @param jogador O jogador cujo time será trocado
 	 * @param novoTime O novo time do jogador.
-	 * @throws IllegalArgumentException Se o jogador n�o pertecer a esta partida
+	 * @throws IllegalArgumentException Se o jogador não pertecer a esta partida
 	 */
 	public void trocarTime(final Player jogador, final TeamType novoTime)
 	{
@@ -69,14 +114,14 @@ public class Match
 
 		if (mJogador == null)
 		{
-			throw new IllegalArgumentException("Erro: Jogador n�o pertence � partida");
+			throw new IllegalArgumentException("Erro: Jogador não pertence à partida");
 		}
 		
 		mJogador.trocarDeTime(novoTime);
 	}
 
 	/**
-	 * Cria um encantamento para o jogador passado como par�metro
+	 * Cria um encantamento para o jogador passado como parâmetro
 	 * @param jogador O jogador a criar o encantamento
 	 * @return O encantamento criado
 	 */
@@ -88,7 +133,7 @@ public class Match
 	}
 	
 	/**
-	 * Cria um desencantamento para o jogador e encantamentos passado como par�metro
+	 * Cria um desencantamento para o jogador e encantamentos passado como parâmetro
 	 * @param jogador O jogador a fazer o desencantamento
 	 * @param encantamento O encantamento a ser desencantado
 	 * @return O desencantamento do jogador
@@ -96,6 +141,25 @@ public class Match
 	public Disenchantment criarDesencantamento(final Player jogador, final Enchantment encantamento)
 	{
 		return jogador.desencantar(encantamento, new Date());
+	}
+	
+	/**
+	 * Esse enum representa a duração de uma partida
+	 */
+	public enum MatchDuration
+	{
+		FIVE_MINUTES(5), TEN_MINUTES(10), FIFTEEN_MINUTES(15), UNLIMITED(Integer.MAX_VALUE);
+		
+		private final long inMilliseconds;
+		
+		private MatchDuration(int minutes) {
+			this.inMilliseconds = minutes * 60 * 1000;
+		}
+
+		public long getInMilliseconds() {
+			return inMilliseconds;
+		}
+		
 	}
 
 }

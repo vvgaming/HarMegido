@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.theGame.gos;
+package org.vvgaming.harmegido.gameEngine.gos;
 
 import org.vvgaming.harmegido.gameEngine.GameObject;
 import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;

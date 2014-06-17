@@ -10,18 +10,15 @@ import com.github.detentor.codex.monads.Option;
 /**
  * Essa classe representa o encantamento de um determinado objeto.
  */
-public class Enchantment implements Copyable
+public class Enchantment extends Spell implements Copyable
 {
-	private final Player jogador;
-	private final Date timestamp;
 	private final EnchantmentImage histogram; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento;
 
 	protected Enchantment(final Player enchanter, final Date enchantTime, final EnchantmentImage histogram)
 	{
-		super();
-		this.jogador = enchanter.copy(); //copia para guardar o estado do jogador no momento do encantamento
-		this.timestamp = enchantTime;
+		//copia para guardar o estado do jogador no momento do encantamento
+		super(enchanter.copy(), new Date(enchantTime.getTime()));
 		this.histogram = histogram;
 	}
 
@@ -54,16 +51,6 @@ public class Enchantment implements Copyable
 		this.desencantamento = Option.from(oDesencantamento);
 	}
 
-	public Player getJogador()
-	{
-		return jogador;
-	}
-
-	public Date getTimestamp()
-	{
-		return timestamp;
-	}
-
 	public int calcularPontuacao()
 	{
 		// TODO: efetivar o c�lculo
@@ -72,7 +59,7 @@ public class Enchantment implements Copyable
 
 	public Enchantment copy()
 	{
-		final Enchantment enchantment = new Enchantment(this.jogador, this.timestamp, this.histogram);
+		final Enchantment enchantment = new Enchantment(getJogador(), getTimestamp(), this.histogram);
 		enchantment.desencantamento = this.desencantamento; //seguro porque no desencantamento uma nova Option é criada
 		return enchantment;
 	}

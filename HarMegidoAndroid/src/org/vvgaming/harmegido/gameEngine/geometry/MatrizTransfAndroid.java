@@ -50,6 +50,18 @@ public class MatrizTransfAndroid {
 		refreshMatrix();
 	}
 
+	public void setWidthKeepingRatio(final float width) {
+		this.dstWidth = width;
+		this.dstHeight = (srcHeight / srcWidth) * width;
+		refreshMatrix();
+	}
+
+	public void setHeightKeepingRatio(final float height) {
+		this.dstHeight = height;
+		this.dstWidth = (srcWidth / srcHeight) * height;
+		refreshMatrix();
+	}
+
 	public void setRotation(float rotation) {
 		this.rotation = rotation;
 		refreshMatrix();

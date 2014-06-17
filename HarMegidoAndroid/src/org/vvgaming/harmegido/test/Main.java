@@ -28,8 +28,8 @@ import android.widget.Button;
 
 public class Main extends Activity {
 
-	private static final String SERVER_IP = "54.207.95.160"; // ip do servidor
-																// da Amazon
+	private static final String SERVER_IP = "harmegido.servegame.com"; //servidor da amazon
+
 
 	private UOS uos = null;
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
-import org.vvgaming.harmegido.gameEngine.Text;
+import org.vvgaming.harmegido.gameEngine.gos.Text;
 
 import android.app.Activity;
 import android.view.MotionEvent;

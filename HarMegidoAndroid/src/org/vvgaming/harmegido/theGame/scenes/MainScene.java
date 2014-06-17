@@ -2,8 +2,8 @@ package org.vvgaming.harmegido.theGame.scenes;
 
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
-import org.vvgaming.harmegido.gameEngine.Text;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.gameEngine.gos.Text;
 import org.vvgaming.harmegido.theGame.gos.ImageGO;
 import org.vvgaming.harmegido.theGame.gos.SimilarityCamGO;
 import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;

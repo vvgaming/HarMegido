@@ -1,5 +1,6 @@
-package org.vvgaming.harmegido.gameEngine;
+package org.vvgaming.harmegido.gameEngine.gos;
 
+import org.vvgaming.harmegido.gameEngine.GameObject;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Canvas;

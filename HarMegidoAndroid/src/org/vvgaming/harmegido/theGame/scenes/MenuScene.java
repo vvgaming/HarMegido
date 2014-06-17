@@ -1,7 +1,7 @@
 package org.vvgaming.harmegido.theGame.scenes;
 
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
-import org.vvgaming.harmegido.gameEngine.Text;
+import org.vvgaming.harmegido.gameEngine.gos.Text;
 import org.vvgaming.harmegido.theGame.HarMegidoActivity;
 
 import android.app.Activity;

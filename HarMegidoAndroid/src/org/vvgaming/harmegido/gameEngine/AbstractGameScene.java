@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.vvgaming.harmegido.gameEngine.util.AssetManager;
+
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.view.MotionEvent;

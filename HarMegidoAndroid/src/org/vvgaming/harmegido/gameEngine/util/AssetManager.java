@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.gameEngine;
+package org.vvgaming.harmegido.gameEngine.util;
 
 import java.util.HashMap;
 import java.util.Map;

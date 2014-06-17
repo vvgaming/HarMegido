@@ -3,12 +3,12 @@ package org.vvgaming.harmegido.test.bubbleTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.vvgaming.harmegido.gameEngine.AbstractGame;
+import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 
 import android.content.res.Resources;
 import android.view.MotionEvent;
 
-public class BubbleGame extends AbstractGame {
+public class BubbleGame extends AbstractGameScene {
 
 	public BubbleGame(Resources res) {
 		super(res);

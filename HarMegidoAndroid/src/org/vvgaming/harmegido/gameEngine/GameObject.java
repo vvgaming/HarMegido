@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 
 /**
  * Interface que define comportamento padrão para objetos em jogos do tipo
- * {@link AbstractGame}
+ * {@link AbstractGameScene}
  * 
  * @author Vinicius Nogueira
  */

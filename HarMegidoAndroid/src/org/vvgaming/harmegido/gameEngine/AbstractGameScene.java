@@ -17,7 +17,7 @@ import android.view.MotionEvent;
  * 
  * @author Vinicius Nogueira
  */
-public abstract class AbstractGame {
+public abstract class AbstractGameScene {
 
 	private int width = 0;
 	private int height = 0;
@@ -29,7 +29,7 @@ public abstract class AbstractGame {
 		return res;
 	}
 
-	public AbstractGame(Resources res) {
+	public AbstractGameScene(Resources res) {
 		super();
 		this.res = res;
 	}
@@ -85,7 +85,7 @@ public abstract class AbstractGame {
 
 	/**
 	 * Método padrão que deve ser implementado pelos filhos de
-	 * {@link AbstractGame}. Este método é invocado a cada frame e dá a
+	 * {@link AbstractGameScene}. Este método é invocado a cada frame e dá a
 	 * possibilidade de atualizar as informações necessárias do jogo.
 	 * 
 	 * @param delta

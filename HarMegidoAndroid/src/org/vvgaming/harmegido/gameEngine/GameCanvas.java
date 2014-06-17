@@ -1,5 +1,6 @@
 package org.vvgaming.harmegido.gameEngine;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -11,38 +12,51 @@ import android.view.SurfaceView;
 
 /**
  * Implementação de um canvas para jogos. Este canvas implementa uma Thread e
- * recebe um {@link AbstractGame} para renderizar seus objetos controlando o
+ * recebe um {@link AbstractGameScene} para renderizar seus objetos controlando o
  * loop.
  * 
  * @author Vinicius Nogueira
  */
+@SuppressLint("ViewConstructor")
 public class GameCanvas extends SurfaceView implements Callback {
 
 	private LoopThread loopThread;
 	private int fpsLock = 30;
 	private boolean showFps = false;
-	private final AbstractGame theGame;
+	private AbstractGameScene cena;
 
-	public GameCanvas(Context context, AbstractGame theGame) {
+	private AbstractGameScene proximaCena = null;
+
+	public GameCanvas(final Context context, final AbstractGameScene aCena) {
 		super(context);
 		getHolder().addCallback(this);
-		this.theGame = theGame;
-		setKeepScreenOn(true);
+		this.cena = aCena;
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		theGame.onTouch(event);
+	public boolean onTouchEvent(final MotionEvent event) {
+		cena.onTouch(event);
 		return true;
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		theGame.setWidth(getWidth());
-		theGame.setHeight(getHeight());
+		inicializaCena(cena);
+	}
 
-		theGame.realInit();
-		
+	private void reInicializaCena(final AbstractGameScene aCena) {
+		aCena.realEnd();
+		// novo jogo
+		this.cena = aCena;
+		inicializaCena(aCena);
+	}
+
+	private void inicializaCena(final AbstractGameScene aCena) {
+		aCena.setWidth(getWidth());
+		aCena.setHeight(getHeight());
+
+		aCena.realInit();
+
 		loopThread = new LoopThread(getHolder());
 		loopThread.start();
 	}
@@ -52,15 +66,20 @@ public class GameCanvas extends SurfaceView implements Callback {
 			int height) {
 
 		loopThread.setTheHolder(holder);
-		theGame.setWidth(width);
-		theGame.setHeight(height);
+		cena.setWidth(width);
+		cena.setHeight(height);
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		loopThread.setShouldQuit(true);
 		loopThread = null;
-		theGame.realEnd();
+		encerraCena();
+	}
+
+	private void encerraCena() {
+		cena.realEnd();
+		cena = null;
 	}
 
 	private class LoopThread extends Thread {
@@ -113,8 +132,8 @@ public class GameCanvas extends SurfaceView implements Callback {
 				// pinta tudo de preto
 				canvas.drawRect(retanguloMaximo, preto);
 
-				theGame.realUpdate(delta);
-				theGame.realRender(canvas);
+				cena.realUpdate(delta);
+				cena.realRender(canvas);
 
 				if (showFps) {
 					canvas.drawText("fps: "
@@ -131,6 +150,12 @@ public class GameCanvas extends SurfaceView implements Callback {
 				// cálculo definitivo do tempo gasto neste frame
 				delta = System.currentTimeMillis() - initFrame;
 
+			}
+
+			if (proximaCena != null) {
+				encerraCena();
+				reInicializaCena(proximaCena);
+				proximaCena = null;
 			}
 
 		}
@@ -150,6 +175,11 @@ public class GameCanvas extends SurfaceView implements Callback {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void trocarCena(final AbstractGameScene novaCena) {
+		loopThread.setShouldQuit(true);
+		proximaCena = novaCena;
 	}
 
 	public void setFpsLock(int fpsLock) {

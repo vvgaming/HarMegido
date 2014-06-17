@@ -1,7 +1,7 @@
 package org.vvgaming.harmegido.theGame;
 
 import org.vvgaming.harmegido.R;
-import org.vvgaming.harmegido.gameEngine.AbstractGame;
+import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.theGame.gos.ImageGO;
 import org.vvgaming.harmegido.theGame.gos.SimilarityCamGO;
@@ -10,9 +10,9 @@ import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;
 import android.content.res.Resources;
 import android.view.MotionEvent;
 
-public class HarMegidoGame extends AbstractGame {
+public class MainScene extends AbstractGameScene {
 
-	public HarMegidoGame(Resources res) {
+	public MainScene(Resources res) {
 		super(res);
 	}
 

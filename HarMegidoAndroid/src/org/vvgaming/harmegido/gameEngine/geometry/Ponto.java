@@ -15,4 +15,8 @@ public class Ponto {
 		this.y = y;
 	}
 
+	public Ponto translate(float x, float y) {
+		return new Ponto(this.x + x, this.y + y);
+	}
+
 }

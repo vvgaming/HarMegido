@@ -22,6 +22,10 @@ public class Text implements GameObject {
 
 	private boolean visible = true;
 
+	public Text() {
+		this(0, 0, "");
+	}
+
 	public Text(int x, int y, String text) {
 		paint.setARGB(255, 255, 255, 255);
 		pos = new Ponto(x, y);
@@ -66,6 +70,18 @@ public class Text implements GameObject {
 
 	public void setARGB(final int a, final int r, final int g, final int b) {
 		paint.setARGB(a, r, g, b);
+	}
+
+	public Text clone() {
+		Text retorno = new Text();
+		retorno.face = face;
+		retorno.size = size;
+		retorno.visible = visible;
+		retorno.paint = new Paint(paint);
+		retorno.face = face;
+		retorno.pos = pos;
+		retorno.text = text;
+		return retorno;
 	}
 
 }

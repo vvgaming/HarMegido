@@ -18,6 +18,7 @@ import org.vvgaming.harmegido.lib.model.match.PlayerChangeTeam;
  */
 public class Match
 {
+	private final String matchName;
 	private final Date inicioPartida;
 	private final MatchDuration duracao;
 
@@ -25,21 +26,28 @@ public class Match
 	private final Map<Player, Player> jogadores = new HashMap<Player, Player>();
 	private final Set<Enchantment> encantamentos = new HashSet<Enchantment>();
 
-	private Match(final Date inicio, final MatchDuration duracao)
+	private Match(final String nomePartida, final Date inicio, final MatchDuration duracao)
 	{
-		this.inicioPartida = inicio;
+		this.matchName = nomePartida;
+		this.inicioPartida = new Date(inicio.getTime());
 		this.duracao = duracao;
 	}
 
 	/**
 	 * Cria uma nova partida, com o início e duração passados como parâmetro
 	 * 
+	 * @param nomePartida O nome da partida
 	 * @param inicio O instante no tempo que a partida teve/terá início
 	 * @param duracao A duração da partida
 	 * @return Uma partida com a duração e início passados como parâmetro
 	 */
-	public Match from(final Date inicio, final MatchDuration duracao)
+	public static Match from(final String nomePartida, final Date inicio, final MatchDuration duracao)
 	{
+		if (nomePartida == null)
+		{
+			throw new IllegalArgumentException("O nome da partida não pode ser nulo");
+		}
+
 		if (inicio == null)
 		{
 			throw new IllegalArgumentException("O início não pode ser nulo");
@@ -50,7 +58,7 @@ public class Match
 			throw new IllegalArgumentException("A duração da partida não pode ser nula");
 		}
 
-		return new Match(inicio, duracao);
+		return new Match(nomePartida, inicio, duracao);
 	}
 
 	/**
@@ -73,7 +81,16 @@ public class Match
 	 */
 	public boolean isAtiva()
 	{
-		return getEndTime() < new Date().getTime();
+		return getHoraFimMilis() < new Date().getTime();
+	}
+	
+	/**
+	 * Retorna o instante no tempo que a partida foi iniciada.
+	 * @return Uma instância de date que contém o instante no tempo que a partida foi iniciada
+	 */
+	public Date getInicioPartida()
+	{
+		return new Date(inicioPartida.getTime());
 	}
 
 	/**
@@ -81,24 +98,35 @@ public class Match
 	 * 
 	 * @return Um long que representa, em milisegundos, o instante que a partida terminá
 	 */
-	private long getEndTime()
+	private long getHoraFimMilis()
 	{
 		return duracao.getInMilliseconds() + inicioPartida.getTime();
 	}
-	
+
 	/**
-	 * Executa a mudança de estado para esta partida, a partir da 
-	 * mudança passada como parâmetro. 
+	 * Retorna <tt>true</tt> se esta partida contém o jogador passado como parâmetro
+	 * 
+	 * @param jogador O jogador a ser verificado se pertence a essa partida
+	 * @return <tt>true</tt> se esta partida contém o jogador, ou <tt>false</tt> do contrário
+	 */
+	public boolean contemJogador(final Player jogador)
+	{
+		return jogadores.containsKey(jogador);
+	}
+
+	/**
+	 * Executa a mudança de estado para esta partida, a partir da mudança passada como parâmetro.
+	 * 
 	 * @param stateChange A classe que especifica qual tipo de mudança será feita nesta partida
 	 */
-	public void executeChange(final MatchState stateChange)
+	public void executarMudanca(final MatchState stateChange)
 	{
-		//Como StateChange é um ADT, apesar de feia, 
-		//essa é a maneira correta de fazer 'Match' nos tipos possíveis
+		// Como StateChange é um ADT, apesar de feia,
+		// essa é a maneira correta de fazer 'Match' nos tipos possíveis
 		if (stateChange instanceof PlayerChangeAdd)
 		{
 			final PlayerChangeAdd pca = (PlayerChangeAdd) stateChange;
-			//modificações estruturais no jogador não refletirão no jogador da partida.
+			// modificações estruturais no jogador não refletirão no jogador da partida.
 			jogadores.put(pca.getJogador(), pca.getJogador().copy());
 		}
 		else if (stateChange instanceof PlayerChangeRemove)
@@ -109,7 +137,7 @@ public class Match
 		else if (stateChange instanceof PlayerChangeTeam)
 		{
 			final PlayerChangeTeam pct = (PlayerChangeTeam) stateChange;
-			
+
 			final Player mJogador = jogadores.get(pct.getJogador());
 
 			if (mJogador == null)
@@ -126,7 +154,7 @@ public class Match
 		else if (stateChange instanceof PlayerChangeDisenchant)
 		{
 			final PlayerChangeDisenchant pcd = (PlayerChangeDisenchant) stateChange;
-			//não precisa guardar porque o encantamento é desencantado como 'side-effect'
+			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
 			pcd.getJogador().desencantar(pcd.getEncantamento(), new Date());
 		}
 		else
@@ -148,10 +176,104 @@ public class Match
 		{
 			this.inMilliseconds = minutes * 60 * 1000;
 		}
+		
+		/**
+		 * Tenta criar uma duração de partida a partir de uma String
+		 * @param theString A string que será transformada em duração de partida
+		 * @return A representação desta string em uma duração de partida
+		 * @throws IllegalArgumentException Se a string não corresponder a uma partida
+		 */
+		public static MatchDuration from(final String theString)
+		{
+			for (MatchDuration curMatch : MatchDuration.values())
+			{
+				if (curMatch.toString().equals(theString))
+				{
+					return curMatch;
+				}
+			}
+			throw new IllegalArgumentException("Não foi possível fazer parse da string '" + theString + "' para uma duração de partida");
+		}
 
 		public long getInMilliseconds()
 		{
 			return inMilliseconds;
 		}
+		
+		@Override
+		public String toString()
+		{
+			switch (this)
+			{
+				case FIVE_MINUTES:
+				{
+					return "Cinco minutos";
+				}
+				case TEN_MINUTES:
+				{
+					return "Dez minutos"; 
+				}
+				case FIFTEEN_MINUTES:
+				{
+					return "Quinze minutos";
+				}
+				case UNLIMITED:
+				{
+					return "Sem limite de tempo";
+				}
+				default:
+				{
+					throw new IllegalArgumentException("Tipo de duração não reconhecida: " + this.getClass());
+				}
+			}
+		};
+	}
+
+	/**
+	 * Retorna o nome associado com esta partida
+	 * @return O nome associado à partida
+	 */
+	public String getNomePartida()
+	{
+		return matchName;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (matchName == null ? 0 : matchName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj)
+	{
+		if (this == obj)
+		{
+			return true;
+		}
+		if (obj == null)
+		{
+			return false;
+		}
+		if (getClass() != obj.getClass())
+		{
+			return false;
+		}
+		final Match other = (Match) obj;
+		if (matchName == null)
+		{
+			if (other.matchName != null)
+			{
+				return false;
+			}
+		}
+		else if (!matchName.equals(other.matchName))
+		{
+			return false;
+		}
+		return true;
 	}
 }

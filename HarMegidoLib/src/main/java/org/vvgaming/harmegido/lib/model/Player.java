@@ -65,11 +65,22 @@ public class Player implements Copyable
 	{
 		return playerName;
 	}
+	
+	/**
+	 * Retorna a identificação única deste jogador
+	 * @return Uma identificação única para este jogador
+	 */
+	public String getIdJogador()
+	{
+		return dispositivo;
+	}
 
 	public void trocarDeTime(final TeamType novoTime)
 	{
 		this.time = novoTime;
 	}
+	
+	
 
 	/**
 	 * Cria um encantamento a partir da data/hora passada como par�metro

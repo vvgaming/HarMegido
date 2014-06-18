@@ -1,80 +1,143 @@
 package org.vvgaming.harmegido.server;
 
+import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
+
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
-import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
 import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.driverManager.UosDriver;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
+import org.vvgaming.harmegido.lib.model.Match;
+import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
+import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.match.MatchState;
 
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
+import com.github.detentor.operations.ObjectOps;
 
 /**
  * Classe de fachada para o ServerDriver, de modo a simplificar o seu uso. <br/>
- * Todos os mÈtodos possÌveis de serem utilizados pelo ServerDriver s„o mÈtodos
- * desta classe. 
+ * Todos os m√©todos poss√≠veis de serem utilizados pelo ServerDriver s√£o m√©todos dessa classe.
  */
-public class ServerDriverFacade 
+public class ServerDriverFacade
 {
-	final UOS uos;
-	final ServerDriver serverDriver;
-
-	protected ServerDriverFacade(final UOS uos) {
+	private final UOS uos;
+	private final ServerDriver serverDriver;
+	
+	protected ServerDriverFacade(final UOS uos)
+	{
 		super();
 		this.uos = uos;
 		this.serverDriver = new ServerDriver();
 	}
 
 	/**
-	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como par‚metro.
-	 * @param uos A inst‚ncia do UOS a ser utilizada para a fachada
-	 * @return Uma inst‚ncia da fachada do servidor
+	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como par√¢metro.
+	 * 
+	 * @param uos A inst√¢ncia do UOS a ser utilizada para a fachada
+	 * @return Uma inst√¢ncia da fachada do servidor
 	 */
-	public static ServerDriverFacade from(final UOS uos) 
+	public static ServerDriverFacade from(final UOS uos)
 	{
 		if (uos == null)
 		{
-			throw new IllegalArgumentException("uos n„o pode ser nulo");
+			throw new IllegalArgumentException("A inst√¢ncia do uos n√£o pode ser nula");
 		}
 		if (uos.getGateway() == null)
 		{
-			throw new IllegalArgumentException("Erro: Gateway do uos n„o pode retornar null");
+			throw new IllegalArgumentException("Erro: Gateway do uos n√£o pode retornar null");
 		}
 		return new ServerDriverFacade(uos);
 	}
 	
+	
+	/**
+	 * Cria uma partida no servidor para o nome e dura√ß√£o informados
+	 * @param nomePartida O nome a ser vinculado com a partida. N√£o pode coincidir com o nome de nenhuma
+	 * outra partida.
+	 * @param duracao A dura√ß√£o da partida
+	 * @return Uma inst√¢ncia de {@link Either} que ir√° conter em Right a partida criada, ou Left a exce√ß√£o que 
+	 * aconteceu. 
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Match> criarPartida(final String nomePartida, final MatchDuration duracao)
+	{
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
+		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("duracao", duracao.toString());
+		
+		final Either<Exception, Response> response = callService("criarPartida", arg1, arg2);
+		
+		if (response.isLeft())
+		{
+			return Either.createLeft(response.getLeft());
+		}
+		
+		final String jsonStr = response.getRight().getResponseData("partida").toString();
+		return Either.createRight(fromJson(jsonStr, Match.class));
+	}
+	
+	/**
+	 * Adiciona o jogador na partida informada
+	 * @param partida A partida √† qual o jogador deve ser vinculado
+	 * @param jogador O jogador a ser vinculado √† partida
+	 * @return Uma inst√¢ncia de {@link Either} que conter√° <tt>true</tt> se o jogador foi adicionado, ou a exce√ß√£o
+	 * em caso contr√°rio
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Boolean> adicionarJogador(final Match partida, final Player jogador)
+	{
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
+		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("idJogador", jogador.getIdJogador());
+		
+		MatchState.adicionarJogador(jogador);
+		
+		final Either<Exception, Response> response = callService("adicionarJogador", arg1, arg2);
+		
+		if (response.isLeft())
+		{
+			return Either.createLeft(response.getLeft());
+		}
+		return Either.createRight(true);
+	}
+	
+	
+	
+	
+
 	/**
 	 * Retorna um dispositivo a partir do nome do driver. <br/>
-	 * @param driver O driver a partir do qual o dispositivo ser· encontrado
+	 * 
+	 * @param driver O driver a partir do qual o dispositivo ser√° encontrado
 	 * @return Um dispositivo que corresponde ao driver
-	 * @throws RuntimeException Se n„o houver dispositivo corresponde ao driver
+	 * @throws RuntimeException Se n√£o houver dispositivo corresponde ao driver
 	 */
 	private UpDevice deviceFromDriver(final UosDriver driver)
 	{
 		final List<DriverData> listDrivers = uos.getGateway().listDrivers(driver.getDriver().getName());
-		
+
 		if (listDrivers == null || listDrivers.isEmpty())
 		{
-			throw new RuntimeException("Nenhum dispositivo encontrado para o driver passado como par‚metro");
+			throw new RuntimeException("Nenhum dispositivo encontrado para o driver passado como par√¢metro");
 		}
-		
+
 		return listDrivers.get(0).getDevice();
 	}
-	
+
 	/**
-	 * Chamada genÈrica para um serviÁo deste server. 
-	 * @param serviceName O nome do serviÁo a ser chamado
-	 * @param params Os par‚metros a serem repassados para o serviÁo
-	 * @return Uma inst‚ncia de {@link Either} que ir· conter a mensagem de retorno ou a exceÁ„o no caso de erro.
+	 * Chamada gen√©rica para um servi√ßo deste server.
+	 * 
+	 * @param serviceName O nome do serviÔøΩo a ser chamado
+	 * @param params Os par√¢metros a serem repassados para o servi√ßo
+	 * @return Uma inst√¢ncia de {@link Either} que ir√° conter o retorno ou a exce√ß√£o no caso de erro.
 	 */
-	private Either<ServiceCallException, String> callService(final String serviceName, final Tuple2<String, Object>... params)
+	private Either<Exception, Response> callService(final String serviceName, final Tuple2<String, Object>... params)
 	{
 		final Call call = new Call(serverDriver.getDriver().getName(), serviceName);
-		
+
 		if (params != null)
 		{
 			for (Tuple2<String, Object> curParam : params)
@@ -83,23 +146,26 @@ public class ServerDriverFacade
 			}
 		}
 
-		try {
+		try
+		{
 			final Response response = uos.getGateway().callService(deviceFromDriver(serverDriver), call);
-			return Either.createRight(response.toString());
-		} 
-		catch (ServiceCallException e) {
+			return Either.createRight(response);
+		}
+		catch (Exception e)
+		{
 			return Either.createLeft(e);
 		}
 	}
 
 	/**
 	 * Envia uma mensagem para o driver do servidor
+	 * 
 	 * @param message A mensagem a ser enviada
-	 * @return Uma inst‚ncia de {@link Either} que ir· conter a mensagem de retorno ou a exceÁ„o no caso de erro.
+	 * @return Uma inst√¢ncia de {@link Either} que ir√° conter a mensagem de retorno ou a exce√ß√£o no caso de erro.
 	 */
 	@SuppressWarnings("unchecked")
-	public Either<ServiceCallException, String> sendMessage(final String message) 
+	public Either<Exception, String> sendMessage(final String message)
 	{
-		return callService("sendMessage", Tuple2.<String, Object>from("message", message));
+		return callService("sendMessage", Tuple2.<String, Object> from("message", message)).map(ObjectOps.toString);
 	}
 }

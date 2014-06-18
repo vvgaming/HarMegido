@@ -18,6 +18,7 @@ import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
+import org.vvgaming.harmegido.lib.model.match.MatchState;
 
 import com.github.detentor.codex.monads.Either;
 
@@ -80,44 +81,43 @@ public class ServerDriver implements UosDriver
 		}
 		response.addParameter("partida", toJson(partida));
 	}
-
-	public void adicionarJogador(Call call, Response response, CallContext callContext)
+	
+	
+	/**
+	 * Faz a efetiva execução de um estado para uma partida
+	 * @param call
+	 * @param response
+	 * @param callContext
+	 */
+	public void runState(Call call, Response response, CallContext callContext)
 	{
 		final String nomePartida = call.getParameter("nomePartida").toString();
-		final String idJogador = call.getParameter("idJogador").toString();
+		final MatchState state = fromJson(call.getParameter("state").toString(), MatchState.class);
 		
-		final Either<Exception, Match> eMatch = findMatch(nomePartida);
+		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
 		
 		if (eMatch.isLeft()) //Não existe partida
 		{
-			throw new IllegalArgumentException(eMatch.getLeft());
+			response.addParameter("retorno", toJson(eMatch));
 		}
-		
-//		//Efetua a alteração
-//		synchronized(lock)
-//		{
-//			eMatch.getRight().executarMudanca(stateChange);
-//			mapaPartidas.put(nomePartida, partida);
-//		}
-//		
-//		else
-//		{
-//			
-//			synchronized(lock)
-//			{
-//				mapaPartidas.put(nomePartida, partida);
-//			}
-//		}
-//		final String json = toJson(partida);
-//		response.addParameter("partida", json);
+		else
+		{
+			//Efetua a alteração
+			synchronized(lock)
+			{
+				eMatch.getRight().executarMudanca(state);
+			}
+			response.addParameter("retorno", toJson(Either.createRight(true)));
+		}
 	}
 	
+
 	/**
 	 * Procura uma partida, retornando ou a partida ou uma exceção
 	 * @param nomePartida A partida a ser procurada
 	 * @return Uma instância de {@link Either} que irá conter a partida ou a exceção
 	 */
-	private Either<Exception, Match> findMatch(final String nomePartida)
+	private Either<RuntimeException, Match> findMatch(final String nomePartida)
 	{
 		Match theMatch;
 		
@@ -128,8 +128,8 @@ public class ServerDriver implements UosDriver
 
 		if (theMatch == null)
 		{
-			final Exception theException = new IllegalArgumentException("A partida procurada não existe");
-			return Either.createLeft(theException);
+			final RuntimeException theValue = new IllegalArgumentException("A partida procurada não existe");
+			return Either.createLeft(theValue);
 		}
 		return Either.createRight(theMatch);
 	}

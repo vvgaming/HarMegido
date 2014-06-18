@@ -18,6 +18,7 @@ import org.vvgaming.harmegido.lib.model.match.MatchState;
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.operations.ObjectOps;
+import static org.vvgaming.harmegido.lib.util.JSONTransformer.*;
 
 /**
  * Classe de fachada para o ServerDriver, de modo a simplificar o seu uso. <br/>
@@ -90,12 +91,11 @@ public class ServerDriverFacade
 	@SuppressWarnings("unchecked")
 	public Either<Exception, Boolean> adicionarJogador(final Match partida, final Player jogador)
 	{
+		final MatchState mState = MatchState.adicionarJogador(jogador);
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
-		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("idJogador", jogador.getIdJogador());
+		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("state", toJson(mState));
 		
-		MatchState.adicionarJogador(jogador);
-		
-		final Either<Exception, Response> response = callService("adicionarJogador", arg1, arg2);
+		final Either<Exception, Response> response = callService("runState", arg1, arg2);
 		
 		if (response.isLeft())
 		{

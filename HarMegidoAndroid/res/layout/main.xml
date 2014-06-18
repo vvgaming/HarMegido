@@ -24,6 +24,12 @@
         android:text="Teste da Câmera" />
 
     <Button
+        android:id="@+id/btnCameraTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teste da Câmera (features)" />
+
+    <Button
         android:id="@+id/btnMyTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

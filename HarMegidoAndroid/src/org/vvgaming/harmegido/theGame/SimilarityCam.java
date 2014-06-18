@@ -1,138 +1,84 @@
 package org.vvgaming.harmegido.theGame;
 
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-import org.vvgaming.harmegido.vision.JavaCam;
 import org.vvgaming.harmegido.vision.JavaCameraFrame;
-import org.vvgaming.harmegido.vision.OCVUtil;
 
-import android.graphics.Bitmap;
-
+import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Wrapper de {@link JavaCam} para conferir novas funcionalidades. É uma câmera
- * que fica comparando os frames com frames anteriores guardados, verificando
- * sua similaridade. <br/>
- * Essencialmente é uma especialização de {@link JavaCam}, mas implementado como
- * agregação ao em vez de herança
+ * É uma especificação de câmera que tem a capacidade de capturar determinados
+ * frames e compará-los ao atuais que fica comparando os frames com frames
+ * anteriores guardados, verificando sua similaridade. <br/>
  * 
  * @author Vinicius Nogueira
  */
-public class SimilarityCam {
+public interface SimilarityCam<T> {
 
-	public static final int EQUALITY_THRESHOLD = 20;
+	/**
+	 * Captura um snapshot retornando a imagem capturada e os dados necessários
+	 * à comparação deste frame no futuro
+	 * 
+	 * @return
+	 */
+	public abstract T snapshot();
 
-	private JavaCam realCam = new JavaCam();
+	/**
+	 * Inicia observação dos dados informados por parametro, isto é, fica
+	 * comparando o frame atual com este informado
+	 * 
+	 * @param obs
+	 */
+	public abstract void observar(T obs);
 
-	private Mat histogramaEmObservacao;
+	/**
+	 * Para a observação iniciada por
+	 * {@link FeaturesSimilarityCam#observar(Tuple2)}
+	 */
+	public abstract void stopObservar();
 
-	public Tuple2<Mat, Bitmap> register() {
+	/**
+	 * Compara o frame atual com o frame capturado anteriormente
+	 * 
+	 * @return retorna o valor da comparação de acordo com a métrica definida ou
+	 *         option vazia, caso não tenha sido um frame capturado
+	 *         anteriormente. Capture com
+	 *         {@link FeaturesSimilarityCam#snapshot()} e inicie observação com
+	 *         {@link FeaturesSimilarityCam#observar(Mat)}
+	 */
+	public abstract Option<Float> compara();
 
-		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
-		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
-		// ficar trancando o acesso
-		synchronized (this) {
-			final OCVUtil ocvUtil = OCVUtil.getInstance();
+	/**
+	 * Conecta à câmera com a resolução desejada
+	 * 
+	 * @param width
+	 * @param height
+	 */
+	public abstract void connectCamera(int width, int height);
 
-			final Mat rgba = getLastFrame().rgba().clone();
+	/**
+	 * Libera a câmera
+	 */
+	public abstract void disconnectCamera();
 
-			Bitmap bmp = ocvUtil.toBmp(rgba);
-			final Mat hist = ocvUtil.calcHistHS(rgba);
+	/**
+	 * Recupera o último frame
+	 * 
+	 * @return
+	 */
+	public abstract JavaCameraFrame getLastFrame();
 
-			ocvUtil.releaseMat(rgba);
-			return Tuple2.from(hist, bmp);
-		}
-	}
+	/**
+	 * Implementa a regra para ver se o resultado da comparação é suficiente
+	 * para considerar a imagem "bastante" similar
+	 * 
+	 * @param comparacao
+	 * @return
+	 */
+	public abstract boolean isSimilarEnough(float comparacao);
 
-	public void initObservar(Mat histograma) {
-		synchronized (this) {
-			stopObservar();
-			histogramaEmObservacao = histograma;
-		}
-	}
+	public abstract int getHeight();
 
-	public void stopObservar() {
-		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
-		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
-		// ficar trancando o acesso
-		synchronized (this) {
-			OCVUtil.getInstance().releaseMat(histogramaEmObservacao);
-			histogramaEmObservacao = null;
-		}
-	}
-
-	public boolean emObservacao() {
-		return histogramaEmObservacao != null;
-	}
-
-	public boolean isObservacaoOk() {
-
-		if (histogramaEmObservacao != null) {
-			final OCVUtil ocvUtil = OCVUtil.getInstance();
-
-			final Mat atual = getLastFrame().rgba().clone();
-			final Mat histAtual = ocvUtil.calcHistHS(atual);
-
-			// compara o histograma
-			final int METODO_COMPARACAO = 1;
-			boolean result = Imgproc.compareHist(histAtual,
-					histogramaEmObservacao, METODO_COMPARACAO) < EQUALITY_THRESHOLD;
-
-			ocvUtil.releaseMat(atual, histAtual);
-			return result;
-		}
-		return false;
-	}
-
-	public double compara() {
-		if (histogramaEmObservacao != null) {
-			final OCVUtil ocvUtil = OCVUtil.getInstance();
-
-			final Mat atual = getLastFrame().rgba().clone();
-			final Mat histAtual = ocvUtil.calcHistHS(atual);
-
-			// compara o histograma
-			final int METODO_COMPARACAO = 1;
-			double result = Imgproc.compareHist(histAtual,
-					histogramaEmObservacao, METODO_COMPARACAO);
-
-			ocvUtil.releaseMat(atual, histAtual);
-			return result;
-		}
-		return Double.MAX_VALUE;
-	}
-
-	public void connectCamera(int width, int height) {
-		realCam.connectCamera(width, height);
-	}
-
-	public void disconnectCamera() {
-		realCam.disconnectCamera();
-	}
-
-	public JavaCameraFrame getLastFrame() {
-
-		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
-		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
-		// ficar trancando o acesso
-		synchronized (this) {
-			return realCam.getLastFrame();
-		}
-	}
-
-	public int getHeight() {
-		return realCam.getHeight();
-	}
-
-	public int getWidth() {
-		return realCam.getWidth();
-	}
+	public abstract int getWidth();
 
 }

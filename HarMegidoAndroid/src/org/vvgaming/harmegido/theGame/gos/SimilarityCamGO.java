@@ -4,6 +4,8 @@ import org.opencv.core.Mat;
 import org.vvgaming.harmegido.gameEngine.LazyInitGameObject;
 import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.theGame.FeaturesSimilarityCam;
+import org.vvgaming.harmegido.theGame.HistogramaSimilarityCam;
 import org.vvgaming.harmegido.theGame.SimilarityCam;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
@@ -17,19 +19,23 @@ import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * GameObject para plotar imagens da {@link SimilarityCam} em um jogo
+ * GameObject para plotar imagens da {@link HistogramaSimilarityCam} em um jogo
  * 
  * @author Vinicius Nogueira
  */
 public class SimilarityCamGO extends LazyInitGameObject {
 
-	private SimilarityCam cam;
+	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
 	private Bitmap lastFrame;
+
+	// contagem de frames para pular na comparação (para ganhar performance)
+	private int skipCount = 0;
+	private final int SKIP_LIMIT = 3;
 
 	MatrizTransfAndroid matriz;
 
-	private Option<Tuple2<Mat, Bitmap>> registrado = Option.empty();
-	private double comparacao = Double.MAX_VALUE;
+	private Option<Tuple2<Bitmap, Mat>> registrado = Option.empty();
+	private Option<Float> comparacao = Option.empty();
 
 	public SimilarityCamGO(final Ponto center, final float width) {
 		addToInit(new Function0<Void>() {
@@ -43,16 +49,13 @@ public class SimilarityCamGO extends LazyInitGameObject {
 	}
 
 	@Override
-	public void render(Canvas canvas) {
-		Paint alphed = new Paint();
-		alphed.setAlpha(100);
-		Paint natural = new Paint();
-		final Matrix matrix = matriz.getMatrix();
-		canvas.drawBitmap(lastFrame, matrix, natural);
-		if (!registrado.isEmpty()) {
-			final Bitmap regFrame = registrado.get().getVal2();
-			canvas.drawBitmap(regFrame, matrix, alphed);
+	public void preInit() {
+		if (cam == null) {
+			cam = new FeaturesSimilarityCam();
+//			cam = new HistogramaSimilarityCam();
 		}
+		cam.connectCamera(640, 480);
+		matriz = new MatrizTransfAndroid(480, 640);
 	}
 
 	@Override
@@ -61,7 +64,26 @@ public class SimilarityCamGO extends LazyInitGameObject {
 		lastFrame = OCVUtil.getInstance().toBmp(lastFrameMat);
 		OCVUtil.getInstance().releaseMat(lastFrameMat);
 
-		comparacao = cam.compara();
+		skipCount++;
+
+		if (skipCount > SKIP_LIMIT) {
+			comparacao = cam.compara();
+			skipCount = 0;
+		}
+
+	}
+
+	@Override
+	public void render(Canvas canvas) {
+		Paint alphed = new Paint();
+		alphed.setAlpha(100);
+		Paint natural = new Paint();
+		final Matrix matrix = matriz.getMatrix();
+		canvas.drawBitmap(lastFrame, matrix, natural);
+		if (registrado.notEmpty()) {
+			final Bitmap regFrame = registrado.get().getVal1();
+			canvas.drawBitmap(regFrame, matrix, alphed);
+		}
 	}
 
 	@Override
@@ -70,33 +92,25 @@ public class SimilarityCamGO extends LazyInitGameObject {
 	}
 
 	@Override
-	public void preInit() {
-		if (cam == null) {
-			cam = new SimilarityCam();
-		}
-		cam.connectCamera(640, 480);
-		matriz = new MatrizTransfAndroid(480, 640);
-	}
-
-	@Override
 	public void end() {
 		cam.disconnectCamera();
 	}
 
 	public void onClick() {
-		registrado = Option.from(cam.register());
+
+		registrado = Option.from(cam.snapshot());
 		if (!registrado.isEmpty()) {
-			cam.initObservar(registrado.get().getVal1());
+			cam.observar(registrado.get());
 		}
 
 	}
 
 	public boolean isOkResultado() {
-		return comparacao < SimilarityCam.EQUALITY_THRESHOLD;
-	}
-
-	public double getComparacao() {
-		return comparacao;
+		if (comparacao.notEmpty()) {
+			return cam.isSimilarEnough(comparacao.get());
+		} else {
+			return false;
+		}
 	}
 
 	@Override

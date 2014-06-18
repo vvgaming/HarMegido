@@ -10,14 +10,18 @@ import org.unbiquitous.uos.core.driverManager.UosDriver;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
+import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.operations.ObjectOps;
+
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.*;
 
 /**
@@ -88,10 +92,72 @@ public class ServerDriverFacade
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador foi adicionado, ou a exceção
 	 * em caso contrário
 	 */
-	@SuppressWarnings("unchecked")
 	public Either<Exception, Boolean> adicionarJogador(final Match partida, final Player jogador)
 	{
-		final MatchState mState = MatchState.adicionarJogador(jogador);
+		return executarEstado(partida, MatchState.adicionarJogador(jogador));
+	}
+	
+	/**
+	 * Remove um jogador da partida informada
+	 * @param partida A partida à qual o jogador deve ser desvinculado
+	 * @param jogador O jogador a ser desvinculado da partida
+	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador foi removido, ou a exceção
+	 * em caso contrário
+	 */
+	public Either<Exception, Boolean> removerJogador(final Match partida, final Player jogador)
+	{
+		return executarEstado(partida, MatchState.removerJogador(jogador));
+	}
+	
+	/**
+	 * Muda o time de um jogador da partida informada
+	 * @param partida A partida que o jogador pertence
+	 * @param jogador O jogador cujo time será alterado
+	 * @param novoTime O novo time do jogador
+	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador teve o time trocado, ou a exceção
+	 * em caso contrário
+	 */
+	public Either<Exception, Boolean> mudarTime(final Match partida, final Player jogador, final TeamType novoTime)
+	{
+		return executarEstado(partida, MatchState.mudarTime(jogador, novoTime));
+	}
+	
+	/**
+	 * Cria um encantamento para o jogador e a imagem informados
+	 * @param partida A partida que o jogador pertence
+	 * @param jogador O jogador que está efetuando o encantamento
+	 * @param imagem A imagem do objeto encantado
+	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador encantou o objeto, ou a exceção
+	 * em caso contrário
+	 */
+	public Either<Exception, Boolean> encantarObjeto(final Match partida, final Player jogador, final EnchantmentImage imagem)
+	{
+		return executarEstado(partida, MatchState.encantar(jogador, imagem));
+	}
+	
+	/**
+	 * Cria um desencantamento para o jogador e o encantamento informados
+	 * @param partida A partida que o jogador pertence
+	 * @param jogador O jogador que está efetuando o encantamento
+	 * @param encantamento O encantamento a ser desencantado
+	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador desencantou o objeto, ou a exceção
+	 * em caso contrário
+	 */
+	public Either<Exception, Boolean> desencantarObjeto(final Match partida, final Player jogador, final Enchantment encantamento)
+	{
+		return executarEstado(partida, MatchState.desencantar(jogador, encantamento));
+	}
+	
+	/**
+	 * Código comum a todos os métodos que fazem mudança a partir de uma mudança de estado
+	 * @param partida A partida a ser alterada
+	 * @param mState O estado que contém a alteração a ser executada
+	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se houve sucesso, ou a exceção
+	 * que ocorreu em caso contrário 
+	 */
+	@SuppressWarnings("unchecked")
+	private Either<Exception, Boolean> executarEstado(final Match partida, final MatchState mState)
+	{
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("state", toJson(mState));
 		
@@ -103,9 +169,6 @@ public class ServerDriverFacade
 		}
 		return Either.createRight(true);
 	}
-	
-	
-	
 	
 
 	/**

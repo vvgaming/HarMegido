@@ -6,6 +6,7 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 
 /**
  * Mostra e manipula imagens
@@ -18,7 +19,7 @@ public class NImage extends GameNode {
 
 	private Bitmap bmp;
 
-	// matriz de transforma��es
+	// matriz de transformações
 	private MatrizTransfAndroid matriz;
 
 	public NImage(final int x, final int y, final Bitmap bmp) {
@@ -84,5 +85,11 @@ public class NImage extends GameNode {
 	public void setScale(final float scale) {
 		matriz.setScale(scale);
 	}
+
+	public RectF getBoundingRect() {
+		return matriz.getBoundingRect();
+	}
+	
+	
 
 }

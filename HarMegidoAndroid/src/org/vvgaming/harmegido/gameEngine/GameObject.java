@@ -3,7 +3,7 @@ package org.vvgaming.harmegido.gameEngine;
 import android.graphics.Canvas;
 
 /**
- * Interface que define comportamento padrão para objetos em jogos do tipo
+ * Interface que define comportamento padrï¿½o para objetos em jogos do tipo
  * {@link AbstractGameScene}
  * 
  * @author Vinicius Nogueira
@@ -11,19 +11,19 @@ import android.graphics.Canvas;
 public interface GameObject {
 
 	/**
-	 * Método invocado a cada frame para que o objeto faça suas atualizações
-	 * necessárias
+	 * MÃ©todo invocado a cada frame para que o objeto faï¿½a suas atualizaï¿½ï¿½es
+	 * necessï¿½rias
 	 * 
 	 * @param delta
-	 *            é o tempo decorrido desde no último frame, para os casos em
-	 *            que seja necessário fazer atualizações baseadas em variações
+	 *            ï¿½ o tempo decorrido desde no ï¿½ltimo frame, para os casos em
+	 *            que seja necessï¿½rio fazer atualizaï¿½ï¿½es baseadas em variaï¿½ï¿½es
 	 *            de tempo
 	 */
 	void update(final long delta);
 
 	/**
-	 * Método invocado a cada frame para desenhar (ou renderizar) o objeto na
-	 * tela. Deve se valer do canvas do parâmetro, para realizar o desenho
+	 * MÃ©todo invocado a cada frame para desenhar (ou renderizar) o objeto na
+	 * tela. Deve se valer do canvas do parï¿½metro, para realizar o desenho
 	 * 
 	 * @param canvas
 	 */

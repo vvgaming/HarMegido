@@ -14,7 +14,7 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 /**
- * Implementação default de um Jogo (ou parte de um). Quando for implementar um
+ * Implementaï¿½ï¿½o default de um Jogo (ou parte de um). Quando for implementar um
  * Jogo para ser rodado pelo {@link GameCanvas}, deve-se estender essa classe.
  * 
  * @author Vinicius Nogueira
@@ -26,12 +26,16 @@ public abstract class AbstractGameScene {
 	private int height = 0;
 	private Map<Integer, List<GameObject>> objectsPerLayer = new TreeMap<>();
 
+	// indicador se essa cena foi inicializada
+	private boolean inicializada = false;
+
 	public AbstractGameScene(final Activity act) {
 		super();
 		assetManager = new AssetManager(act);
 	}
 
 	protected final void realInit() {
+		inicializada = true;
 		init();
 	}
 
@@ -82,13 +86,13 @@ public abstract class AbstractGameScene {
 	}
 
 	/**
-	 * Método padrão que deve ser implementado pelos filhos de
-	 * {@link AbstractGameScene}. Este método é invocado a cada frame e dá a
-	 * possibilidade de atualizar as informações necessárias do jogo.
+	 * Mï¿½todo padrï¿½o que deve ser implementado pelos filhos de
+	 * {@link AbstractGameScene}. Este mï¿½todo ï¿½ invocado a cada frame e dï¿½ a
+	 * possibilidade de atualizar as informaï¿½ï¿½es necessï¿½rias do jogo.
 	 * 
 	 * @param delta
-	 *            é a variação de tempo (em ms) do último frame, particularmente
-	 *            útil quando se deseja fazer atualizações que dependam de tempo
+	 *            ï¿½ a variaï¿½ï¿½o de tempo (em ms) do ï¿½ltimo frame, particularmente
+	 *            ï¿½til quando se deseja fazer atualizaï¿½ï¿½es que dependam de tempo
 	 */
 	abstract public void update(long delta);
 
@@ -107,21 +111,21 @@ public abstract class AbstractGameScene {
 
 	/**
 	 * Adiciona um objeto da lista de objetos controlados por este jogo. Os
-	 * objetos desta lista são gerenciados automaticamente sendo atualizados
+	 * objetos desta lista sï¿½o gerenciados automaticamente sendo atualizados
 	 * {@link GameObject#update(long)} a cada frame e renderizados
-	 * {@link GameObject#render(Canvas)} também.
+	 * {@link GameObject#render(Canvas)} tambï¿½m.
 	 * 
 	 * @param object
 	 *            o objeto a ser adicionado
 	 * @param layerIndex
-	 *            o índice da camada de renderização (serve para sobrepor
+	 *            o ï¿½ndice da camada de renderizaï¿½ï¿½o (serve para sobrepor
 	 *            objetos)
 	 * @return retorna <code>true</code> se conseguiu adicionar
 	 */
 	public boolean addObject(final GameObject object, int layerIndex) {
 
-		// TODO esse proxy é uma maneira de evitar aqueles INITS e ENDS
-		// explicitos no objeto, para fazer um controle de estados automáticos.
+		// TODO esse proxy ï¿½ uma maneira de evitar aqueles INITS e ENDS
+		// explicitos no objeto, para fazer um controle de estados automï¿½ticos.
 		// vou reavaliar isso aqui depois para ver se vale a pena mudar e
 		// implementar dessa maneira
 
@@ -129,13 +133,18 @@ public abstract class AbstractGameScene {
 		// .getClass().getClassLoader(), new Class[] { GameObject.class },
 		// new GameObjectProxy(object));
 
+		if (!inicializada) {
+			throw new IllegalStateException(
+					"Essa cena nÃ£o foi inicializada e portanto nÃ£o pode receber objetos. "
+							+ "Dica: nunca de addObject em construtores, para isso use o mÃ©todo init");
+		}
 		object.init();
 		List<GameObject> layer = getLayer(layerIndex);
 		return layer.add(object);
 	}
 
 	/**
-	 * Limpa todos os objetos que estão sendo controlado por este game. Veja
+	 * Limpa todos os objetos que estï¿½o sendo controlado por este game. Veja
 	 * {@link #addObject(GameObject, int)} para mais detalhes.
 	 */
 	public void clearObjects() {
@@ -148,8 +157,8 @@ public abstract class AbstractGameScene {
 		}
 	}
 
-	// TODO esse proxy abaixo é uma maneira de evitar aqueles INITS e ENDS
-	// explicitos no objeto, para fazer um controle de estados automáticos.
+	// TODO esse proxy abaixo ï¿½ uma maneira de evitar aqueles INITS e ENDS
+	// explicitos no objeto, para fazer um controle de estados automï¿½ticos.
 	// vou reavaliar isso aqui depois para ver se vale a pena mudar e
 	// implementar dessa maneira
 

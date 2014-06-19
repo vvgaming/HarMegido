@@ -1,6 +1,7 @@
 package org.vvgaming.harmegido.gameEngine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -121,14 +122,27 @@ public abstract class GameNode {
 	 */
 	abstract protected void update(long delta);
 
-	public void onTouch(MotionEvent event) {
-		for (Entry<Integer, List<GameNode>> entry : nodesPerLayer.entrySet()) {
+	protected final boolean onRealTouch(MotionEvent event) {
+
+		ArrayList<Entry<Integer, List<GameNode>>> entries = new ArrayList<>(
+				nodesPerLayer.entrySet());
+		Collections.reverse(entries);
+
+		for (Entry<Integer, List<GameNode>> entry : entries) {
 			// criando uma nova para evitar problemas de acesso concorrente
 			List<GameNode> curLayerList = new ArrayList<>(entry.getValue());
 			for (GameNode node : curLayerList) {
-				node.onTouch(event);
+				if (node.onRealTouch(event))
+					return true;
 			}
 		}
+
+		return onTouch(event);
+
+	}
+
+	protected boolean onTouch(final MotionEvent event) {
+		return false;
 	}
 
 	/**
@@ -187,8 +201,16 @@ public abstract class GameNode {
 		return RootNode.getInstance().getWidth();
 	}
 
+	protected final float getGameWidth(float percentage) {
+		return getGameWidth() * percentage;
+	}
+
 	protected final int getGameHeight() {
 		return RootNode.getInstance().getHeight();
+	}
+
+	protected final float getGameHeight(float percentage) {
+		return getGameHeight() * percentage;
 	}
 
 	protected final AssetManager getGameAssetManager() {

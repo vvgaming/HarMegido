@@ -33,8 +33,7 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		root.onTouch(event);
-		return true;
+		return root.onRealTouch(event);
 	}
 
 	@Override

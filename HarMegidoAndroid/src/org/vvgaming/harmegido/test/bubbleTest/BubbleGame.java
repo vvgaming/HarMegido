@@ -26,14 +26,15 @@ public class BubbleGame extends GameNode {
 	}
 
 	@Override
-	public void onTouch(MotionEvent event) {
+	public boolean onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			RandomBubble bubble = new RandomBubble(getGameWidth(),
 					getGameHeight());
 			addSubNode(bubble);
 			bubbles.add(bubble);
-
+			return true;
 		}
+		return false;
 	}
 
 }

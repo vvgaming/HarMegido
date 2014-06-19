@@ -8,11 +8,11 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 /**
- * Uma implementaÁ„o de {@link GameObject} que dispıe e manipula texto
+ * Uma implementa√ß√£o de {@link GameObject} que disp√µe e manipula texto
  * 
  * @author Vinicius Nogueira
  */
-public class Text implements GameObject {
+public class TextGO implements GameObject {
 
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	public Typeface face;
@@ -22,11 +22,11 @@ public class Text implements GameObject {
 
 	private boolean visible = true;
 
-	public Text() {
+	public TextGO() {
 		this(0, 0, "");
 	}
 
-	public Text(int x, int y, String text) {
+	public TextGO(int x, int y, String text) {
 		paint.setARGB(255, 255, 255, 255);
 		pos = new Ponto(x, y);
 		paint.setTextSize(size);
@@ -72,8 +72,8 @@ public class Text implements GameObject {
 		paint.setARGB(a, r, g, b);
 	}
 
-	public Text clone() {
-		Text retorno = new Text();
+	public TextGO clone() {
+		TextGO retorno = new TextGO();
 		retorno.face = face;
 		retorno.size = size;
 		retorno.visible = visible;

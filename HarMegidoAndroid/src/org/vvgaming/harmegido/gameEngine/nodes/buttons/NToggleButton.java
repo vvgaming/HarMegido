@@ -1,4 +1,6 @@
-package org.vvgaming.harmegido.gameEngine.nodes;
+package org.vvgaming.harmegido.gameEngine.nodes.buttons;
+
+import org.vvgaming.harmegido.gameEngine.GameNode;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -8,19 +10,22 @@ import android.graphics.RectF;
 import com.github.detentor.codex.function.Function0;
 
 /**
- * Botão de seleção com imagem
+ * Botão de seleção
  * 
  * @author Vinicius Nogueira
  */
-public class NToggleButtonImage extends NButtonImage {
+public class NToggleButton extends GameNode {
+
+	private final NButton button;
 
 	private RectF boundingBox;
 	private float padding = 8.0f;
 	private boolean toggled = false;
 	private Paint paint;
 
-	public NToggleButtonImage(final NImage image) {
-		super(image);
+	public NToggleButton(NButton button) {
+		super();
+		this.button = button;
 	}
 
 	@Override
@@ -36,12 +41,12 @@ public class NToggleButtonImage extends NButtonImage {
 				return null;
 			}
 		});
+		addSubNode(button);
 	}
 
 	@Override
 	protected void update(long delta) {
-		super.update(delta);
-		boundingBox = getImage().getBoundingRect();
+		boundingBox = getBoundingRect();
 		boundingBox.left -= padding;
 		boundingBox.top -= padding;
 		boundingBox.bottom += padding;
@@ -56,9 +61,8 @@ public class NToggleButtonImage extends NButtonImage {
 		}
 	}
 
-	@Override
 	public void setOnClickFunction(final Function0<Void> onClickFunction) {
-		super.setOnClickFunction(new Function0<Void>() {
+		button.setOnClickFunction(new Function0<Void>() {
 
 			@Override
 			public Void apply() {
@@ -75,6 +79,14 @@ public class NToggleButtonImage extends NButtonImage {
 
 	public void toggle(boolean toggled) {
 		this.toggled = toggled;
+	}
+
+	public RectF getBoundingRect() {
+		return button.getBoundingRect();
+	}
+
+	public NButton getButton() {
+		return button;
 	}
 
 }

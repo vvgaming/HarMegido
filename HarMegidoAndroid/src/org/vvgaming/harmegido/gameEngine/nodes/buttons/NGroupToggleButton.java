@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.gameEngine.nodes;
+package org.vvgaming.harmegido.gameEngine.nodes.buttons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,19 +11,19 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 
 /**
- * Grupo de botões de seleção {@link NToggleButtonImage} com imagens
+ * Grupo de botões de seleção {@link NToggleButton}
  * 
  * @author Vinicius Nogueira
  */
-public class NGroupToggleButtonImage extends GameNode {
+public class NGroupToggleButton extends GameNode {
 
-	private List<NToggleButtonImage> btns = new ArrayList<>();
+	private List<NToggleButton> btns = new ArrayList<>();
 	private Option<Integer> toggledIndex = Option.empty();
 
 	private Option<Function1<Option<Integer>, Void>> onToggleChange = Option
 			.empty();
 
-	public NGroupToggleButtonImage(final NToggleButtonImage... btns) {
+	public NGroupToggleButton(final NToggleButton... btns) {
 
 		this.btns.addAll(Arrays.asList(btns));
 	}
@@ -31,7 +31,7 @@ public class NGroupToggleButtonImage extends GameNode {
 	@Override
 	public void init() {
 		super.init();
-		for (final NToggleButtonImage btn : btns) {
+		for (final NToggleButton btn : btns) {
 			addSubNode(btn);
 			btn.setOnClickFunction(new Function0<Void>() {
 				@Override
@@ -46,7 +46,7 @@ public class NGroupToggleButtonImage extends GameNode {
 
 	private void toggle(final int index) {
 		int oldIndex = toggledIndex.getOrElse(-1);
-		for (NToggleButtonImage tglingBtn : btns) {
+		for (NToggleButton tglingBtn : btns) {
 			tglingBtn.toggle(false);
 		}
 		btns.get(index).toggle(true);

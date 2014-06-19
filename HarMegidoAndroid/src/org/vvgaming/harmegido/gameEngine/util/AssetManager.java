@@ -7,10 +7,11 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 
 /**
- * Gerenciador de recursos que dá acesso aos nativos do Android e mantem alguns
- * em seu domínio para evitar duplicidade em memória
+ * Gerenciador de recursos que dï¿½ acesso aos nativos do Android e mantem alguns
+ * em seu domï¿½nio para evitar duplicidade em memï¿½ria
  * 
  * @author Vinicius Nogueira
  */
@@ -18,6 +19,7 @@ public class AssetManager {
 
 	private final Activity act;
 	private final Map<Integer, Bitmap> bitmaps = new HashMap<>();
+	private final Map<Integer, MediaPlayer> medias = new HashMap<>();
 
 	public AssetManager(final Activity act) {
 		this.act = act;
@@ -38,6 +40,19 @@ public class AssetManager {
 		for (Entry<Integer, Bitmap> entry : bitmaps.entrySet()) {
 			entry.getValue().recycle();
 		}
+		bitmaps.clear();
+		for (Entry<Integer, MediaPlayer> entry : medias.entrySet()) {
+			entry.getValue().release();
+		}
+		medias.clear();
+	}
+
+	public void playSound(final int soundId) {
+		MediaPlayer mp;
+		if ((mp = medias.get(soundId)) == null) {
+			medias.put(soundId, mp = MediaPlayer.create(getActivity(), soundId));
+		}
+		mp.start();
 	}
 
 	public android.content.res.AssetManager getAndroidAssets() {

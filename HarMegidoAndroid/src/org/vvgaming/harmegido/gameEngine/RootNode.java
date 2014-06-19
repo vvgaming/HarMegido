@@ -88,6 +88,12 @@ public class RootNode extends GameNode {
 		return instance;
 	}
 
+	@Override
+	public void kill() {
+		super.kill();
+		instance = null;
+	}
+
 	public static RootNode create(final Activity act, final GameNode mainNode) {
 		if (instance == null) {
 			instance = new RootNode(act, mainNode);

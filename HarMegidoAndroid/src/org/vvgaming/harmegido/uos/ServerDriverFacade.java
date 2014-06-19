@@ -182,6 +182,25 @@ public class ServerDriverFacade
 		}
 		return Either.createRight(true);
 	}
+	
+	/**
+	 * Lista todas as partidas neste momento
+	 * @return Uma instância de {@link Either} que conterá uma lista com o nome das partidas ativas,
+	 * ou a exceção em caso de erro
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, List<String>> listarPartidas()
+	{
+		final Either<Exception, Response> response = callService("listarPartidas");
+		
+		if (response.isLeft())
+		{
+			return Either.createLeft(response.getLeft());
+		}
+
+		final List<String> fromJson = fromJson(response.getRight().getResponseData("retorno").toString(), List.class);
+		return Either.createRight(fromJson);
+	}
 
 	/**
 	 * Chamada genérica para um serviço deste server.

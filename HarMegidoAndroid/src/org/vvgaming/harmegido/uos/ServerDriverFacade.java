@@ -3,6 +3,7 @@ package org.vvgaming.harmegido.uos;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
@@ -38,7 +39,7 @@ public class ServerDriverFacade
 		this.uos = uos;
 		this.device = device;
 	}
-
+	
 	/**
 	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro.
 	 * 
@@ -101,7 +102,7 @@ public class ServerDriverFacade
 		{
 		}
 		
-		return drivers;
+		return drivers == null ? new ArrayList<DriverData>() : drivers;
 	}
 	
 	/**

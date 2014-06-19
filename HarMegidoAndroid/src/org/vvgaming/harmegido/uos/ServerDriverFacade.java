@@ -3,6 +3,7 @@ package org.vvgaming.harmegido.uos;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
@@ -38,7 +39,7 @@ public class ServerDriverFacade
 		this.uos = uos;
 		this.device = device;
 	}
-
+	
 	/**
 	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro.
 	 * 
@@ -96,14 +97,13 @@ public class ServerDriverFacade
 		final long startTime = System.currentTimeMillis();
 		List<DriverData> drivers;
 		
-		while(  ((drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER)) == null || drivers.isEmpty()) &&
+		while(  (drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER)).isEmpty() &&
 				(System.currentTimeMillis() - startTime < timeout))
 		{
 		}
-		
+
 		return drivers;
 	}
-	
 	
 	/**
 	 * Cria uma partida no servidor para o nome e duração informados

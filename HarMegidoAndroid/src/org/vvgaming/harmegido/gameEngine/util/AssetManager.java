@@ -18,8 +18,8 @@ import android.media.MediaPlayer;
 public class AssetManager {
 
 	private final Activity act;
-	private final Map<Integer, Bitmap> bitmaps = new HashMap<>();
-	private final Map<Integer, MediaPlayer> medias = new HashMap<>();
+	private final Map<Integer, Bitmap> bitmaps = new HashMap<Integer, Bitmap>();
+	private final Map<Integer, MediaPlayer> medias = new HashMap<Integer, MediaPlayer>();
 
 	public AssetManager(final Activity act) {
 		this.act = act;

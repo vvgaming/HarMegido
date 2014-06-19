@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.server;
+package org.vvgaming.harmegido.uos;
 
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;

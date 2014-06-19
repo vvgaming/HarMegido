@@ -21,7 +21,7 @@ import android.view.MotionEvent;
  */
 public abstract class GameNode {
 
-	private Map<Integer, List<GameNode>> nodesPerLayer = new TreeMap<>();
+	private Map<Integer, List<GameNode>> nodesPerLayer = new TreeMap<Integer, List<GameNode>>();
 
 	// isso é uma morte forçada
 	private boolean murdered = false;
@@ -90,7 +90,7 @@ public abstract class GameNode {
 
 		for (Entry<Integer, List<GameNode>> entry : nodesPerLayer.entrySet()) {
 			// criando uma nova para evitar problemas de acesso concorrente
-			List<GameNode> curLayerList = new ArrayList<>(entry.getValue());
+			List<GameNode> curLayerList = new ArrayList<GameNode>(entry.getValue());
 			for (GameNode node : curLayerList) {
 				if (node.isVisible()) {
 					node.realRender(canvas);
@@ -124,13 +124,13 @@ public abstract class GameNode {
 
 	protected final boolean onRealTouch(MotionEvent event) {
 
-		ArrayList<Entry<Integer, List<GameNode>>> entries = new ArrayList<>(
+		ArrayList<Entry<Integer, List<GameNode>>> entries = new ArrayList<Entry<Integer, List<GameNode>>>(
 				nodesPerLayer.entrySet());
 		Collections.reverse(entries);
 
 		for (Entry<Integer, List<GameNode>> entry : entries) {
 			// criando uma nova para evitar problemas de acesso concorrente
-			List<GameNode> curLayerList = new ArrayList<>(entry.getValue());
+			List<GameNode> curLayerList = new ArrayList<GameNode>(entry.getValue());
 			for (GameNode node : curLayerList) {
 				if (node.onRealTouch(event))
 					return true;

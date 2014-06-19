@@ -14,7 +14,6 @@ import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
-import org.opencv.imgproc.Imgproc;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
 public class ObjDetectFeatTestCam implements CvCameraViewListener2 {
@@ -122,7 +121,7 @@ public class ObjDetectFeatTestCam implements CvCameraViewListener2 {
 		de.compute(marcada, kps, marcadaDescs);
 
 		dm.clear();
-		List<Mat> list = new ArrayList<>();
+		List<Mat> list = new ArrayList<Mat>();
 		list.add(marcadaDescs);
 		dm.add(list);
 
@@ -143,7 +142,7 @@ public class ObjDetectFeatTestCam implements CvCameraViewListener2 {
 		// Core.normalize(histMarcada, histMarcada, 0, 1, Core.NORM_MINMAX, -1,
 		// empty);
 		//
-		// // borrando um pouco a imagem para ficar "menos visível"
+		// // borrando um pouco a imagem para ficar "menos visï¿½vel"
 		// Imgproc.blur(marcada, marcada, new Size(5, 5));
 	}
 

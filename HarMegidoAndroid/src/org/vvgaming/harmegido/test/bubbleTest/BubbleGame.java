@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 
 public class BubbleGame extends GameNode {
 
-	private List<RandomBubble> bubbles = new ArrayList<>();
+	private List<RandomBubble> bubbles = new ArrayList<RandomBubble>();
 
 	private final NText texto = new NText(100, 10, "");
 

@@ -13,12 +13,13 @@ import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.nodes.NGroupToggleButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
-import org.vvgaming.harmegido.gameEngine.nodes.NToggleButtonImage;
+import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
+import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
+import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
 import org.vvgaming.harmegido.theGame.UOSFacade;
 
 import android.graphics.Paint.Align;
@@ -35,8 +36,8 @@ public class N2Menu extends GameNode {
 	private NText serverName;
 	private NText clientInfo;
 
-	private NToggleButtonImage anjos;
-	private NToggleButtonImage demonios;
+	private NToggleButton anjos;
+	private NToggleButton demonios;
 
 	@Override
 	public void init() {
@@ -57,18 +58,19 @@ public class N2Menu extends GameNode {
 		clientInfo = serverName.clone();
 		clientInfo.pos = clientInfo.pos.translate(0, 40);
 
-		anjos = new NToggleButtonImage(new NImage(new Ponto(getGameWidth(.25f),
-				getGameHeight(.8f)), getGameAssetManager().getBitmap(
-				R.drawable.kayle)));
-		anjos.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+		final NButtonImage anjosBtn = new NButtonImage(new NImage(new Ponto(
+				getGameWidth(.25f), getGameHeight(.8f)), getGameAssetManager()
+				.getBitmap(R.drawable.kayle)));
+		anjosBtn.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+		anjos = new NToggleButton(anjosBtn);
 
-		demonios = new NToggleButtonImage(new NImage(new Ponto(
+		final NButtonImage demoniosBtn = new NButtonImage(new NImage(new Ponto(
 				getGameWidth(.75f), getGameHeight(.8f)), getGameAssetManager()
 				.getBitmap(R.drawable.morgana)));
-		demonios.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+		demoniosBtn.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+		demonios = new NToggleButton(demoniosBtn);
 
-		NGroupToggleButtonImage group = new NGroupToggleButtonImage(anjos,
-				demonios);
+		NGroupToggleButton group = new NGroupToggleButton(anjos, demonios);
 		group.setOnToggleChange(new Function1<Option<Integer>, Void>() {
 
 			@Override

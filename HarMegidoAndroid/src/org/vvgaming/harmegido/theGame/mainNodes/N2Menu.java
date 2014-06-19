@@ -13,11 +13,11 @@ import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.nodes.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
+import org.vvgaming.harmegido.gameEngine.nodes.NToggleButtonImage;
 import org.vvgaming.harmegido.theGame.UOSFacade;
 
 import android.graphics.Paint.Align;
@@ -32,8 +32,8 @@ public class N2Menu extends GameNode {
 	private NText serverName;
 	private NText clientInfo;
 
-	private NButtonImage anjos;
-	private NButtonImage demonios;
+	private NToggleButtonImage anjos;
+	private NToggleButtonImage demonios;
 
 	@Override
 	public void init() {
@@ -54,14 +54,14 @@ public class N2Menu extends GameNode {
 		clientInfo = serverName.clone();
 		clientInfo.pos = clientInfo.pos.translate(0, 40);
 
-		anjos = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f),
+		anjos = new NToggleButtonImage(new NImage(new Ponto(getGameWidth(.25f),
 				getGameHeight(.8f)), getGameAssetManager().getBitmap(
 				R.drawable.kayle)));
 		anjos.getImage().setWidthKeepingRatio(getGameWidth(.4f));
 
-		demonios = new NButtonImage(new NImage(new Ponto(getGameWidth(.75f),
-				getGameHeight(.8f)), getGameAssetManager().getBitmap(
-				R.drawable.morgana)));
+		demonios = new NToggleButtonImage(new NImage(new Ponto(
+				getGameWidth(.75f), getGameHeight(.8f)), getGameAssetManager()
+				.getBitmap(R.drawable.morgana)));
 		demonios.getImage().setWidthKeepingRatio(getGameWidth(.4f));
 
 		addSubNode(anjos);

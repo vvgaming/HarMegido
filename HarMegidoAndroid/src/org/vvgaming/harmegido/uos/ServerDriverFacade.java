@@ -97,12 +97,12 @@ public class ServerDriverFacade
 		final long startTime = System.currentTimeMillis();
 		List<DriverData> drivers;
 		
-		while(  ((drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER)) == null || drivers.isEmpty()) &&
+		while(  (drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER)).isEmpty() &&
 				(System.currentTimeMillis() - startTime < timeout))
 		{
 		}
-		
-		return drivers == null ? new ArrayList<DriverData>() : drivers;
+
+		return drivers;
 	}
 	
 	/**

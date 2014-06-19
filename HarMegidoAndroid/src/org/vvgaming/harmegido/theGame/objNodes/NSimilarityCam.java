@@ -28,7 +28,7 @@ public class NSimilarityCam extends LazyInitGameNode {
 	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
 	private Bitmap lastFrame;
 
-	// contagem de frames para pular na compara��o (para ganhar performance)
+	// contagem de frames para pular na comparação (para ganhar performance)
 	private int skipCount = 0;
 	private final int SKIP_LIMIT = 3;
 
@@ -52,7 +52,7 @@ public class NSimilarityCam extends LazyInitGameNode {
 	public void preInit() {
 		if (cam == null) {
 			cam = new FeaturesSimilarityCam();
-//			cam = new HistogramaSimilarityCam();
+			// cam = new HistogramaSimilarityCam();
 		}
 		cam.connectCamera(640, 480);
 		matriz = new MatrizTransfAndroid(480, 640);

@@ -35,6 +35,7 @@ public class HarMegidoActivity extends Activity {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
 				RootNode.create(HarMegidoActivity.this, new N1Intro());
+				
 				gameCanvas = new GameCanvas(HarMegidoActivity.this,
 						RootNode.getInstance());
 				gameCanvas.setShowFps(true);

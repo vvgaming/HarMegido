@@ -39,7 +39,7 @@ public final class JSONTransformer
 	 */
 	public static String toJson(final Object source)
 	{
-		return gson.toJson(source);
+		return getGson().toJson(source);
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public final class JSONTransformer
 	 */
 	public static <T> T fromJson(final String source, final Class<T> classOf)
 	{
-		return gson.fromJson(source, classOf);
+		return getGson().fromJson(source, classOf);
 	}
 			
 	

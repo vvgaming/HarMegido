@@ -1,5 +1,6 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
@@ -15,19 +16,24 @@ import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
+import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
-import org.vvgaming.harmegido.theGame.UOSFacade;
+import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
+import org.vvgaming.harmegido.uos.ServerDriverFacade;
+import org.vvgaming.harmegido.uos.UOSFacade;
 
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
+import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.monads.Option;
 
 public class N2Menu extends GameNode {
@@ -35,6 +41,8 @@ public class N2Menu extends GameNode {
 	private NTextBlinking toqueNaTela;
 	private NText serverName;
 	private NText clientInfo;
+
+	private NText partidasTxt;
 
 	private NToggleButton anjos;
 	private NToggleButton demonios;
@@ -54,9 +62,14 @@ public class N2Menu extends GameNode {
 		serverName.pos = new Ponto(getGameWidth(.5f), getGameHeight(.2f));
 		serverName.text = "";
 		serverName.size = 40;
+		serverName.vAlign = VerticalAlign.TOP;
 
 		clientInfo = serverName.clone();
 		clientInfo.pos = clientInfo.pos.translate(0, 40);
+
+		partidasTxt = clientInfo.clone();
+		partidasTxt.pos = partidasTxt.pos.translate(0, 80);
+		partidasTxt.text = "";
 
 		final NButtonImage anjosBtn = new NButtonImage(new NImage(new Ponto(
 				getGameWidth(.25f), getGameHeight(.8f)), getGameAssetManager()
@@ -93,6 +106,7 @@ public class N2Menu extends GameNode {
 		addSubNode(toqueNaTela);
 		addSubNode(serverName);
 		addSubNode(clientInfo);
+		addSubNode(partidasTxt);
 
 		addSubNode(new NTimer(5000, new Function0<Void>() {
 			@Override
@@ -106,9 +120,22 @@ public class N2Menu extends GameNode {
 
 	@Override
 	public void update(long delta) {
+		partidasTxt.text = ListSharp.from(getPartidas()).mkString("\n");
+	}
+
+	private List<String> getPartidas() {
+		ServerDriverFacade sdf = UOSFacade.getDriverFacade();		
+		final Either<Exception, List<String>> partidas = sdf.listarPartidas();
+		if (partidas.isRight()) {
+			return partidas.getRight();
+		} else {
+			sdf.criarPartida("jurubeba", MatchDuration.FIVE_MINUTES);
+			return Arrays.asList("nenhuma");
+		}
 	}
 
 	private void checkUOS() {
+
 		UOS uos = UOSFacade.getUos();
 
 		final Gateway gateway = uos.getGateway();

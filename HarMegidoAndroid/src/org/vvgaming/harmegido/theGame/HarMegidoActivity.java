@@ -13,22 +13,19 @@ import android.view.WindowManager;
 
 public class HarMegidoActivity extends Activity {
 
-	public static HarMegidoActivity activity;
-
 	private GameCanvas gameCanvas;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		activity = this;
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this,
+		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_8, this,
 				callback);
 	}
 
@@ -42,7 +39,6 @@ public class HarMegidoActivity extends Activity {
 						RootNode.getInstance());
 				gameCanvas.setShowFps(true);
 				setContentView(gameCanvas);
-
 			}
 				break;
 			default: {

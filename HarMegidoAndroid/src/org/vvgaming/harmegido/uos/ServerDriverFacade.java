@@ -104,7 +104,6 @@ public class ServerDriverFacade
 		return drivers;
 	}
 	
-	
 	/**
 	 * Cria uma partida no servidor para o nome e duração informados
 	 * @param nomePartida O nome a ser vinculado com a partida. Não pode coincidir com o nome de nenhuma

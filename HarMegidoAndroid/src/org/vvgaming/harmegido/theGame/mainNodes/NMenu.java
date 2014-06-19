@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.theGame.scenes;
+package org.vvgaming.harmegido.theGame.mainNodes;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.gos.TextGO;
-import org.vvgaming.harmegido.gameEngine.gos.TimerGO;
+import org.vvgaming.harmegido.gameEngine.nodes.NText;
+import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.theGame.UOSFacade;
 
 import android.graphics.Paint.Align;
@@ -22,17 +22,17 @@ import android.view.MotionEvent;
 
 import com.github.detentor.codex.function.Function0;
 
-public class MenuScene extends GameNode {
+public class NMenu extends GameNode {
 
-	private TextGO toqueNaTela;
-	private TextGO serverName;
-	private TextGO clientInfo;
+	private NText toqueNaTela;
+	private NText serverName;
+	private NText clientInfo;
 
 	@Override
 	public void init() {
 		super.init();
 
-		toqueNaTela = new TextGO(getGameWidth() / 2, getGameHeight() / 2,
+		toqueNaTela = new NText(getGameWidth() / 2, getGameHeight() / 2,
 				"Toque na tela para iniciar");
 		toqueNaTela.face = Typeface.createFromAsset(getGameAssetManager()
 				.getAndroidAssets(), "fonts/Radio Trust.ttf");
@@ -51,7 +51,7 @@ public class MenuScene extends GameNode {
 		addSubNode(serverName);
 		addSubNode(clientInfo);
 
-		addSubNode(new TimerGO(500, new Function0<Void>() {
+		addSubNode(new NTimer(500, new Function0<Void>() {
 			@Override
 			public Void apply() {
 				toqueNaTela.setVisible(!toqueNaTela.isVisible());
@@ -59,7 +59,7 @@ public class MenuScene extends GameNode {
 			}
 		}));
 
-		addSubNode(new TimerGO(5000, new Function0<Void>() {
+		addSubNode(new NTimer(5000, new Function0<Void>() {
 			@Override
 			public Void apply() {
 				checkUOS();
@@ -117,7 +117,7 @@ public class MenuScene extends GameNode {
 	@Override
 	public void onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			RootNode.getInstance().changeMainNode(new MainScene());
+			RootNode.getInstance().changeMainNode(new NPartida());
 		}
 	}
 

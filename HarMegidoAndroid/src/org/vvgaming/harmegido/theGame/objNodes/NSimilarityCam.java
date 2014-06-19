@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.theGame.gos;
+package org.vvgaming.harmegido.theGame.objNodes;
 
 import org.opencv.core.Mat;
 import org.vvgaming.harmegido.gameEngine.LazyInitGameNode;
@@ -23,7 +23,7 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinicius Nogueira
  */
-public class SimilarityCamGO extends LazyInitGameNode {
+public class NSimilarityCam extends LazyInitGameNode {
 
 	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
 	private Bitmap lastFrame;
@@ -37,12 +37,12 @@ public class SimilarityCamGO extends LazyInitGameNode {
 	private Option<Tuple2<Bitmap, Mat>> registrado = Option.empty();
 	private Option<Float> comparacao = Option.empty();
 
-	public SimilarityCamGO(final Ponto center, final float width) {
+	public NSimilarityCam(final Ponto center, final float width) {
 		addToInit(new Function0<Void>() {
 			@Override
 			public Void apply() {
-				SimilarityCamGO.this.matriz.setCenter(center);
-				SimilarityCamGO.this.matriz.setWidthKeepingRatio(width);
+				NSimilarityCam.this.matriz.setCenter(center);
+				NSimilarityCam.this.matriz.setWidthKeepingRatio(width);
 				return null;
 			}
 		});

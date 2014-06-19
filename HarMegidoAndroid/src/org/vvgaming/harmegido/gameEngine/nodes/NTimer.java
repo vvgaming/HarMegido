@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.gameEngine.gos;
+package org.vvgaming.harmegido.gameEngine.nodes;
 
 import org.vvgaming.harmegido.gameEngine.GameNode;
 
@@ -10,7 +10,7 @@ import com.github.detentor.codex.function.Function0;
  * 
  * @author Vinicius Nogueira
  */
-public class TimerGO extends GameNode {
+public class NTimer extends GameNode {
 
 	private long counter = 0;
 	private long timeLimit = 0;
@@ -18,7 +18,7 @@ public class TimerGO extends GameNode {
 	private final boolean onTimeOnly;
 	private final Function0<Void> callback;
 
-	public TimerGO(final long timeLimit, Function0<Void> callback,
+	public NTimer(final long timeLimit, Function0<Void> callback,
 			final boolean onTimeOnly) {
 		super();
 		this.onTimeOnly = onTimeOnly;
@@ -26,7 +26,7 @@ public class TimerGO extends GameNode {
 		this.callback = callback;
 	}
 
-	public TimerGO(final long timeLimit, Function0<Void> callback) {
+	public NTimer(final long timeLimit, Function0<Void> callback) {
 		this(timeLimit, callback, false);
 	}
 
@@ -59,7 +59,7 @@ public class TimerGO extends GameNode {
 		this.timeLimit = timeLimit;
 	}
 
-	public TimerGO setCounting(long counter) {
+	public NTimer setCounting(long counter) {
 		this.counter = counter;
 		return this;
 	}

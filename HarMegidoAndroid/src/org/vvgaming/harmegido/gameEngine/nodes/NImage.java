@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.gameEngine.gos;
+package org.vvgaming.harmegido.gameEngine.nodes;
 
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
@@ -12,7 +12,7 @@ import android.graphics.Canvas;
  * 
  * @author Vinicius Nogueira
  */
-public class ImageGO extends GameNode {
+public class NImage extends GameNode {
 
 	private boolean visible = true;
 
@@ -21,11 +21,11 @@ public class ImageGO extends GameNode {
 	// matriz de transforma��es
 	private MatrizTransfAndroid matriz;
 
-	public ImageGO(final int x, final int y, final Bitmap bmp) {
+	public NImage(final int x, final int y, final Bitmap bmp) {
 		this(new Ponto(x, y), bmp);
 	}
 
-	public ImageGO(Ponto center, final Bitmap bmp) {
+	public NImage(Ponto center, final Bitmap bmp) {
 		this.bmp = bmp;
 		matriz = new MatrizTransfAndroid(bmp.getWidth(), bmp.getHeight());
 		matriz.setCenter(center);

@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.gameEngine.gos;
+package org.vvgaming.harmegido.gameEngine.nodes;
 
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
@@ -12,7 +12,7 @@ import android.graphics.Typeface;
  * 
  * @author Vinicius Nogueira
  */
-public class TextGO extends GameNode {
+public class NText extends GameNode {
 
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	public Typeface face;
@@ -22,11 +22,11 @@ public class TextGO extends GameNode {
 
 	private boolean visible = true;
 
-	public TextGO() {
+	public NText() {
 		this(0, 0, "");
 	}
 
-	public TextGO(int x, int y, String text) {
+	public NText(int x, int y, String text) {
 		paint.setARGB(255, 255, 255, 255);
 		pos = new Ponto(x, y);
 		paint.setTextSize(size);
@@ -72,8 +72,8 @@ public class TextGO extends GameNode {
 		paint.setARGB(a, r, g, b);
 	}
 
-	public TextGO clone() {
-		TextGO retorno = new TextGO();
+	public NText clone() {
+		NText retorno = new NText();
 		retorno.face = face;
 		retorno.size = size;
 		retorno.visible = visible;

@@ -1,6 +1,7 @@
 package org.vvgaming.harmegido.gameEngine.geometry;
 
 import android.graphics.Matrix;
+import android.graphics.RectF;
 
 /**
  * Wrapper da {@link Matrix} do Android, provendo novas funcionalidades
@@ -112,4 +113,38 @@ public class MatrizTransfAndroid {
 		return new Matrix(matrix);
 	}
 
+	public RectF getBoundingRect() {
+
+		float x0 = 0;
+		float y0 = 0;
+
+		float[] pts = new float[] { x0, y0, x0 + getSrcWidth(), y0, x0,
+				y0 + getSrcHeight(), x0 + getSrcWidth(), y0 + getSrcHeight() };
+		matrix.mapPoints(pts);
+
+		// procurar o maior x
+		float maiorX = Float.MIN_VALUE;
+		float menorX = Float.MAX_VALUE;
+		for (int i = 0; i < pts.length; i += 2) {
+			if (pts[i] > maiorX) {
+				maiorX = pts[i];
+			}
+			if (pts[i] < menorX) {
+				menorX = pts[i];
+			}
+		}
+
+		// procurar o maior y
+		float maiorY = Float.MIN_VALUE;
+		float menorY = Float.MAX_VALUE;
+		for (int i = 1; i < pts.length; i += 2) {
+			if (pts[i] > maiorY) {
+				maiorY = pts[i];
+			}
+			if (pts[i] < menorY) {
+				menorY = pts[i];
+			}
+		}
+		return new RectF(menorX, menorY, maiorX, maiorY);
+	}
 }

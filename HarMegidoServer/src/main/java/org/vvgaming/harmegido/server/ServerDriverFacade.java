@@ -1,12 +1,12 @@
 package org.vvgaming.harmegido.server;
 
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
+import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
 import org.unbiquitous.uos.core.driverManager.DriverData;
-import org.unbiquitous.uos.core.driverManager.UosDriver;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
@@ -20,9 +20,6 @@ import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
-import com.github.detentor.operations.ObjectOps;
-
-import static org.vvgaming.harmegido.lib.util.JSONTransformer.*;
 
 /**
  * Classe de fachada para o ServerDriver, de modo a simplificar o seu uso. <br/>
@@ -30,14 +27,16 @@ import static org.vvgaming.harmegido.lib.util.JSONTransformer.*;
  */
 public class ServerDriverFacade
 {
+	private static final String HAR_MEGIDO_DRIVER = "uos.harmegido.server";
 	private final UOS uos;
-	private final ServerDriver serverDriver;
+	private final UpDevice device;
 	
-	protected ServerDriverFacade(final UOS uos)
+
+	protected ServerDriverFacade(final UOS uos, final UpDevice device)
 	{
 		super();
 		this.uos = uos;
-		this.serverDriver = new ServerDriver();
+		this.device = device;
 	}
 
 	/**
@@ -52,11 +51,25 @@ public class ServerDriverFacade
 		{
 			throw new IllegalArgumentException("A instância do uos não pode ser nula");
 		}
+		
 		if (uos.getGateway() == null)
 		{
-			throw new IllegalArgumentException("Erro: Gateway do uos não pode retornar null");
+			throw new IllegalStateException("Erro: Gateway do uos não pode retornar null");
 		}
-		return new ServerDriverFacade(uos);
+		
+		final List<DriverData> drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER);
+		
+		if (drivers == null || drivers.isEmpty())
+		{
+			throw new IllegalStateException("Não foi encontrado o driver do Har Megido na instância do uos");
+		}
+		
+		if (drivers.size() > 1)
+		{
+			throw new IllegalStateException("Mais de um driver encontrado para o Har Megido na instância do uos");
+		}
+		
+		return new ServerDriverFacade(uos, drivers.get(0).getDevice());
 	}
 	
 	
@@ -73,9 +86,9 @@ public class ServerDriverFacade
 	{
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("duracao", duracao.toString());
-		
+
 		final Either<Exception, Response> response = callService("criarPartida", arg1, arg2);
-		
+
 		if (response.isLeft())
 		{
 			return Either.createLeft(response.getLeft());
@@ -169,26 +182,6 @@ public class ServerDriverFacade
 		}
 		return Either.createRight(true);
 	}
-	
-
-	/**
-	 * Retorna um dispositivo a partir do nome do driver. <br/>
-	 * 
-	 * @param driver O driver a partir do qual o dispositivo será encontrado
-	 * @return Um dispositivo que corresponde ao driver
-	 * @throws RuntimeException Se não houver dispositivo corresponde ao driver
-	 */
-	private UpDevice deviceFromDriver(final UosDriver driver)
-	{
-		final List<DriverData> listDrivers = uos.getGateway().listDrivers(driver.getDriver().getName());
-
-		if (listDrivers == null || listDrivers.isEmpty())
-		{
-			throw new RuntimeException("Nenhum dispositivo encontrado para o driver passado como parâmetro");
-		}
-
-		return listDrivers.get(0).getDevice();
-	}
 
 	/**
 	 * Chamada genérica para um serviço deste server.
@@ -199,7 +192,7 @@ public class ServerDriverFacade
 	 */
 	private Either<Exception, Response> callService(final String serviceName, final Tuple2<String, Object>... params)
 	{
-		final Call call = new Call(serverDriver.getDriver().getName(), serviceName);
+		final Call call = new Call(HAR_MEGIDO_DRIVER, serviceName);
 
 		if (params != null)
 		{
@@ -211,24 +204,11 @@ public class ServerDriverFacade
 
 		try
 		{
-			final Response response = uos.getGateway().callService(deviceFromDriver(serverDriver), call);
-			return Either.createRight(response);
+			return Either.createRight(uos.getGateway().callService(device, call));
 		}
 		catch (Exception e)
 		{
 			return Either.createLeft(e);
 		}
-	}
-
-	/**
-	 * Envia uma mensagem para o driver do servidor
-	 * 
-	 * @param message A mensagem a ser enviada
-	 * @return Uma instância de {@link Either} que irá conter a mensagem de retorno ou a exceção no caso de erro.
-	 */
-	@SuppressWarnings("unchecked")
-	public Either<Exception, String> sendMessage(final String message)
-	{
-		return callService("sendMessage", Tuple2.<String, Object> from("message", message)).map(ObjectOps.toString);
 	}
 }

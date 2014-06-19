@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
@@ -24,13 +25,23 @@ import com.github.detentor.codex.monads.Either;
 
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.*;
 
+/**
+ * O driver do servidor, provendo todos os seus serviços. <br/>
+ * O contrato de cada serviço deste driver exige que a resposta
+ * será dada através do parâmetro de nome 'retorno', e seu objeto
+ * será uma instância de {@link Either} que irá conter o retorno 
+ * da chamada, ou a exceção no caso de algum erro.
+ */
 public class ServerDriver implements UosDriver
 {
-
 	private UpDriver definition;
+	//TODO: Extrair essa constante para alguma outra parte
 	private String DRIVER_NAME = "uos.harmegido.server";
-	private Map<String, Match> mapaPartidas = new HashMap<String, Match>();
 	
+	//TODO:O mapa de partidas contém tanto as partidas ativas quanto as inativas
+	//deve-se fazer algum tipo de limpeza, para retirar do mapa as partidas que acabaram
+	private Map<String, Match> mapaPartidas = new HashMap<String, Match>();
+
 	//Cria um objeto que será o "monitor" desta Thread. 
 	//Ele possui um tipo próprio para facilitar debug se houver erro
 	private static final class Lock { }
@@ -41,9 +52,18 @@ public class ServerDriver implements UosDriver
 		definition = new UpDriver(DRIVER_NAME);
 		definition.addService("getClientCount");
 		definition.addService("getHostName");
+		
+		//TODO: Adicionar os serviços aqui
+		definition.addService("criarPartida");
+		definition.addService("listarPartidas");
+		definition.addService("runState");
 	}
 
 	public void init(Gateway gateway, InitialProperties properties, String instanceId)
+	{
+	}
+	
+	public void destroy()
 	{
 	}
 
@@ -57,43 +77,68 @@ public class ServerDriver implements UosDriver
 		return new ArrayList<UpDriver>();
 	}
 
-	public void destroy()
-	{
-	}
 
 	// Serviços deste Server Driver
 	
+	/**
+	 * Cria uma partida
+	 */
 	public void criarPartida(Call call, Response response, CallContext callContext)
 	{
 		final String nomePartida = call.getParameter("nomePartida").toString();
 		final MatchDuration duracao = MatchDuration.from(call.getParameter("duracao").toString());
 		final Match partida = Match.from(nomePartida, new Date(), duracao);
 		
-		if (findMatch(nomePartida).isRight()) //Existe partida
-		{
-			throw new IllegalArgumentException("Partida com esse nome já existe");
-		}
+		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
+		Either<RuntimeException, Match> toReturn;
 		
-		//Efetua a alteração
-		synchronized(lock)
+		if (eMatch.isRight()) //Existe partida
 		{
-			mapaPartidas.put(nomePartida, partida);
+			final RuntimeException theValue = new IllegalArgumentException("Partida com esse nome já existe");
+			toReturn = Either.createLeft(theValue);
 		}
-		response.addParameter("partida", toJson(partida));
+		else //Não existe partida
+		{
+			//Efetua a alteração
+			synchronized(lock)
+			{
+				mapaPartidas.put(nomePartida, partida);
+			}
+			toReturn = Either.createRight(partida);
+		}
+		response.addParameter("retorno", toJson(toReturn));
 	}
 	
+	/**
+	 * Lista todas as partidas ativas neste momento
+	 */
+	public void listarPartidas(Call call, Response response, CallContext callContext)
+	{
+		final List<String> listaPartidas = new ArrayList<String>();
+		
+		//Trava até terminar de ler
+		synchronized(lock)
+		{
+			for (Entry<String, Match> entry : mapaPartidas.entrySet())
+			{
+				if (entry.getValue().isAtiva())
+				{
+					listaPartidas.add(entry.getKey());
+				}
+			}
+		}
+		
+		final Either<RuntimeException, List<String>> toReturn = Either.createRight(listaPartidas);
+		response.addParameter("retorno", toJson(toReturn));
+	}
 	
 	/**
 	 * Faz a efetiva execução de um estado para uma partida
-	 * @param call
-	 * @param response
-	 * @param callContext
 	 */
 	public void runState(Call call, Response response, CallContext callContext)
 	{
 		final String nomePartida = call.getParameter("nomePartida").toString();
 		final MatchState state = fromJson(call.getParameter("state").toString(), MatchState.class);
-		
 		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
 		
 		if (eMatch.isLeft()) //Não existe partida
@@ -110,7 +155,6 @@ public class ServerDriver implements UosDriver
 			response.addParameter("retorno", toJson(Either.createRight(true)));
 		}
 	}
-	
 
 	/**
 	 * Procura uma partida, retornando ou a partida ou uma exceção

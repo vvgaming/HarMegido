@@ -16,8 +16,8 @@ public class N1Intro extends GameNode {
 	public void init() {
 		super.init();
 
-		final String texto = "Eles então se congregaram num lugar\n"
-				+ "que em hebreu chama-se Har Megido.\nApocalise 16:13-16\n\n\n"
+		final String texto = "\"Eles então se congregaram num lugar\n"
+				+ "que em hebreu chama-se Har Megido.\"\nApocalise 16:13-16\n\n\n"
 				+ "A batalha entre o bem \n" + "e o mal está se espalhando \n"
 				+ "pelo planeta, e é hora de\n "
 				+ "você escolher por qual lado lutar";

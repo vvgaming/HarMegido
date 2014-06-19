@@ -43,9 +43,10 @@ public class ServerDriverFacade
 	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro.
 	 * 
 	 * @param uos A instância do UOS a ser utilizada para a fachada
+	 * @param timeout O tempo a esperar (em milisegundos) até desistir de encontrar o driver
 	 * @return Uma instância da fachada do servidor
 	 */
-	public static ServerDriverFacade from(final UOS uos, final long timeOut)
+	public static ServerDriverFacade from(final UOS uos, final long timeout)
 	{
 		if (uos == null)
 		{
@@ -57,13 +58,9 @@ public class ServerDriverFacade
 			throw new IllegalStateException("Erro: Gateway do uos não pode retornar null");
 		}
 		
-		long startTime = System.currentTimeMillis();
-		List<DriverData> drivers;
-		do{
-			drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER);
-		}while((drivers == null || drivers.isEmpty()) && System.currentTimeMillis() - startTime < timeOut );
-		
-		if ((drivers == null || drivers.isEmpty()))
+		final List<DriverData> drivers = waitForDrivers(uos, timeout);
+
+		if (drivers.isEmpty())
 		{
 			throw new IllegalStateException("Não foi encontrado o driver do Har Megido na instância do uos");
 		}
@@ -76,9 +73,35 @@ public class ServerDriverFacade
 		return new ServerDriverFacade(uos, drivers.get(0).getDevice());
 	}
 	
+	/**
+	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro, 
+	 * esperando até 5 segundos pelo driver ficar pronto.
+	 * 
+	 * @param uos A instância do UOS a ser utilizada para a fachada
+	 * @return Uma instância da fachada do servidor
+	 */
 	public static ServerDriverFacade from(final UOS uos)
 	{
 		return from(uos, 5000);
+	}
+	
+	/**
+	 * Espera por drivers uma quantidade de tempo (em milisegundos) definida em timeout
+	 * @param uos A instância do UOS de onde o driver será retirado
+	 * @param timeout O tempo (em milisegundos) a esperar pelo driver
+	 * @return Uma lista de drivers (potencialmente vazia) retornado pelo gateway do uos
+	 */
+	private static List<DriverData> waitForDrivers(final UOS uos, final long timeout)
+	{
+		final long startTime = System.currentTimeMillis();
+		List<DriverData> drivers;
+		
+		while(  ((drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER)) == null || drivers.isEmpty()) &&
+				(System.currentTimeMillis() - startTime < timeout))
+		{
+		}
+		
+		return drivers;
 	}
 	
 	
@@ -214,10 +237,11 @@ public class ServerDriverFacade
 	/**
 	 * Chamada genérica para um serviço deste server.
 	 * 
-	 * @param serviceName O nome do servi�o a ser chamado
+	 * @param serviceName O nome do serviço a ser chamado
 	 * @param params Os parâmetros a serem repassados para o serviço
 	 * @return Uma instância de {@link Either} que irá conter o retorno ou a exceção no caso de erro.
 	 */
+	@SuppressWarnings("unchecked")
 	private Either<Exception, Response> callService(final String serviceName, final Tuple2<String, Object>... params)
 	{
 		final Call call = new Call(HAR_MEGIDO_DRIVER, serviceName);
@@ -232,7 +256,18 @@ public class ServerDriverFacade
 
 		try
 		{
-			return Either.createRight(uos.getGateway().callService(device, call));
+			final Response response = uos.getGateway().callService(device, call);
+			final String responseData = response.getResponseData("retorno").toString();
+			
+			//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
+			//Nesse caso, basta retorná-la
+			if (responseData != null)
+			{
+				return fromJson(responseData, Either.class);
+			}
+
+			//Cria um Either para a response recebida
+			return Either.createRight(response);
 		}
 		catch (Exception e)
 		{

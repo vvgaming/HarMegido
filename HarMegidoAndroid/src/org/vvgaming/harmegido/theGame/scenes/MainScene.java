@@ -1,23 +1,18 @@
 package org.vvgaming.harmegido.theGame.scenes;
 
 import org.vvgaming.harmegido.R;
-import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.gos.ImageGO;
 import org.vvgaming.harmegido.gameEngine.gos.TextGO;
 import org.vvgaming.harmegido.theGame.gos.SimilarityCamGO;
 import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;
 
-import android.app.Activity;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
-public class MainScene extends AbstractGameScene {
-
-	public MainScene(Activity act) {
-		super(act);
-	}
+public class MainScene extends GameNode {
 
 	private SimilarityCamGO cam;
 	private SimpleBoxGO bg;
@@ -28,29 +23,29 @@ public class MainScene extends AbstractGameScene {
 	@Override
 	public void init() {
 		super.init();
-		cam = new SimilarityCamGO(new Ponto(getWidth() / 2,
-				(getHeight() * 2) / 5), getWidth() * .75f);
+		cam = new SimilarityCamGO(new Ponto(getGameWidth() / 2,
+				(getGameHeight() * 2) / 5), getGameWidth() * .75f);
 
-		bg = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 0, 0, 0);
-		resultBox = new SimpleBoxGO(0, 0, getWidth(), getHeight(), 100, 0, 0,
-				100);
-		resultBox.setVisible(true);
+		bg = new SimpleBoxGO(0, 0, getGameWidth(), getGameHeight(), 0, 0, 0);
+		resultBox = new SimpleBoxGO(0, 0, getGameWidth(), getGameHeight(), 100,
+				0, 0, 100);
 
-		bgImg = new ImageGO(new Ponto(getWidth() / 2, getHeight() / 2),
-				getAssetManager().getBitmap(R.drawable.bg));
-		bgImg.setHeightKeepingRatio(getHeight());
+		bgImg = new ImageGO(new Ponto(getGameWidth() / 2, getGameHeight() / 2),
+				getGameAssetManager().getBitmap(R.drawable.bg));
+		bgImg.setHeightKeepingRatio(getGameHeight());
 
-		TextGO text = new TextGO(getWidth() / 2, getHeight() / 10, "Har Megido");
-		text.face = Typeface.createFromAsset(getAssetManager()
+		TextGO text = new TextGO(getGameWidth() / 2, getGameHeight() / 10,
+				"Har Megido");
+		text.face = Typeface.createFromAsset(getGameAssetManager()
 				.getAndroidAssets(), "fonts/dc_o.ttf");
 		text.paint.setTextAlign(Align.CENTER);
 		text.size = 140;
 
-		addObject(bg, 0);
-		addObject(cam, 1);
-		addObject(resultBox, 2);
-		addObject(bgImg, 3);
-		addObject(text, 4);
+		addSubNode(bg, 0);
+		addSubNode(cam, 1);
+		addSubNode(resultBox, 2);
+		addSubNode(bgImg, 3);
+		addSubNode(text, 4);
 
 	}
 

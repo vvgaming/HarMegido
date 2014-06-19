@@ -1,6 +1,6 @@
 package org.vvgaming.harmegido.gameEngine.gos;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Canvas;
@@ -12,7 +12,7 @@ import android.graphics.Typeface;
  * 
  * @author Vinicius Nogueira
  */
-public class TextGO implements GameObject {
+public class TextGO extends GameNode {
 
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	public Typeface face;

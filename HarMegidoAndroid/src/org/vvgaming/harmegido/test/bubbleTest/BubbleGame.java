@@ -3,31 +3,21 @@ package org.vvgaming.harmegido.test.bubbleTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.gos.TextGO;
 
-import android.app.Activity;
 import android.view.MotionEvent;
 
-public class BubbleGame extends AbstractGameScene {
-
-	public BubbleGame(Activity act) {
-		super(act);
-	}
+public class BubbleGame extends GameNode {
 
 	private List<RandomBubble> bubbles = new ArrayList<>();
-	// private final SquareButton btn = new SquareButton(0, 100, 200, 120,
-	// "Testar ObjDetect");
-	private final TextGO texto = new TextGO(100, 10, "");
 
-	// private final OCVCamObjTest cam = new OCVCamObjTest(new Ponto(0, 0));
+	private final TextGO texto = new TextGO(100, 10, "");
 
 	@Override
 	public void init() {
 		super.init();
-		// cam.setCenter(new Ponto(getWidth() / 2, getHeight() / 2));
-		addObject(texto, 100);
-		// addObject(cam);
+		addSubNode(texto, 100);
 	}
 
 	@Override
@@ -38,17 +28,10 @@ public class BubbleGame extends AbstractGameScene {
 	@Override
 	public void onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-			// if (btn.ret.contem(new Vetor2d(event.getX(), event.getY()))) {
-			// Intent i = new Intent(
-			// GameTestActivity.this.getApplicationContext(),
-			// ObjDetectTestActivity.class);
-			// startActivity(i);
-			// } else {
-			RandomBubble bubble = new RandomBubble(getWidth(), getHeight());
-			addObject(bubble);
+			RandomBubble bubble = new RandomBubble(getGameWidth(),
+					getGameHeight());
+			addSubNode(bubble);
 			bubbles.add(bubble);
-			// }
 
 		}
 	}

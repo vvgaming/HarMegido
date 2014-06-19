@@ -1,17 +1,15 @@
 package org.vvgaming.harmegido.theGame.gos;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class SimpleBoxGO implements GameObject {
+public class SimpleBoxGO extends GameNode {
 
 	private final Paint color = new Paint();
-
-	private boolean visible = true;
 
 	private final Retangulo ret;
 
@@ -37,36 +35,12 @@ public class SimpleBoxGO implements GameObject {
 		canvas.drawRect(ret.toAndroidCanvasRect(), color);
 	}
 
-	@Override
-	public boolean isDead() {
-		return false;
-	}
-
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void end() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean visible) {
-		this.visible = visible;
-	}
-
-	public void setColor(int r, int g, int b){
+	public void setColor(int r, int g, int b) {
 		color.setARGB(255, r, g, b);
 	}
-	
-	public void setColor(int a, int r, int g, int b){
+
+	public void setColor(int a, int r, int g, int b) {
 		color.setARGB(a, r, g, b);
 	}
-	
+
 }

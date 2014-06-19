@@ -3,29 +3,17 @@ package org.vvgaming.harmegido.gameEngine;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Canvas;
-
 import com.github.detentor.codex.function.Function0;
 
 /**
- * Uma extens„o de {@link GameObject} que suporta inicialiÁ„o lazy. Devo
- * verificar a real necessidade mesmo dessa implementaÁ„o depois
+ * Uma extens√£o de {@link GameNode} que suporta inicializa√ß√£o lazy. Devo
+ * verificar a real necessidade mesmo dessa implementa√ß√£o depois
  * 
  * @author Vinicius Nogueira
  */
-public abstract class LazyInitGameObject implements GameObject {
+public abstract class LazyInitGameNode extends GameNode {
 
 	private List<Function0<Void>> functions = new ArrayList<>();
-
-	public abstract void update(long delta);
-
-	public abstract void render(Canvas canvas);
-
-	public abstract boolean isDead();
-
-	public abstract boolean isVisible();
-
-	public abstract void end();
 
 	public final void init() {
 		preInit();

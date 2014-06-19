@@ -1,6 +1,6 @@
 package org.vvgaming.harmegido.gameEngine.gos;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
@@ -8,17 +8,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 /**
- * Uma implementação de {@link GameObject} que dispõe e manipula imagens
+ * Mostra e manipula imagens
  * 
  * @author Vinicius Nogueira
  */
-public class ImageGO implements GameObject {
+public class ImageGO extends GameNode {
 
 	private boolean visible = true;
 
 	private Bitmap bmp;
 
-	// matriz de transformações
+	// matriz de transformaï¿½ï¿½es
 	private MatrizTransfAndroid matriz;
 
 	public ImageGO(final int x, final int y, final Bitmap bmp) {
@@ -29,11 +29,6 @@ public class ImageGO implements GameObject {
 		this.bmp = bmp;
 		matriz = new MatrizTransfAndroid(bmp.getWidth(), bmp.getHeight());
 		matriz.setCenter(center);
-	}
-
-	@Override
-	public void init() {
-
 	}
 
 	@Override

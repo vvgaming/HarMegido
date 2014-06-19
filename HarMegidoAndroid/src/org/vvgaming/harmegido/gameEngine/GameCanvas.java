@@ -11,9 +11,9 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 /**
- * Implementação de um canvas para jogos. Este canvas implementa uma Thread e
- * recebe um {@link AbstractGameScene} para renderizar seus objetos controlando o
- * loop.
+ * Implementaï¿½ï¿½o de um canvas para jogos. Este canvas implementa uma Thread e
+ * recebe um {@link AbstractGameScene} para renderizar seus objetos controlando
+ * o loop.
  * 
  * @author Vinicius Nogueira
  */
@@ -23,39 +23,26 @@ public class GameCanvas extends SurfaceView implements Callback {
 	private LoopThread loopThread;
 	private int fpsLock = 30;
 	private boolean showFps = false;
-	private AbstractGameScene cena;
+	private RootNode root;
 
-	private AbstractGameScene proximaCena = null;
-
-	public GameCanvas(final Context context, final AbstractGameScene aCena) {
+	public GameCanvas(final Context context, final RootNode theRoot) {
 		super(context);
 		getHolder().addCallback(this);
-		this.cena = aCena;
+		this.root = theRoot;
 	}
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		cena.onTouch(event);
+		root.onTouch(event);
 		return true;
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		inicializaCena(cena);
-	}
+		root.setWidth(getWidth());
+		root.setHeight(getHeight());
 
-	private void reInicializaCena(final AbstractGameScene aCena) {
-		aCena.realEnd();
-		// novo jogo
-		this.cena = aCena;
-		inicializaCena(aCena);
-	}
-
-	private void inicializaCena(final AbstractGameScene aCena) {
-		aCena.setWidth(getWidth());
-		aCena.setHeight(getHeight());
-
-		aCena.realInit();
+		root.realInit();
 
 		loopThread = new LoopThread(getHolder());
 		loopThread.start();
@@ -66,26 +53,19 @@ public class GameCanvas extends SurfaceView implements Callback {
 			int height) {
 
 		loopThread.setTheHolder(holder);
-		cena.setWidth(width);
-		cena.setHeight(height);
+		root.setWidth(width);
+		root.setHeight(height);
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		loopThread.setShouldQuit(true);
+		root.kill();
 		loopThread = null;
-		encerraCena();
-	}
-
-	private void encerraCena() {
-		cena.realEnd();
-		cena = null;
 	}
 
 	private class LoopThread extends Thread {
 
 		private SurfaceHolder theHolder;
-		private boolean shouldQuit = false;
 
 		public LoopThread(SurfaceHolder theHolder) {
 			super();
@@ -107,7 +87,7 @@ public class GameCanvas extends SurfaceView implements Callback {
 			Paint preto = new Paint();
 			preto.setARGB(255, 0, 0, 0);
 
-			// criando um retangulo do tamanho máximo para limpar a tela
+			// criando um retangulo do tamanho mï¿½ximo para limpar a tela
 			Canvas canvas = theHolder.lockCanvas();
 			Rect retanguloMaximo = new Rect(0, 0, canvas.getWidth(),
 					canvas.getHeight());
@@ -115,25 +95,25 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 			long delta = 0;
 
-			while (!shouldQuit) {
+			while (!root.isDead()) {
 
 				long initFrame = System.currentTimeMillis();
 
 				canvas = theHolder.lockCanvas();
 				if (canvas == null) {
-					// se não tiver canvas, pula pra próxima passada
+					// se nï¿½o tiver canvas, pula pra prï¿½xima passada
 					// (provavelmente vai abortar)
-					// isso é para resolver uma NPE quando surfaceDestroyed é
-					// chamado e vai provavelmente abortar na próxima passada
-					// TODO verificar se essa solução é boa mesmo, ou se não,
+					// isso ï¿½ para resolver uma NPE quando surfaceDestroyed ï¿½
+					// chamado e vai provavelmente abortar na prï¿½xima passada
+					// TODO verificar se essa soluï¿½ï¿½o ï¿½ boa mesmo, ou se nï¿½o,
 					// bolar uma melhor
 					continue;
 				}
 				// pinta tudo de preto
 				canvas.drawRect(retanguloMaximo, preto);
 
-				cena.realUpdate(delta);
-				cena.realRender(canvas);
+				root.realUpdate(delta);
+				root.realRender(canvas);
 
 				if (showFps) {
 					canvas.drawText("fps: "
@@ -143,25 +123,16 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 				theHolder.unlockCanvasAndPost(canvas);
 
-				// cálculo parcial do delta
+				// cï¿½lculo parcial do delta
 				delta = System.currentTimeMillis() - initFrame;
 				// espera um pouco por causa do fpslock
 				delay(MIN_DELAY - delta);
-				// cálculo definitivo do tempo gasto neste frame
+				// cï¿½lculo definitivo do tempo gasto neste frame
 				delta = System.currentTimeMillis() - initFrame;
 
 			}
+			root = null;
 
-			if (proximaCena != null) {
-				encerraCena();
-				reInicializaCena(proximaCena);
-				proximaCena = null;
-			}
-
-		}
-
-		public void setShouldQuit(boolean shouldQuit) {
-			this.shouldQuit = shouldQuit;
 		}
 
 	}
@@ -175,11 +146,6 @@ public class GameCanvas extends SurfaceView implements Callback {
 			e.printStackTrace();
 		}
 
-	}
-
-	public void trocarCena(final AbstractGameScene novaCena) {
-		loopThread.setShouldQuit(true);
-		proximaCena = novaCena;
 	}
 
 	public void setFpsLock(int fpsLock) {

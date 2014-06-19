@@ -1,7 +1,7 @@
 package org.vvgaming.harmegido.theGame.gos;
 
 import org.opencv.core.Mat;
-import org.vvgaming.harmegido.gameEngine.LazyInitGameObject;
+import org.vvgaming.harmegido.gameEngine.LazyInitGameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.theGame.FeaturesSimilarityCam;
@@ -23,12 +23,12 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinicius Nogueira
  */
-public class SimilarityCamGO extends LazyInitGameObject {
+public class SimilarityCamGO extends LazyInitGameNode {
 
 	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
 	private Bitmap lastFrame;
 
-	// contagem de frames para pular na comparação (para ganhar performance)
+	// contagem de frames para pular na comparaï¿½ï¿½o (para ganhar performance)
 	private int skipCount = 0;
 	private final int SKIP_LIMIT = 3;
 

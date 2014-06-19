@@ -1,8 +1,6 @@
 package org.vvgaming.harmegido.gameEngine.gos;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
-
-import android.graphics.Canvas;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 
 import com.github.detentor.codex.function.Function0;
 
@@ -12,7 +10,7 @@ import com.github.detentor.codex.function.Function0;
  * 
  * @author Vinicius Nogueira
  */
-public class TimerGO implements GameObject {
+public class TimerGO extends GameNode {
 
 	private long counter = 0;
 	private long timeLimit = 0;
@@ -33,11 +31,6 @@ public class TimerGO implements GameObject {
 	}
 
 	@Override
-	public void init() {
-
-	}
-
-	@Override
 	public void update(long delta) {
 		counter += delta;
 		if (counter >= timeLimit) {
@@ -48,17 +41,8 @@ public class TimerGO implements GameObject {
 	}
 
 	@Override
-	public void render(Canvas canvas) {
-		// sempre invisível, não pinta nada na tela
-	}
-
-	@Override
 	public boolean isDead() {
 		return onTimeOnly && cycles > 0;
-	}
-
-	@Override
-	public void end() {
 	}
 
 	@Override
@@ -74,7 +58,7 @@ public class TimerGO implements GameObject {
 	public void setTimeLimit(long timeLimit) {
 		this.timeLimit = timeLimit;
 	}
-	
+
 	public TimerGO setCounting(long counter) {
 		this.counter = counter;
 		return this;

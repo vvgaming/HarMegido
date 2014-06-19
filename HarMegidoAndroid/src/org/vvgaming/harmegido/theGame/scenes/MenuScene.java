@@ -9,54 +9,49 @@ import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
-import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
+import org.vvgaming.harmegido.gameEngine.GameNode;
+import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.gos.TextGO;
 import org.vvgaming.harmegido.gameEngine.gos.TimerGO;
-import org.vvgaming.harmegido.theGame.HarMegidoActivity;
 import org.vvgaming.harmegido.theGame.UOSFacade;
 
-import android.app.Activity;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 import com.github.detentor.codex.function.Function0;
 
-public class MenuScene extends AbstractGameScene {
+public class MenuScene extends GameNode {
 
 	private TextGO toqueNaTela;
 	private TextGO serverName;
 	private TextGO clientInfo;
 
-	public MenuScene(Activity act) {
-		super(act);
-	}
-
 	@Override
 	public void init() {
 		super.init();
 
-		toqueNaTela = new TextGO(getWidth() / 2, getHeight() / 2,
+		toqueNaTela = new TextGO(getGameWidth() / 2, getGameHeight() / 2,
 				"Toque na tela para iniciar");
-		toqueNaTela.face = Typeface.createFromAsset(getAssetManager()
+		toqueNaTela.face = Typeface.createFromAsset(getGameAssetManager()
 				.getAndroidAssets(), "fonts/Radio Trust.ttf");
 		toqueNaTela.paint.setTextAlign(Align.CENTER);
 		toqueNaTela.size = 70;
 
 		serverName = toqueNaTela.clone();
-		serverName.pos = new Ponto(getWidth() / 2, 2 * getHeight() / 10);
+		serverName.pos = new Ponto(getGameWidth() / 2, 2 * getGameHeight() / 10);
 		serverName.text = "";
 		serverName.size = 40;
 
 		clientInfo = serverName.clone();
 		clientInfo.pos = clientInfo.pos.translate(0, 40);
 
-		addObject(toqueNaTela);
-		addObject(serverName);
-		addObject(clientInfo);
+		addSubNode(toqueNaTela);
+		addSubNode(serverName);
+		addSubNode(clientInfo);
 
-		addObject(new TimerGO(500, new Function0<Void>() {
+		addSubNode(new TimerGO(500, new Function0<Void>() {
 			@Override
 			public Void apply() {
 				toqueNaTela.setVisible(!toqueNaTela.isVisible());
@@ -64,7 +59,7 @@ public class MenuScene extends AbstractGameScene {
 			}
 		}));
 
-		addObject(new TimerGO(5000, new Function0<Void>() {
+		addSubNode(new TimerGO(5000, new Function0<Void>() {
 			@Override
 			public Void apply() {
 				checkUOS();
@@ -122,8 +117,7 @@ public class MenuScene extends AbstractGameScene {
 	@Override
 	public void onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			HarMegidoActivity.activity.trocarCena(new MainScene(
-					getAssetManager().getActivity()));
+			RootNode.getInstance().changeMainNode(new MainScene());
 		}
 	}
 

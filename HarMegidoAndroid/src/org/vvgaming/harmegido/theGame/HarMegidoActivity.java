@@ -3,8 +3,8 @@ package org.vvgaming.harmegido.theGame;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 import org.vvgaming.harmegido.gameEngine.GameCanvas;
+import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.theGame.scenes.MenuScene;
 
 import android.app.Activity;
@@ -37,8 +37,9 @@ public class HarMegidoActivity extends Activity {
 		public void onManagerConnected(int status) {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
+				RootNode.create(HarMegidoActivity.this, new MenuScene());
 				gameCanvas = new GameCanvas(HarMegidoActivity.this,
-						new MenuScene(HarMegidoActivity.this));
+						RootNode.getInstance());
 				gameCanvas.setShowFps(true);
 				setContentView(gameCanvas);
 
@@ -52,9 +53,5 @@ public class HarMegidoActivity extends Activity {
 		}
 
 	};
-
-	public void trocarCena(final AbstractGameScene cena) {
-		gameCanvas.trocarCena(cena);
-	}
 
 }

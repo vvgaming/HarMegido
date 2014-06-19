@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
-import org.vvgaming.harmegido.gameEngine.gos.Text;
+import org.vvgaming.harmegido.gameEngine.gos.TextGO;
 
 import android.app.Activity;
 import android.view.MotionEvent;
@@ -18,7 +18,7 @@ public class BubbleGame extends AbstractGameScene {
 	private List<RandomBubble> bubbles = new ArrayList<>();
 	// private final SquareButton btn = new SquareButton(0, 100, 200, 120,
 	// "Testar ObjDetect");
-	private final Text texto = new Text(100, 10, "");
+	private final TextGO texto = new TextGO(100, 10, "");
 
 	// private final OCVCamObjTest cam = new OCVCamObjTest(new Ponto(0, 0));
 

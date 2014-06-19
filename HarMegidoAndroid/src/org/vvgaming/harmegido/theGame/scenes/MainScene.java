@@ -4,7 +4,7 @@ import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.gos.ImageGO;
-import org.vvgaming.harmegido.gameEngine.gos.Text;
+import org.vvgaming.harmegido.gameEngine.gos.TextGO;
 import org.vvgaming.harmegido.theGame.gos.SimilarityCamGO;
 import org.vvgaming.harmegido.theGame.gos.SimpleBoxGO;
 
@@ -40,7 +40,7 @@ public class MainScene extends AbstractGameScene {
 				getAssetManager().getBitmap(R.drawable.bg));
 		bgImg.setHeightKeepingRatio(getHeight());
 
-		Text text = new Text(getWidth() / 2, getHeight() / 10, "Har Megido");
+		TextGO text = new TextGO(getWidth() / 2, getHeight() / 10, "Har Megido");
 		text.face = Typeface.createFromAsset(getAssetManager()
 				.getAndroidAssets(), "fonts/dc_o.ttf");
 		text.paint.setTextAlign(Align.CENTER);

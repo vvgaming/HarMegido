@@ -13,6 +13,7 @@ import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.gameEngine.nodes.NGroupToggleButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
@@ -25,6 +26,8 @@ import android.graphics.Typeface;
 import android.view.MotionEvent;
 
 import com.github.detentor.codex.function.Function0;
+import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.monads.Option;
 
 public class N2Menu extends GameNode {
 
@@ -64,8 +67,26 @@ public class N2Menu extends GameNode {
 				.getBitmap(R.drawable.morgana)));
 		demonios.getImage().setWidthKeepingRatio(getGameWidth(.4f));
 
-		addSubNode(anjos);
-		addSubNode(demonios);
+		NGroupToggleButtonImage group = new NGroupToggleButtonImage(anjos,
+				demonios);
+		group.setOnToggleChange(new Function1<Option<Integer>, Void>() {
+
+			@Override
+			public Void apply(Option<Integer> arg0) {
+				if (arg0.notEmpty()) {
+					System.out.println(arg0);
+					if (arg0.get() == 0) {
+						getGameAssetManager().playSound(R.raw.kayle);
+					}
+					if (arg0.get() == 1) {
+						getGameAssetManager().playSound(R.raw.morgana);
+					}
+				}
+				return null;
+			}
+		});
+
+		addSubNode(group);
 
 		addSubNode(toqueNaTela);
 		addSubNode(serverName);

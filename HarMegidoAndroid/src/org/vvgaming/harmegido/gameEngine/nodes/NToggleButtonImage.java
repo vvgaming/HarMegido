@@ -69,8 +69,12 @@ public class NToggleButtonImage extends NButtonImage {
 		});
 	}
 
-	private void toggle() {
+	public void toggle() {
 		toggled = !toggled;
+	}
+
+	public void toggle(boolean toggled) {
+		this.toggled = toggled;
 	}
 
 }

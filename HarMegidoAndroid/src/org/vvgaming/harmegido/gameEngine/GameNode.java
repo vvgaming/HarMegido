@@ -63,13 +63,12 @@ public abstract class GameNode {
 		// invoca o update do nó
 		update(delta);
 
+		// camadas
 		for (Entry<Integer, List<GameNode>> entry : nodesPerLayer.entrySet()) {
-			// criando uma nova para evitar problemas de acesso concorrente
-			// List<GameNode> curLayerList = new ArrayList<>(entry.getValue());
+			// cada nó da camada
 			for (Iterator<GameNode> iterator = entry.getValue().iterator(); iterator
 					.hasNext();) {
 				GameNode node = (GameNode) iterator.next();
-				node.realUpdate(delta);
 				if (node.murdered || node.isDead()) {
 					if (node.isDead()) {
 						// só morreu normal, entao mata os filhos
@@ -79,6 +78,7 @@ public abstract class GameNode {
 					iterator.remove();
 					continue;
 				}
+				node.realUpdate(delta);
 			}
 		}
 	}

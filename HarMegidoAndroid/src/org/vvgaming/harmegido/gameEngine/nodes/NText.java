@@ -14,10 +14,15 @@ import android.graphics.Typeface;
  */
 public class NText extends GameNode {
 
+	public enum VerticalAlign {
+		TOP, MIDDLE;
+	}
+
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	public Typeface face;
 	public String text;
 	public Ponto pos;
+	public VerticalAlign vAlign = VerticalAlign.MIDDLE;
 	public int size = 12;
 
 	private boolean visible = true;
@@ -43,7 +48,22 @@ public class NText extends GameNode {
 
 	@Override
 	public void render(Canvas canvas) {
-		canvas.drawText(text, pos.x, pos.y, paint);
+		final String[] splitByLine = text.split("\n");
+		float yStart = pos.y;
+		switch (vAlign) {
+		case TOP:
+			yStart = pos.y;
+			break;
+		case MIDDLE:
+			yStart = pos.y - ((splitByLine.length * size) / 2);
+			break;
+		default:
+			throw new IllegalArgumentException(
+					"Alinhamento vertical desconhecido: " + vAlign);
+		}
+		for (int i = 0; i < splitByLine.length; i++) {
+			canvas.drawText(splitByLine[i], pos.x, yStart + (i * size), paint);
+		}
 	}
 
 	@Override

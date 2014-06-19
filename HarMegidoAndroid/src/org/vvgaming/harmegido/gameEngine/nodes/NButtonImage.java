@@ -2,9 +2,10 @@ package org.vvgaming.harmegido.gameEngine.nodes;
 
 import org.vvgaming.harmegido.gameEngine.GameNode;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.MotionEvent;
+
+import com.github.detentor.codex.function.Function0;
+import com.github.detentor.codex.monads.Option;
 
 /**
  * Botão com imagem
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 public class NButtonImage extends GameNode {
 
 	private final NImage image;
+	private Option<Function0<Void>> onClickFunction = Option.empty();
 
 	public NButtonImage(NImage image) {
 		super();
@@ -31,17 +33,11 @@ public class NButtonImage extends GameNode {
 	}
 
 	@Override
-	protected void render(Canvas canvas) {
-		super.render(canvas);
-		final Paint green = new Paint();
-		green.setARGB(255, 0, 200, 0);
-		canvas.drawRect(image.getBoundingRect(), green);
-	}
-
-	@Override
 	public boolean onTouch(MotionEvent event) {
-		if (image.getBoundingRect().contains(event.getX(), event.getY())) {
-			System.out.println("opaa");
+		if (onClickFunction.notEmpty()
+				&& event.getAction() == MotionEvent.ACTION_DOWN
+				&& image.getBoundingRect().contains(event.getX(), event.getY())) {
+			onClickFunction.get().apply();
 			return true;
 		}
 		return false;
@@ -49,6 +45,10 @@ public class NButtonImage extends GameNode {
 
 	public NImage getImage() {
 		return image;
+	}
+
+	public void setOnClickFunction(Function0<Void> onClickFunction) {
+		this.onClickFunction = Option.from(onClickFunction);
 	}
 
 }

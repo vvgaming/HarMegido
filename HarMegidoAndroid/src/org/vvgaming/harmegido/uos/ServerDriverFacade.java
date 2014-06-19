@@ -45,7 +45,7 @@ public class ServerDriverFacade
 	 * @param uos A instância do UOS a ser utilizada para a fachada
 	 * @return Uma instância da fachada do servidor
 	 */
-	public static ServerDriverFacade from(final UOS uos)
+	public static ServerDriverFacade from(final UOS uos, final long timeOut)
 	{
 		if (uos == null)
 		{
@@ -57,9 +57,13 @@ public class ServerDriverFacade
 			throw new IllegalStateException("Erro: Gateway do uos não pode retornar null");
 		}
 		
-		final List<DriverData> drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER);
+		long startTime = System.currentTimeMillis();
+		List<DriverData> drivers;
+		do{
+			drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER);
+		}while((drivers == null || drivers.isEmpty()) && System.currentTimeMillis() - startTime < timeOut );
 		
-		if (drivers == null || drivers.isEmpty())
+		if ((drivers == null || drivers.isEmpty()))
 		{
 			throw new IllegalStateException("Não foi encontrado o driver do Har Megido na instância do uos");
 		}
@@ -70,6 +74,11 @@ public class ServerDriverFacade
 		}
 		
 		return new ServerDriverFacade(uos, drivers.get(0).getDevice());
+	}
+	
+	public static ServerDriverFacade from(final UOS uos)
+	{
+		return from(uos, 5000);
 	}
 	
 	

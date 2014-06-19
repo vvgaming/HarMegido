@@ -6,7 +6,7 @@ import org.vvgaming.harmegido.test.bubbleTest.BubbleTestActivity;
 import org.vvgaming.harmegido.test.vision.ObjDetectTestActivity;
 import org.vvgaming.harmegido.test.vision.features.ObjDetectFeatTestActivity;
 import org.vvgaming.harmegido.theGame.HarMegidoActivity;
-import org.vvgaming.harmegido.theGame.UOSFacade;
+import org.vvgaming.harmegido.uos.UOSFacade;
 
 import android.app.Activity;
 import android.content.Intent;

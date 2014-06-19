@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.theGame;
+package org.vvgaming.harmegido.uos;
 
 import java.util.logging.Level;
 
@@ -9,14 +9,22 @@ import org.unbiquitous.uos.core.UOSLogging;
 import android.os.AsyncTask;
 
 public class UOSFacade {
-	private static final String SERVER_IP = "harmegido.servegame.com"; // servidor
-																		// amazon
+	// private static final String SERVER_IP = "harmegido.servegame.com"; //
+	// servidor
+	// amazon
+	private static final String SERVER_IP = "192.168.0.100";
+
 	private static UOS uos;
+	private static ServerDriverFacade driverFacade;
+
 	private static boolean started = false;
 
 	public static UOS getUos() {
 		if (uos == null) {
 			startUos();
+			while (!started) {
+
+			}
 		}
 		return uos;
 	}
@@ -39,6 +47,7 @@ public class UOSFacade {
 				return null;
 			}
 		}.execute();
+
 	}
 
 	public static void stopUos() {
@@ -51,6 +60,13 @@ public class UOSFacade {
 
 	public static boolean isStarted() {
 		return started;
+	}
+
+	public static ServerDriverFacade getDriverFacade() {
+		if (driverFacade == null) {
+			driverFacade = ServerDriverFacade.from(getUos());
+		}
+		return driverFacade;
 	}
 
 }

@@ -5,6 +5,7 @@ import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
+import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.theGame.objNodes.NSimilarityCam;
 import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
 
@@ -12,7 +13,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
-public class NPartida extends GameNode {
+public class N3Partida extends GameNode {
 
 	private NSimilarityCam cam;
 	private NSimpleBox bg;
@@ -40,6 +41,7 @@ public class NPartida extends GameNode {
 				.getAndroidAssets(), "fonts/dc_o.ttf");
 		text.paint.setTextAlign(Align.CENTER);
 		text.size = 140;
+		text.vAlign = VerticalAlign.TOP;
 
 		addSubNode(bg, 0);
 		addSubNode(cam, 1);
@@ -59,10 +61,12 @@ public class NPartida extends GameNode {
 	}
 
 	@Override
-	public void onTouch(MotionEvent event) {
+	public boolean onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			cam.onClick();
+			return true;
 		}
+		return false;
 	}
 
 }

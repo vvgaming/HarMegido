@@ -9,10 +9,14 @@ import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
+import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.gameEngine.nodes.NButtonImage;
+import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
+import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.theGame.UOSFacade;
 
@@ -22,42 +26,50 @@ import android.view.MotionEvent;
 
 import com.github.detentor.codex.function.Function0;
 
-public class NMenu extends GameNode {
+public class N2Menu extends GameNode {
 
-	private NText toqueNaTela;
+	private NTextBlinking toqueNaTela;
 	private NText serverName;
 	private NText clientInfo;
+
+	private NButtonImage anjos;
+	private NButtonImage demonios;
 
 	@Override
 	public void init() {
 		super.init();
 
-		toqueNaTela = new NText(getGameWidth() / 2, getGameHeight() / 2,
-				"Toque na tela para iniciar");
+		toqueNaTela = new NTextBlinking((int) getGameWidth(.5f),
+				(int) getGameHeight(.5f), "Toque na tela para iniciar");
 		toqueNaTela.face = Typeface.createFromAsset(getGameAssetManager()
 				.getAndroidAssets(), "fonts/Radio Trust.ttf");
 		toqueNaTela.paint.setTextAlign(Align.CENTER);
 		toqueNaTela.size = 70;
 
 		serverName = toqueNaTela.clone();
-		serverName.pos = new Ponto(getGameWidth() / 2, 2 * getGameHeight() / 10);
+		serverName.pos = new Ponto(getGameWidth(.5f), getGameHeight(.2f));
 		serverName.text = "";
 		serverName.size = 40;
 
 		clientInfo = serverName.clone();
 		clientInfo.pos = clientInfo.pos.translate(0, 40);
 
+		anjos = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f),
+				getGameHeight(.8f)), getGameAssetManager().getBitmap(
+				R.drawable.kayle)));
+		anjos.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+
+		demonios = new NButtonImage(new NImage(new Ponto(getGameWidth(.75f),
+				getGameHeight(.8f)), getGameAssetManager().getBitmap(
+				R.drawable.morgana)));
+		demonios.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+
+		addSubNode(anjos);
+		addSubNode(demonios);
+
 		addSubNode(toqueNaTela);
 		addSubNode(serverName);
 		addSubNode(clientInfo);
-
-		addSubNode(new NTimer(500, new Function0<Void>() {
-			@Override
-			public Void apply() {
-				toqueNaTela.setVisible(!toqueNaTela.isVisible());
-				return null;
-			}
-		}));
 
 		addSubNode(new NTimer(5000, new Function0<Void>() {
 			@Override
@@ -115,10 +127,12 @@ public class NMenu extends GameNode {
 	}
 
 	@Override
-	public void onTouch(MotionEvent event) {
+	public boolean onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			RootNode.getInstance().changeMainNode(new NPartida());
+			RootNode.getInstance().changeMainNode(new N3Partida());
+			return true;
 		}
+		return false;
 	}
 
 }

@@ -17,7 +17,7 @@ import com.github.detentor.codex.monads.Option;
  */
 public class NGroupToggleButtonImage extends GameNode {
 
-	private List<NToggleButtonImage> btns = new ArrayList<>();
+	private List<NToggleButtonImage> btns = new ArrayList<NToggleButtonImage>();
 	private Option<Integer> toggledIndex = Option.empty();
 
 	private Option<Function1<Option<Integer>, Void>> onToggleChange = Option

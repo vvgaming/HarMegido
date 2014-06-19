@@ -13,7 +13,7 @@ import com.github.detentor.codex.function.Function0;
  */
 public abstract class LazyInitGameNode extends GameNode {
 
-	private List<Function0<Void>> functions = new ArrayList<>();
+	private List<Function0<Void>> functions = new ArrayList<Function0<Void>>();
 
 	public final void init() {
 		preInit();

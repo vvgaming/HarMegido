@@ -11,7 +11,8 @@ import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.gos.Text;
+import org.vvgaming.harmegido.gameEngine.gos.TextGO;
+import org.vvgaming.harmegido.gameEngine.gos.TimerGO;
 import org.vvgaming.harmegido.theGame.HarMegidoActivity;
 import org.vvgaming.harmegido.theGame.UOSFacade;
 
@@ -20,13 +21,13 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
+import com.github.detentor.codex.function.Function0;
+
 public class MenuScene extends AbstractGameScene {
 
-	private long timerPisca;
-	private long timerCheckUOS = 10000;
-	private Text toqueNaTela;
-	private Text serverName;
-	private Text clientInfo;
+	private TextGO toqueNaTela;
+	private TextGO serverName;
+	private TextGO clientInfo;
 
 	public MenuScene(Activity act) {
 		super(act);
@@ -36,7 +37,7 @@ public class MenuScene extends AbstractGameScene {
 	public void init() {
 		super.init();
 
-		toqueNaTela = new Text(getWidth() / 2, getHeight() / 2,
+		toqueNaTela = new TextGO(getWidth() / 2, getHeight() / 2,
 				"Toque na tela para iniciar");
 		toqueNaTela.face = Typeface.createFromAsset(getAssetManager()
 				.getAndroidAssets(), "fonts/Radio Trust.ttf");
@@ -55,63 +56,66 @@ public class MenuScene extends AbstractGameScene {
 		addObject(serverName);
 		addObject(clientInfo);
 
+		addObject(new TimerGO(500, new Function0<Void>() {
+			@Override
+			public Void apply() {
+				toqueNaTela.setVisible(!toqueNaTela.isVisible());
+				return null;
+			}
+		}));
+
+		addObject(new TimerGO(5000, new Function0<Void>() {
+			@Override
+			public Void apply() {
+				checkUOS();
+				return null;
+			}
+		}).setCounting(10000));
+
 	}
 
 	@Override
 	public void update(long delta) {
+	}
 
-		timerPisca += delta;
-		timerCheckUOS += delta;
+	private void checkUOS() {
+		UOS uos = UOSFacade.getUos();
 
-		if (timerCheckUOS >= 5000) {
-			timerCheckUOS = 0;
+		final Gateway gateway = uos.getGateway();
+		final List<DriverData> drivers = gateway
+				.listDrivers("uos.harmegido.server");
 
-			UOS uos = UOSFacade.getUos();
+		if (!UOSFacade.isStarted()) {
+			serverName.text = "Nenhum servidor encontrado";
+		} else if (drivers == null || drivers.size() == 0) {
+			// nenhum hm server encontrado
+			serverName.text = "Nenhum servidor encontrado";
+		} else if (drivers.size() > 1) {
+			// mais de um hm server encontrado
+			serverName.text = "Mais de um servidor encontrado";
+		} else {
+			final DriverData dev = drivers.get(0);
 
-			final Gateway gateway = uos.getGateway();
-			final List<DriverData> drivers = gateway
-					.listDrivers("uos.harmegido.server");
+			final UpDevice device = dev.getDevice();
 
-			if (!UOSFacade.isStarted()) {
-				serverName.text = "Nenhum servidor encontrado";
-			} else if (drivers == null || drivers.size() == 0) {
-				// nenhum hm server encontrado
-				serverName.text = "Nenhum servidor encontrado";
-			} else if (drivers.size() > 1) {
-				// mais de um hm server encontrado
-				serverName.text = "Mais de um servidor encontrado";
-			} else {
-				final DriverData dev = drivers.get(0);
+			Call callHostName = new Call("uos.harmegido.server", "getHostName");
+			Call callClientCount = new Call("uos.harmegido.server",
+					"getClientCount");
 
-				final UpDevice device = dev.getDevice();
+			try {
+				Response callService = gateway
+						.callService(device, callHostName);
+				String hostName = callService.getResponseString("HostName");
+				Integer clientCount = (Integer) gateway.callService(device,
+						callClientCount).getResponseData("clientCount");
 
-				Call callHostName = new Call("uos.harmegido.server",
-						"getHostName");
-				Call callClientCount = new Call("uos.harmegido.server",
-						"getClientCount");
+				serverName.text = hostName + "";
+				clientInfo.text = "(clientes conectados: " + clientCount + ")";
 
-				try {
-					Response callService = gateway.callService(device,
-							callHostName);
-					String hostName = callService.getResponseString("HostName");
-					Integer clientCount = (Integer) gateway.callService(device,
-							callClientCount).getResponseData("clientCount");
-
-					serverName.text = hostName + "";
-					clientInfo.text = "(clientes conectados: " + clientCount
-							+ ")";
-
-				} catch (ServiceCallException e) {
-					serverName.text = e.getMessage();
-					e.printStackTrace();
-				}
+			} catch (ServiceCallException e) {
+				serverName.text = e.getMessage();
+				e.printStackTrace();
 			}
-
-		}
-
-		if (timerPisca >= 500) {
-			toqueNaTela.setVisible(!toqueNaTela.isVisible());
-			timerPisca = 0;
 		}
 	}
 

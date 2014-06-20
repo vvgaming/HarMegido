@@ -3,48 +3,52 @@ package org.vvgaming.harmegido.theGame;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.vvgaming.harmegido.gameEngine.AbstractGameScene;
 import org.vvgaming.harmegido.gameEngine.GameCanvas;
-import org.vvgaming.harmegido.theGame.scenes.MenuScene;
+import org.vvgaming.harmegido.gameEngine.RootNode;
+import org.vvgaming.harmegido.theGame.mainNodes.N1Loading;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.WindowManager;
 
-public class HarMegidoActivity extends Activity {
-
-	public static HarMegidoActivity activity;
+public class HarMegidoActivity extends Activity
+{
 
 	private GameCanvas gameCanvas;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		activity = this;
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onResume()
+	{
 		super.onResume();
 
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this,
-				callback);
+		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_8, this, callback);
 	}
 
-	private BaseLoaderCallback callback = new BaseLoaderCallback(this) {
+	private BaseLoaderCallback callback = new BaseLoaderCallback(this)
+	{
 		@Override
-		public void onManagerConnected(int status) {
-			switch (status) {
-			case LoaderCallbackInterface.SUCCESS: {
-				gameCanvas = new GameCanvas(HarMegidoActivity.this,
-						new MenuScene(HarMegidoActivity.this));
+		public void onManagerConnected(int status)
+		{
+			switch (status)
+			{
+			case LoaderCallbackInterface.SUCCESS:
+			{
+				RootNode.create(HarMegidoActivity.this, new N1Loading());
+
+				gameCanvas = new GameCanvas(HarMegidoActivity.this, RootNode.getInstance());
 				gameCanvas.setShowFps(true);
 				setContentView(gameCanvas);
-
 			}
 				break;
-			default: {
+			default:
+			{
 				super.onManagerConnected(status);
 			}
 				break;
@@ -52,9 +56,5 @@ public class HarMegidoActivity extends Activity {
 		}
 
 	};
-
-	public void trocarCena(final AbstractGameScene cena) {
-		gameCanvas.trocarCena(cena);
-	}
 
 }

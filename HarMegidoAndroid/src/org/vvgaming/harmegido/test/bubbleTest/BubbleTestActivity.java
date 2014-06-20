@@ -4,6 +4,7 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.vvgaming.harmegido.gameEngine.GameCanvas;
+import org.vvgaming.harmegido.gameEngine.RootNode;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -31,8 +32,10 @@ public class BubbleTestActivity extends Activity {
 		public void onManagerConnected(int status) {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
+
+				RootNode.create(BubbleTestActivity.this, new BubbleGame());
 				gameCanvas = new GameCanvas(BubbleTestActivity.this,
-						new BubbleGame(BubbleTestActivity.this));
+						RootNode.getInstance());
 				gameCanvas.setShowFps(true);
 				setContentView(gameCanvas);
 			}

@@ -20,7 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
 /**
- * Classe de utilit·rios para interaÁ„o com Objetos da OpenCV
+ * Classe de utilit√°rios para intera√ß√£o com Objetos da OpenCV
  * 
  * @author Vinicius Nogueira
  */
@@ -28,18 +28,18 @@ public class OCVUtil {
 
 	private Mat empty = new Mat();
 
-	// par‚metros para o c·lculo de histograma em HSV (ignorando o V)
+	// par√¢metros para o c√°lculo de histograma em HSV (ignorando o V)
 	private MatOfInt channels;
 	private MatOfInt histSize;
 	private MatOfFloat ranges;
 
-	// par‚metros para c·lculo de features e descriptors
+	// par√¢metros para c√°lculo de features e descriptors
 	private FeatureDetector fd;
 	private DescriptorExtractor de;
 	private DescriptorMatcher dm;
 
 	private OCVUtil() {
-		// par‚metros para o c·lculo de histograma em HSV (ignorando o V)
+		// par√¢metros para o c√°lculo de histograma em HSV (ignorando o V)
 		channels = new MatOfInt(0, 1);
 		histSize = new MatOfInt(50, 60);
 		ranges = new MatOfFloat();
@@ -48,14 +48,14 @@ public class OCVUtil {
 		ranges.put(1, 0, 0.0f);
 		ranges.put(1, 1, 180.0f);
 
-		// par‚metros para c·lculo de features e descriptors
+		// par√¢metros para c√°lculo de features e descriptors
 		fd = FeatureDetector.create(FeatureDetector.ORB);
 		de = DescriptorExtractor.create(DescriptorExtractor.ORB);
 		dm = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
 	}
 
 	/**
-	 * Libera as matrizes, se n„o nulas
+	 * Libera as matrizes, se n√£o nulas
 	 * 
 	 * @param mats
 	 */
@@ -87,8 +87,8 @@ public class OCVUtil {
 	}
 
 	/**
-	 * C·lcula o histograma de H e S de uma imagem RGBA. Isto È, converte a
-	 * imagem para HSV, ignora o V e c·cula o histograma
+	 * Calcula o histograma de H e S de uma imagem RGBA. Isto √©, converte a
+	 * imagem para HSV, ignora o V e calcula o histograma
 	 * 
 	 * @param mat
 	 *            a imagem em RGBA
@@ -103,7 +103,7 @@ public class OCVUtil {
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGBA2RGB);
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGB2HSV);
 
-		// c·lcula o histograma apenas de H e S
+		// cÔøΩlcula o histograma apenas de H e S
 		Imgproc.calcHist(Arrays.asList(imagem), channels, empty, retorno,
 				histSize, ranges);
 
@@ -130,12 +130,12 @@ public class OCVUtil {
 	}
 
 	/**
-	 * Compara dois descritores extraÌdos em
+	 * Compara dois descritores extraidos em
 	 * {@link OCVUtil#extractFeatureDescriptors(Mat)}
 	 * 
 	 * @param descs1
 	 * @param descs2
-	 * @return de 0 a 1, onde 1 È mais "prÛximo"
+	 * @return de 0 a 1, onde 1 √© o mais "pr√≥ximo"
 	 */
 	public float compareDescriptors(Mat descs1, Mat descs2) {
 		try {
@@ -158,8 +158,8 @@ public class OCVUtil {
 				return 0.0f;
 			}
 		} catch (final CvException ignored) {
-			// esse ignore na exceÁ„o eu coloquei pq alguns frames da
-			// camera vem diferente e d· pau na comparaÁ„o dos descritores
+			// esse ignore na exce√ß√£o eu coloquei pq alguns frames da
+			// camera vem diferente e d√° pau na compara√ß√£o dos descritores
 			// TODO verificar como resolver esse problema "de verdade"
 			return 0.0f;
 		}

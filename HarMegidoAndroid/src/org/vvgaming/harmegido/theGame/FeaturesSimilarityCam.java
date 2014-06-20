@@ -11,11 +11,11 @@ import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Wrapper de {@link JavaCam} para conferir novas funcionalidades. É uma câmera
+ * Wrapper de {@link JavaCam} para conferir novas funcionalidades. uma cÃ¢mera
  * que fica comparando os frames com frames anteriores guardados, verificando
  * sua similaridade. <br/>
- * Essencialmente é uma especialização de {@link JavaCam}, mas implementado como
- * agregação ao em vez de herança
+ * Essencialmente Ã© uma especializaÃ§Ã£o de {@link JavaCam}, mas implementado como
+ * agregaÃ§Ã£o ao em vez de heranÃ§a
  * 
  * @author Vinicius Nogueira
  */
@@ -37,9 +37,9 @@ public class FeaturesSimilarityCam implements
 	public Tuple2<Bitmap, Mat> snapshot() {
 
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// o Ã³digo nativo apresenta uns erros estranhos ao ser acessado por
 		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// TODO verificar se essa Ã© a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
 			final OCVUtil ocvUtil = OCVUtil.getInstance();
@@ -78,9 +78,9 @@ public class FeaturesSimilarityCam implements
 	@Override
 	public void stopObservar() {
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// o cÃ³digo nativo apresenta uns erros estranhos ao ser acessado por
 		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// TODO verificar se essa Ã© a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
 			OCVUtil.getInstance().releaseMat(descsEmObservacao);
@@ -165,9 +165,9 @@ public class FeaturesSimilarityCam implements
 	public JavaCameraFrame getLastFrame() {
 
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// o cÃ³digo nativo apresenta uns erros estranhos ao ser acessado por
 		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// TODO verificar se essa Ã© a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
 			return realCam.getLastFrame();

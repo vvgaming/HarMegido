@@ -1,7 +1,7 @@
 package org.vvgaming.harmegido.test.bubbleTest;
 
 import org.opencv.core.Mat;
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.vision.OCVUtil;
 import org.vvgaming.harmegido.vision.old.OldNativeCam;
@@ -14,7 +14,7 @@ import android.graphics.Canvas;
  * 
  * @author Vinicius Nogueira
  */
-public class OCVCamObjTest implements GameObject {
+public class OCVCamObjTest extends GameNode {
 
 	private OldNativeCam cam;
 	private Bitmap lastFrame;
@@ -38,11 +38,6 @@ public class OCVCamObjTest implements GameObject {
 	}
 
 	@Override
-	public boolean isDead() {
-		return false;
-	}
-
-	@Override
 	public void init() {
 		if (cam == null) {
 			cam = new OldNativeCam();
@@ -60,11 +55,6 @@ public class OCVCamObjTest implements GameObject {
 
 	public void setCenter(Ponto center) {
 		this.center = center;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return true;
 	}
 
 }

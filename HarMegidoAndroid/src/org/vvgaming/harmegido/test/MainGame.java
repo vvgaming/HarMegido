@@ -1,7 +1,6 @@
 package org.vvgaming.harmegido.test;
 
 import org.vvgaming.harmegido.R;
-import org.vvgaming.harmegido.test.bubbleTest.BubbleTestActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,36 +21,37 @@ public class MainGame extends Activity {
 		((TextView) findViewById(R.id.lightchoice))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
-					public void onClick(View v) 
-					{
+					public void onClick(View v) {
 						v.getRootView().setBackgroundColor(Color.WHITE);
-						((TextView) findViewById(R.id.lightchoice)).setVisibility(0);
-						((TextView) findViewById(R.id.darkchoice)).setVisibility(1);
+						((TextView) findViewById(R.id.lightchoice))
+								.setVisibility(0);
+						((TextView) findViewById(R.id.darkchoice))
+								.setVisibility(1);
 					}
 				});
 
 		((TextView) findViewById(R.id.darkchoice))
-		.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) 
-			{
-				v.getRootView().setBackgroundColor(Color.BLACK);
-				((TextView) findViewById(R.id.darkchoice)).setVisibility(0);
-				((TextView) findViewById(R.id.lightchoice)).setVisibility(1);
-			}
-		});
-		
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						v.getRootView().setBackgroundColor(Color.BLACK);
+						((TextView) findViewById(R.id.darkchoice))
+								.setVisibility(0);
+						((TextView) findViewById(R.id.lightchoice))
+								.setVisibility(1);
+					}
+				});
+
 		((Button) findViewById(R.id.btnNextPage))
-		.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) 
-			{
-				Intent i = new Intent(getApplicationContext(),
-						CharSelection.class);
-				startActivity(i);
-			}
-		});
-		
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(getApplicationContext(),
+								CharSelection.class);
+						startActivity(i);
+					}
+				});
+
 	}
 
 	@Override

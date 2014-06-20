@@ -2,12 +2,12 @@ package org.vvgaming.harmegido.test.bubbleTest;
 
 import java.util.Random;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class RandomBubble implements GameObject {
+public class RandomBubble extends GameNode {
 
 	private static final long ANIMATION_DURATION = 5000;
 
@@ -46,26 +46,6 @@ public class RandomBubble implements GameObject {
 		if (!faseAbre) {
 			raio = maxRaio - raio;
 		}
-	}
-
-	@Override
-	public boolean isDead() {
-		return false;
-	}
-
-	@Override
-	public void init() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void end() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public boolean isVisible() {
-		return true;
 	}
 
 }

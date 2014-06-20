@@ -1,6 +1,6 @@
-package org.vvgaming.harmegido.gameEngine.gos;
+package org.vvgaming.harmegido.gameEngine.nodes;
 
-import org.vvgaming.harmegido.gameEngine.GameObject;
+import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Canvas;
@@ -8,25 +8,30 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 /**
- * Uma implementaÁ„o de {@link GameObject} que dispıe e manipula texto
+ * Uma implementa√ß√£o de {@link GameObject} que disp√µe e manipula texto
  * 
  * @author Vinicius Nogueira
  */
-public class Text implements GameObject {
+public class NText extends GameNode {
+
+	public enum VerticalAlign {
+		TOP, MIDDLE;
+	}
 
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	public Typeface face;
 	public String text;
 	public Ponto pos;
+	public VerticalAlign vAlign = VerticalAlign.MIDDLE;
 	public int size = 12;
 
 	private boolean visible = true;
 
-	public Text() {
+	public NText() {
 		this(0, 0, "");
 	}
 
-	public Text(int x, int y, String text) {
+	public NText(int x, int y, String text) {
 		paint.setARGB(255, 255, 255, 255);
 		pos = new Ponto(x, y);
 		paint.setTextSize(size);
@@ -43,7 +48,22 @@ public class Text implements GameObject {
 
 	@Override
 	public void render(Canvas canvas) {
-		canvas.drawText(text, pos.x, pos.y, paint);
+		final String[] splitByLine = text.split("\n");
+		float yStart = pos.y;
+		switch (vAlign) {
+		case TOP:
+			yStart = pos.y;
+			break;
+		case MIDDLE:
+			yStart = pos.y - ((splitByLine.length * size) / 2);
+			break;
+		default:
+			throw new IllegalArgumentException(
+					"Alinhamento vertical desconhecido: " + vAlign);
+		}
+		for (int i = 0; i < splitByLine.length; i++) {
+			canvas.drawText(splitByLine[i], pos.x, yStart + (i * size), paint);
+		}
 	}
 
 	@Override
@@ -72,8 +92,8 @@ public class Text implements GameObject {
 		paint.setARGB(a, r, g, b);
 	}
 
-	public Text clone() {
-		Text retorno = new Text();
+	public NText clone() {
+		NText retorno = new NText();
 		retorno.face = face;
 		retorno.size = size;
 		retorno.visible = visible;

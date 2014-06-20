@@ -14,7 +14,7 @@ import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 public abstract class MatchState
 {
 	/**
-	 * Cria uma mudança de estado para adicionar um jogador à partida.
+	 * Cria uma mudança de estado que representa a adição de um jogador à partida.
 	 * @param jogador O jogador a ser adicionado a uma partida.
 	 * @return Um mudança de estado que representa a adição de um jogador numa partida.
 	 */

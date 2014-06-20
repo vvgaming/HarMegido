@@ -5,7 +5,8 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.vvgaming.harmegido.gameEngine.GameCanvas;
 import org.vvgaming.harmegido.gameEngine.RootNode;
-import org.vvgaming.harmegido.theGame.mainNodes.N1Intro;
+import org.vvgaming.harmegido.theGame.mainNodes.N1Loading;
+import org.vvgaming.harmegido.theGame.mainNodes.N2Intro;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ public class HarMegidoActivity extends Activity {
 		public void onManagerConnected(int status) {
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS: {
-				RootNode.create(HarMegidoActivity.this, new N1Intro());
+				RootNode.create(HarMegidoActivity.this, new N1Loading());
 				
 				gameCanvas = new GameCanvas(HarMegidoActivity.this,
 						RootNode.getInstance());

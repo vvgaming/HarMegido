@@ -30,7 +30,7 @@ public class ServerDriverFacade
 	private static final String HAR_MEGIDO_DRIVER = "uos.harmegido.server";
 	private final UOS uos;
 	private final UpDevice device;
-
+	
 
 	protected ServerDriverFacade(final UOS uos, final UpDevice device)
 	{
@@ -38,7 +38,7 @@ public class ServerDriverFacade
 		this.uos = uos;
 		this.device = device;
 	}
-
+	
 	/**
 	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro.
 	 * 
@@ -52,27 +52,27 @@ public class ServerDriverFacade
 		{
 			throw new IllegalArgumentException("A instância do uos não pode ser nula");
 		}
-
+		
 		if (uos.getGateway() == null)
 		{
 			throw new IllegalStateException("Erro: Gateway do uos não pode retornar null");
 		}
-
+		
 		final List<DriverData> drivers = waitForDrivers(uos, timeout);
 
 		if (drivers.isEmpty())
 		{
 			throw new IllegalStateException("Não foi encontrado o driver do Har Megido na instância do uos");
 		}
-
+		
 		if (drivers.size() > 1)
 		{
 			throw new IllegalStateException("Mais de um driver encontrado para o Har Megido na instância do uos");
 		}
-
+		
 		return new ServerDriverFacade(uos, drivers.get(0).getDevice());
 	}
-
+	
 	/**
 	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro, 
 	 * esperando até 5 segundos pelo driver ficar pronto.
@@ -84,7 +84,7 @@ public class ServerDriverFacade
 	{
 		return from(uos, 5000);
 	}
-
+	
 	/**
 	 * Espera por drivers uma quantidade de tempo (em milisegundos) definida em timeout
 	 * @param uos A instância do UOS de onde o driver será retirado
@@ -95,7 +95,7 @@ public class ServerDriverFacade
 	{
 		final long startTime = System.currentTimeMillis();
 		List<DriverData> drivers;
-
+		
 		while(  (drivers = uos.getGateway().listDrivers(HAR_MEGIDO_DRIVER)).isEmpty() &&
 				(System.currentTimeMillis() - startTime < timeout))
 		{
@@ -103,7 +103,7 @@ public class ServerDriverFacade
 
 		return drivers;
 	}
-
+	
 	/**
 	 * Cria uma partida no servidor para o nome e duração informados
 	 * @param nomePartida O nome a ser vinculado com a partida. Não pode coincidir com o nome de nenhuma
@@ -124,7 +124,7 @@ public class ServerDriverFacade
 		{
 			return Either.createLeft(response.getLeft());
 		}
-
+		
 		final String jsonStr = response.getRight().getResponseData("retorno").toString();
 		return Either.createRight(fromJson(jsonStr, Match.class));
 	}
@@ -140,7 +140,7 @@ public class ServerDriverFacade
 	{
 		return executarEstado(partida, MatchState.adicionarJogador(jogador));
 	}
-
+	
 	/**
 	 * Remove um jogador da partida informada
 	 * @param partida A partida à qual o jogador deve ser desvinculado
@@ -152,7 +152,7 @@ public class ServerDriverFacade
 	{
 		return executarEstado(partida, MatchState.removerJogador(jogador));
 	}
-
+	
 	/**
 	 * Muda o time de um jogador da partida informada
 	 * @param partida A partida que o jogador pertence
@@ -165,7 +165,7 @@ public class ServerDriverFacade
 	{
 		return executarEstado(partida, MatchState.mudarTime(jogador, novoTime));
 	}
-
+	
 	/**
 	 * Cria um encantamento para o jogador e a imagem informados
 	 * @param partida A partida que o jogador pertence
@@ -178,7 +178,7 @@ public class ServerDriverFacade
 	{
 		return executarEstado(partida, MatchState.encantar(jogador, imagem));
 	}
-
+	
 	/**
 	 * Cria um desencantamento para o jogador e o encantamento informados
 	 * @param partida A partida que o jogador pertence
@@ -191,7 +191,7 @@ public class ServerDriverFacade
 	{
 		return executarEstado(partida, MatchState.desencantar(jogador, encantamento));
 	}
-
+	
 	/**
 	 * Código comum a todos os métodos que fazem mudança a partir de uma mudança de estado
 	 * @param partida A partida a ser alterada
@@ -204,16 +204,16 @@ public class ServerDriverFacade
 	{
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("state", toJson(mState));
-
+		
 		final Either<Exception, Response> response = callService("runState", arg1, arg2);
-
+		
 		if (response.isLeft())
 		{
 			return Either.createLeft(response.getLeft());
 		}
 		return Either.createRight(true);
 	}
-
+	
 	/**
 	 * Lista todas as partidas neste momento
 	 * @return Uma instância de {@link Either} que conterá uma lista com o nome das partidas ativas,
@@ -223,7 +223,7 @@ public class ServerDriverFacade
 	public Either<Exception, List<String>> listarPartidas()
 	{
 		final Either<Exception, Response> response = callService("listarPartidas");
-
+		
 		if (response.isLeft())
 		{
 			return Either.createLeft(response.getLeft());
@@ -257,7 +257,7 @@ public class ServerDriverFacade
 		{
 			final Response response = uos.getGateway().callService(device, call);
 			final Object responseData = response.getResponseData("retorno");
-
+			
 			//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
 			//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
 			if (responseData != null)

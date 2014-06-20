@@ -1,7 +1,10 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
+import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
+import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
+import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
@@ -46,9 +49,13 @@ public class N2Intro extends GameNode
 		title.size = 140;
 		title.vAlign = VerticalAlign.TOP;
 
-		addSubNode(orientacao);
-		addSubNode(toqueParaComeçar);
-		addSubNode(title);
+		NImage bgImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.bg_intro));
+		bgImg.setHeightKeepingRatio(getGameHeight());
+
+		addSubNode(bgImg, 0);
+		addSubNode(orientacao, 1);
+		addSubNode(toqueParaComeçar, 1);
+		addSubNode(title, 1);
 
 	}
 

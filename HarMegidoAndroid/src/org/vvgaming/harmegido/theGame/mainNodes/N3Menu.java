@@ -89,8 +89,13 @@ public class N3Menu extends GameNode
 			}
 		});
 
-		addSubNode(group);
-		addSubNode(partidasTxt);
+		NImage bgImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.bg_intro));
+		bgImg.setHeightKeepingRatio(getGameHeight());
+
+		addSubNode(bgImg, 0);
+
+		addSubNode(group, 1);
+		addSubNode(partidasTxt, 1);
 		addSubNode(new NTimer(5000, new Function0<Void>()
 		{
 			@Override
@@ -101,7 +106,7 @@ public class N3Menu extends GameNode
 			}
 		}));
 
-		addSubNode(new NButtonText(new NText(100, 100, "ola mundo")));
+		addSubNode(new NButtonText(new NText(100, 100, "ola mundo")), 1);
 
 	}
 

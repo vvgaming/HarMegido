@@ -15,76 +15,80 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-public class Main extends Activity {
+public class Main extends Activity
+{
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.main);
 
-		ClassLoaderUtils.builder = new ClassLoaderUtils.DefaultClassLoaderBuilder() {
-			public ClassLoader getParentClassLoader() {
+		ClassLoaderUtils.builder = new ClassLoaderUtils.DefaultClassLoaderBuilder()
+		{
+			public ClassLoader getParentClassLoader()
+			{
 				return getClassLoader();
 			};
 		};
 
-		((Button) findViewById(R.id.btnHarMegido))
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(getApplicationContext(),
-								HarMegidoActivity.class);
-						startActivity(i);
-					}
-				});
+		((Button) findViewById(R.id.btnHarMegido)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(getApplicationContext(), HarMegidoActivity.class);
+				startActivity(i);
+			}
+		});
 
-		((Button) findViewById(R.id.btnBubblesTest))
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(getApplicationContext(),
-								BubbleTestActivity.class);
-						startActivity(i);
-					}
-				});
+		((Button) findViewById(R.id.btnBubblesTest)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(getApplicationContext(), BubbleTestActivity.class);
+				startActivity(i);
+			}
+		});
 
-		((Button) findViewById(R.id.btnCameraTest))
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(getApplicationContext(),
-								ObjDetectTestActivity.class);
-						startActivity(i);
-					}
-				});
+		((Button) findViewById(R.id.btnCameraTest)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(getApplicationContext(), ObjDetectTestActivity.class);
+				startActivity(i);
+			}
+		});
 
-		((Button) findViewById(R.id.btnCameraTest2))
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(getApplicationContext(),
-								ObjDetectFeatTestActivity.class);
-						startActivity(i);
-					}
-				});
+		((Button) findViewById(R.id.btnCameraTest2)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(getApplicationContext(), ObjDetectFeatTestActivity.class);
+				startActivity(i);
+			}
+		});
 
-		((Button) findViewById(R.id.btnMyTest))
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						Intent i = new Intent(getApplicationContext(),
-								MainGame.class);
-						startActivity(i);
-					}
-				});
+		((Button) findViewById(R.id.btnMyTest)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent i = new Intent(getApplicationContext(), MainGame.class);
+				startActivity(i);
+			}
+		});
 
-		UOSFacade.startUos();
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy()
+	{
 		super.onDestroy();
 		UOSFacade.stopUos();
 	}

@@ -10,7 +10,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
-public class N1Intro extends GameNode {
+public class N2Intro extends GameNode {
 
 	@Override
 	public void init() {
@@ -60,7 +60,7 @@ public class N1Intro extends GameNode {
 	@Override
 	public boolean onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			RootNode.getInstance().changeMainNode(new N2Menu());
+			RootNode.getInstance().changeMainNode(new N3Menu());
 			return true;
 		}
 		return false;

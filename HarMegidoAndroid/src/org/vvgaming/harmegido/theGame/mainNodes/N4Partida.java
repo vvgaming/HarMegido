@@ -13,7 +13,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 
-public class N3Partida extends GameNode {
+public class N4Partida extends GameNode {
 
 	private NSimilarityCam cam;
 	private NSimpleBox bg;

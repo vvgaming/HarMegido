@@ -229,7 +229,8 @@ public class ServerDriverFacade
 			return Either.createLeft(response.getLeft());
 		}
 
-		final List<String> fromJson = fromJson(response.getRight().getResponseData("retorno").toString(), List.class);
+		final String eitherString = response.getRight().getResponseData("retorno").toString();
+		final List<String> fromJson = ((Either<Exception, List<String>>) fromJson(eitherString, Either.class)).getRight();
 		return Either.createRight(fromJson);
 	}
 

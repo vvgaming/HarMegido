@@ -1,7 +1,10 @@
 package org.vvgaming.harmegido.gameEngine.nodes.buttons;
 
-import org.vvgaming.harmegido.gameEngine.nodes.NImage;
+import org.vvgaming.harmegido.gameEngine.nodes.NText;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
@@ -9,32 +12,56 @@ import android.graphics.RectF;
  * 
  * @author Vinicius Nogueira
  */
-public class NButtonText extends NButton {
+public class NButtonText extends NButton
+{
 
-	private final NImage image;
+	private final NText texto;
 
-	public NButtonText(NImage image) {
+	public NButtonText(final NText texto)
+	{
 		super();
-		this.image = image;
+		this.texto = texto;
 	}
 
 	@Override
-	public void init() {
+	public void init()
+	{
 		super.init();
-		addSubNode(image);
+		addSubNode(texto);
 	}
 
 	@Override
-	protected void update(long delta) {
-	}
-
-	public NImage getImage() {
-		return image;
+	protected void update(final long delta)
+	{
 	}
 
 	@Override
-	public RectF getBoundingRect() {
-		return image.getBoundingRect();
+	protected void render(final Canvas canvas)
+	{
+		super.render(canvas);
+
+		// TODO RETIRAR ESSE TESTE ABAIXO
+		final Paint paint = new Paint();
+		paint.setARGB(255, 255, 255, 255);
+		canvas.drawRect(getBoundingRect(), paint);
+	}
+
+	public NText getTexto()
+	{
+
+		return texto;
+	}
+
+	@Override
+	public RectF getBoundingRect()
+	{
+		final Rect bounds = new Rect();
+		texto.paint.getTextBounds(texto.text, 0, texto.text.length(), bounds);
+
+		// TODO Corrigir esse calculo...
+		bounds.set((int) texto.pos.x, (int) texto.pos.y, (int) (texto.pos.x + bounds.width()), (int) (texto.pos.y + bounds.height()));
+		return new RectF(bounds);
+
 	}
 
 }

@@ -11,6 +11,7 @@ import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
+import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
 import org.vvgaming.harmegido.uos.ServerDriverFacade;
@@ -99,6 +100,8 @@ public class N3Menu extends GameNode
 				return null;
 			}
 		}));
+
+		addSubNode(new NButtonText(new NText(100, 100, "ola mundo")));
 
 	}
 

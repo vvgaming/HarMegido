@@ -10,10 +10,7 @@ import android.os.AsyncTask;
 
 public class UOSFacade
 {
-	// private static final String SERVER_IP = "harmegido.servegame.com"; //
-	// servidor
-	// amazon
-	private static final String SERVER_IP = "192.168.0.100";
+	private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
 
 	// //////////////////////////////// UOS //////////////////////////////////
 	private static UOS uos;
@@ -42,10 +39,11 @@ public class UOSFacade
 		uos = new UOS();
 		new AsyncTask<Void, Void, Void>()
 		{
-			protected Void doInBackground(Void... params)
+			@Override
+			protected Void doInBackground(final Void... params)
 			{
 
-				ClientMode.Properties props = new ClientMode.Properties();
+				final ClientMode.Properties props = new ClientMode.Properties();
 
 				props.setServer(SERVER_IP);
 				uos.start(props);
@@ -60,7 +58,9 @@ public class UOSFacade
 	public static void stopUos()
 	{
 		if (uos == null)
+		{
 			return;
+		}
 		uos.stop();
 		uos = null;
 		driverFacade = null;
@@ -91,7 +91,8 @@ public class UOSFacade
 		}
 		new AsyncTask<Void, Void, Void>()
 		{
-			protected Void doInBackground(Void... params)
+			@Override
+			protected Void doInBackground(final Void... params)
 			{
 
 				try

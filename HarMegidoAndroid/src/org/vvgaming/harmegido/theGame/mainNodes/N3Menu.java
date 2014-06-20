@@ -26,6 +26,16 @@ import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.monads.Option;
 
+/**
+ * Menu de opções para entrar em uma partida. <br/>
+ * - Mostra partidas em andamento <br/>
+ * - Escolhe o time <br/>
+ * - Escolhe o nome do jogador (dentre 3 possíveis aleatórios) <br/>
+ * - Escolhe partida para entrar <br/>
+ * - Solicita criação de nova partida <br/>
+ * 
+ * @author Vinicius Nogueira
+ */
 public class N3Menu extends GameNode
 {
 

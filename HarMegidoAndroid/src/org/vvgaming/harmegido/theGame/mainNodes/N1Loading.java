@@ -8,6 +8,11 @@ import org.vvgaming.harmegido.uos.UOSFacade;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 
+/**
+ * Tela de carregamento no início do jogo, para garantir que não entra no jogo antes de carregar o uOS
+ * 
+ * @author Vinicius Nogueira
+ */
 public class N1Loading extends GameNode
 {
 

@@ -4,7 +4,6 @@ import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.uos.UOSFacade;
-import org.w3c.dom.Text;
 
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;

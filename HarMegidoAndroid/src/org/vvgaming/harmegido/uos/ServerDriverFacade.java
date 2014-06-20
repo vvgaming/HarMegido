@@ -3,7 +3,6 @@ package org.vvgaming.harmegido.uos;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
@@ -126,10 +125,10 @@ public class ServerDriverFacade
 			return Either.createLeft(response.getLeft());
 		}
 		
-		final String jsonStr = response.getRight().getResponseData("partida").toString();
+		final String jsonStr = response.getRight().getResponseData("retorno").toString();
 		return Either.createRight(fromJson(jsonStr, Match.class));
 	}
-	
+
 	/**
 	 * Adiciona o jogador na partida informada
 	 * @param partida A partida à qual o jogador deve ser vinculado
@@ -257,13 +256,19 @@ public class ServerDriverFacade
 		try
 		{
 			final Response response = uos.getGateway().callService(device, call);
-			final String responseData = response.getResponseData("retorno").toString();
+			final Object responseData = response.getResponseData("retorno");
 			
 			//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
-			//Nesse caso, basta retorná-la
+			//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
 			if (responseData != null)
 			{
-				return fromJson(responseData, Either.class);
+				//Extrai o either do retorno, para verificar se é exceção. Se for, repassa a exceção
+				final Either<Exception, Response> extractedEither = fromJson(responseData.toString(), Either.class);
+
+				if (extractedEither.isLeft())
+				{
+					return extractedEither;
+				}
 			}
 
 			//Cria um Either para a response recebida

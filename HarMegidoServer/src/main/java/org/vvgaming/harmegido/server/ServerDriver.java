@@ -1,7 +1,8 @@
 package org.vvgaming.harmegido.server;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
+import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,18 +15,16 @@ import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
 import org.unbiquitous.uos.core.applicationManager.CallContext;
 import org.unbiquitous.uos.core.driverManager.UosDriver;
-import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDriver;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
 
 import com.github.detentor.codex.monads.Either;
-
-import static org.vvgaming.harmegido.lib.util.JSONTransformer.*;
 
 /**
  * O driver do servidor, provendo todos os seus serviços. <br/>
@@ -52,13 +51,13 @@ public class ServerDriver implements UosDriver
 	public ServerDriver()
 	{
 		definition = new UpDriver(DRIVER_NAME);
-		definition.addService("getClientCount");
-		definition.addService("getHostName");
-		
+
 		//TODO: Adicionar os serviços aqui
 		definition.addService("criarPartida");
-		definition.addService("listarPartidas");
+		definition.addService("encontrarPartida");
 		definition.addService("runState");
+		definition.addService("listarPartidas");
+		definition.addService("listarJogadores");
 	}
 
 	public void init(Gateway gateway, InitialProperties properties, String instanceId)
@@ -83,7 +82,8 @@ public class ServerDriver implements UosDriver
 	// Serviços deste Server Driver
 	
 	/**
-	 * Cria uma partida
+	 * Cria uma partida. <br/>
+	 * Parâmetros: nomePartida, duracao
 	 */
 	public void criarPartida(Call call, Response response, CallContext callContext)
 	{
@@ -147,6 +147,30 @@ public class ServerDriver implements UosDriver
 	}
 	
 	/**
+	 * Faz a efetiva execução de um estado para uma partida
+	 */
+	public void runState(Call call, Response response, CallContext callContext)
+	{
+		final String nomePartida = call.getParameter("nomePartida").toString();
+		final MatchState state = fromJson(call.getParameter("state").toString(), MatchState.class);
+		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
+		
+		if (eMatch.isLeft()) //Não existe partida
+		{
+			response.addParameter("retorno", toJson(eMatch));
+		}
+		else
+		{
+			//Efetua a alteração
+			synchronized(lock)
+			{
+				eMatch.getRight().executarMudanca(state);
+			}
+			response.addParameter("retorno", toJson(Either.createRight(true)));
+		}
+	}
+	
+	/**
 	 * Lista todas as partidas ativas neste momento
 	 */
 	public void listarPartidas(Call call, Response response, CallContext callContext)
@@ -170,29 +194,48 @@ public class ServerDriver implements UosDriver
 	}
 	
 	/**
-	 * Faz a efetiva execução de um estado para uma partida
+	 * Lista todas as partidas e uma contagem de jogadores de cada tipo
 	 */
-	public void runState(Call call, Response response, CallContext callContext)
+	public void listarJogadores(Call call, Response response, CallContext callContext)
 	{
-		final String nomePartida = call.getParameter("nomePartida").toString();
-		final MatchState state = fromJson(call.getParameter("state").toString(), MatchState.class);
-		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
+		final List<Map<String, Map<TeamType, Integer>>> listaPartidas = new ArrayList<>();
 		
-		if (eMatch.isLeft()) //Não existe partida
+		//Trava até terminar de ler
+		synchronized(lock)
 		{
-			response.addParameter("retorno", toJson(eMatch));
-		}
-		else
-		{
-			//Efetua a alteração
-			synchronized(lock)
+			for (Match match : mapaPartidas.values())
 			{
-				eMatch.getRight().executarMudanca(state);
-			}
-			response.addParameter("retorno", toJson(Either.createRight(true)));
-		}
-	}
+				if (match.isAtiva())
+				{
+					final Map<TeamType, Integer> mapaValores = new HashMap<TeamType, Integer>();
+					
+					//Inicializa o mapa
+					for (TeamType tipoTime : TeamType.values())
+					{
+						mapaValores.put(tipoTime, 0);
+					}
 
+					//Conta quantos jogadores em cada time
+					for (Player curJogador : match.getJogadores())
+					{
+						final Integer valorAnterior = mapaValores.get(curJogador.getTime());
+						mapaValores.put(curJogador.getTime(), valorAnterior + 1);
+					}
+					
+					//Adiciona o mapa na lista
+					final Map<String, Map<TeamType, Integer>> mapa = new HashMap<String, Map<TeamType, Integer>>();
+					mapa.put(match.getNomePartida(), mapaValores);
+					listaPartidas.add(mapa);
+				}
+			}
+		}
+
+		final Either<RuntimeException, List<Map<String, Map<TeamType, Integer>>>> toReturn = Either.createRight(listaPartidas);
+		response.addParameter("retorno", toJson(toReturn));
+	}
+	
+
+	
 	/**
 	 * Procura uma partida, retornando ou a partida ou uma exceção
 	 * @param nomePartida A partida a ser procurada
@@ -213,24 +256,5 @@ public class ServerDriver implements UosDriver
 			return Either.createLeft(theValue);
 		}
 		return Either.createRight(theMatch);
-	}
-	
-	public void getClientCount(Call call, Response response, CallContext callContext)
-	{
-		List<UpDevice> listDevices = Main.getUos().getGateway().listDevices();
-		int clients = listDevices == null ? 0 : listDevices.size();
-		response.addParameter("clientCount", clients);
-	}
-
-	public void getHostName(Call call, Response response, CallContext callContext)
-	{
-		try
-		{
-			response.addParameter("hostName", InetAddress.getLocalHost().getHostName());
-		}
-		catch (UnknownHostException e)
-		{
-			response.addParameter("hostName", "unknown");
-		}
 	}
 }

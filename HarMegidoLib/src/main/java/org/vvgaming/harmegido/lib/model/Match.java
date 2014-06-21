@@ -1,8 +1,10 @@
 package org.vvgaming.harmegido.lib.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +83,7 @@ public class Match
 	 */
 	public boolean isAtiva()
 	{
-		return getHoraFimMilis() < new Date().getTime();
+		return getHoraFimMilis() > new Date().getTime();
 	}
 	
 	/**
@@ -112,6 +114,23 @@ public class Match
 	public boolean contemJogador(final Player jogador)
 	{
 		return jogadores.containsKey(jogador);
+	}
+	
+	/**
+	 * Retorna uma lista de jogadores contidos nesta partida. <br/>
+	 * ATENÇÃO: Será retornado uma cópia dos jogadores, portanto mudanças estruturais nos jogadores
+	 * retornados não afetarão esta partida.
+	 * @return Uma lista com os jogadores desta partida.
+	 */
+	public List<Player> getJogadores()
+	{
+		final List<Player> toReturn = new ArrayList<Player>();
+		
+		for (Player jogador : jogadores.values())
+		{
+			toReturn.add(jogador.copy());
+		}
+		return toReturn;
 	}
 
 	/**

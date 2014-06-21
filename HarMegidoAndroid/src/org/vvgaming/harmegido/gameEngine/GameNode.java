@@ -13,6 +13,9 @@ import org.vvgaming.harmegido.gameEngine.util.AssetManager;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 
+import com.github.detentor.codex.monads.Option;
+import com.github.detentor.codex.product.Tuple2;
+
 /**
  * Implementação de um nó do jogo. Os objetos do jogo se comportam como uma árvore, onde cada nó tem vários nós abaixo
  * 
@@ -21,7 +24,11 @@ import android.view.MotionEvent;
 public abstract class GameNode
 {
 
+	// sub-nós, por camadas
 	private final Map<Integer, List<GameNode>> nodesPerLayer = new TreeMap<Integer, List<GameNode>>();
+
+	// novos nós que devem ser adicionados no início da passada
+	private List<Tuple2<GameNode, Integer>> newNodes = new ArrayList<>();
 
 	// isso é uma morte forçada
 	private boolean murdered = false;
@@ -64,10 +71,17 @@ public abstract class GameNode
 
 	protected final void realUpdate(final long delta)
 	{
+		// adiciona os novos nós
+		for (Tuple2<GameNode, Integer> newNode : newNodes)
+		{
+			realAddSubNode(newNode.getVal1(), Option.from(newNode.getVal2()).getOrElse(0));
+		}
+		newNodes.clear();
+		
 		// invoca o update do nó
 		update(delta);
 
-		// camadas
+		// percorre as camadas para atualizar cada nó
 		for (final Entry<Integer, List<GameNode>> entry : nodesPerLayer.entrySet())
 		{
 			// cada nó da camada
@@ -172,7 +186,8 @@ public abstract class GameNode
 
 	/**
 	 * Adiciona um nó da lista de objetos controlados por este nó (um sub-nó). Os nós desta lista são gerenciados automaticamente sendo
-	 * atualizados {@link GameNode#update(long)} a cada frame e renderizados {@link GameNode#render(Canvas)} também.
+	 * atualizados {@link GameNode#update(long)} a cada frame e renderizados {@link GameNode#render(Canvas)} também. <br/>
+	 * Na verdade esse método não adiciona na hora. Ele marca para adicionar o nó, no início da próxima passada.
 	 * 
 	 * @param node o nó a ser adicionado
 	 * @param layerIndex o índice da camada de renderização (serve para sobrepor nós)
@@ -180,17 +195,35 @@ public abstract class GameNode
 	 */
 	protected boolean addSubNode(final GameNode node, final int layerIndex)
 	{
+		return newNodes.add(Tuple2.from(node, layerIndex));
+	}
 
+	/**
+	 * Método interno que faz o que o {@link GameNode#addSubNode(GameNode, int)} não faz. <br/>
+	 * Esse aqui adiciona de verdade, é usado internamente para efetivar a adição
+	 * 
+	 * @param node o nó a ser adicionado
+	 * @param layerIndex o índice da camada de renderização (serve para sobrepor nós)
+	 * @return retorna <code>true</code> se conseguiu adicionar
+	 */
+	private boolean realAddSubNode(final GameNode node, final int layerIndex)
+	{
 		if (!inicializado)
 		{
 			throw new IllegalStateException("Este nó não foi inicializado e portanto não pode receber sub nós. "
-					+ "Dica: nunca de addSubNode em construtores, para isso use o método init");
+					+ "Dica: nunca use addSubNode em construtores, para isso use o método init");
 		}
 		node.realInit();
 		final List<GameNode> layer = getLayer(layerIndex);
 		return layer.add(node);
 	}
 
+	/**
+	 * Pega lista de nós de uma camada
+	 * 
+	 * @param layerIndex
+	 * @return
+	 */
 	private List<GameNode> getLayer(final int layerIndex)
 	{
 		List<GameNode> retorno = nodesPerLayer.get(layerIndex);

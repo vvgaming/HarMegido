@@ -15,6 +15,7 @@ import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.util.DeviceInfo;
 import org.vvgaming.harmegido.util.MatchManager;
 
 import com.github.detentor.codex.monads.Either;
@@ -40,6 +41,8 @@ public class ClientDriver implements UosDriver
 	@Override
 	public void init(final Gateway gateway, final InitialProperties properties, final String instanceId)
 	{
+		//Se registra no dispositivo
+		DeviceInfo.setDriver(this);
 	}
 
 	@Override

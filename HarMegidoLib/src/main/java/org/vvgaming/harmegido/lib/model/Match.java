@@ -95,6 +95,15 @@ public class Match
 	{
 		return new Date(inicioPartida.getTime());
 	}
+	
+	/**
+	 * Retorna o instante no tempo que a partida terminará.
+	 * @return Uma instância de date que contém o instante no tempo que a partida terminará
+	 */
+	public Date getFimPartida()
+	{
+		return new Date(getHoraFimMilis());
+	}
 
 	/**
 	 * Retorna, em milis, quando a partida terminará

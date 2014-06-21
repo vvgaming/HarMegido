@@ -128,6 +128,26 @@ public class ServerDriverFacade
 		final String jsonStr = response.getRight().getResponseData("retorno").toString();
 		return Either.createRight(fromJson(jsonStr, Match.class));
 	}
+	
+	/**
+	 * Encontra a partida ativa que o jogador passado como parâmetro está jogando, se ela existir
+	 * @param jogador O jogador cuja partida será buscada
+	 * @return Uma instância de {@link Either} que conterá a partida, ou uma exceção em caso contrário
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Match> encontrarPartida(final Player jogador)
+	{
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("idJogador", jogador.getIdJogador());
+		final Either<Exception, Response> response = callService("encontrarPartida", arg1);
+
+		if (response.isLeft())
+		{
+			return Either.createLeft(response.getLeft());
+		}
+		
+		final String jsonStr = response.getRight().getResponseData("retorno").toString();
+		return Either.createRight(fromJson(jsonStr, Match.class));
+	}
 
 	/**
 	 * Adiciona o jogador na partida informada

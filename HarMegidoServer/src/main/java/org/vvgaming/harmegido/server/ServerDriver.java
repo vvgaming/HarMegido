@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
@@ -19,6 +20,7 @@ import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
+import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
 
 import com.github.detentor.codex.monads.Either;
@@ -106,6 +108,41 @@ public class ServerDriver implements UosDriver
 			}
 			toReturn = Either.createRight(partida);
 		}
+		response.addParameter("retorno", toJson(toReturn));
+	}
+	
+	/**
+	 * Encontra uma partida já existente
+	 */
+	public void encontrarPartida(Call call, Response response, CallContext callContext)
+	{
+		final String idJogador = call.getParameter("idJogador").toString();
+		Match partida = null;
+		
+		synchronized(lock)
+		{
+			for (Entry<String, Match> curEntry : mapaPartidas.entrySet())
+			{
+				if (curEntry.getValue().isAtiva() && curEntry.getValue().contemJogador(Player.from("", idJogador)))
+				{
+					partida = curEntry.getValue();
+					break;
+				}
+			}
+		}
+		
+		Either<RuntimeException, Match> toReturn = null;
+		
+		if (partida == null)
+		{
+			final RuntimeException rException = new NoSuchElementException("O jogador não pertence a nenhuma partida ativa");
+			toReturn = Either.createLeft(rException);
+		}
+		else
+		{
+			toReturn = Either.createRight(partida);
+		}
+
 		response.addParameter("retorno", toJson(toReturn));
 	}
 	

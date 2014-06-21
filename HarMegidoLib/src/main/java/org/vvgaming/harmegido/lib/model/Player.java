@@ -28,7 +28,7 @@ public class Player implements Copyable
 	 * @param device O identificador único do dispositivo do jogador
 	 * @return Uma instância de um jogador, inicializado com as informações passadas como parâmetro
 	 */
-	public Player from(final String playerName, final String device)
+	public static Player from(final String playerName, final String device)
 	{
 		return from(playerName, device, null);
 	}
@@ -41,7 +41,7 @@ public class Player implements Copyable
 	 * @param time O time ao qual aquele jogador estará vinculado. Pode ser nulo.
 	 * @return Uma instância de um jogador, inicializado com as informações passadas como parâmetro
 	 */
-	public Player from(final String playerName, final String device, final TeamType time)
+	public static Player from(final String playerName, final String device, final TeamType time)
 	{
 		if (playerName == null || playerName == "")
 		{

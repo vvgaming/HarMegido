@@ -13,7 +13,9 @@ import java.util.NoSuchElementException;
 
 import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
+import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
 import org.unbiquitous.uos.core.applicationManager.CallContext;
+import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.driverManager.UosDriver;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDriver;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
@@ -26,7 +28,10 @@ import org.vvgaming.harmegido.lib.model.match.MatchState;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeDisenchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 
+import com.github.detentor.codex.collections.mutable.SetSharp;
+import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Either;
+import com.github.detentor.codex.util.Reflections;
 
 /**
  * O driver do servidor, provendo todos os seus serviços. <br/>
@@ -40,6 +45,10 @@ public class ServerDriver implements UosDriver
 	private UpDriver definition;
 	//TODO: Extrair essa constante para alguma outra parte
 	private String DRIVER_NAME = "uos.harmegido.server";
+	private String CLIENT_DRIVER_NAME = "uos.harmegido.client";
+	
+	//Segura a referência ao Gateway
+	private Gateway gateway;
 	
 	//TODO:O mapa de partidas contém tanto as partidas ativas quanto as inativas
 	//deve-se fazer algum tipo de limpeza, para retirar do mapa as partidas que acabaram
@@ -64,6 +73,7 @@ public class ServerDriver implements UosDriver
 
 	public void init(Gateway gateway, InitialProperties properties, String instanceId)
 	{
+		this.gateway = gateway;
 	}
 	
 	public void destroy()
@@ -154,7 +164,8 @@ public class ServerDriver implements UosDriver
 	public void runState(Call call, Response response, CallContext callContext)
 	{
 		final String nomePartida = call.getParameter("nomePartida").toString();
-		final MatchState state = fromJson(call.getParameter("state").toString(), MatchState.class);
+		final String stateJson = call.getParameter("state").toString();
+		final MatchState state = fromJson(stateJson, MatchState.class);
 		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
 		
 		if (eMatch.isLeft()) //Não existe partida
@@ -172,8 +183,8 @@ public class ServerDriver implements UosDriver
 			//Verifica o tipo de alteração
 			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
 			{
-				//Tem que propagar a alteração para todos os clientes
-				//TODO: Colocar o código que comunica aos clientes
+				//TODO: Colocar algum código para fazer algo com o retorno
+				notifyClients(CLIENT_DRIVER_NAME, stateJson);
 			}
 			response.addParameter("retorno", toJson(Either.createRight(true)));
 		}
@@ -207,7 +218,7 @@ public class ServerDriver implements UosDriver
 	 */
 	public void listarJogadores(Call call, Response response, CallContext callContext)
 	{
-		final List<Map<String, Map<TeamType, Integer>>> listaPartidas = new ArrayList<>();
+		final List<Map<String, Map<TeamType, Integer>>> listaPartidas = new ArrayList<Map<String, Map<TeamType, Integer>>>();
 		
 		//Trava até terminar de ler
 		synchronized(lock)
@@ -243,8 +254,6 @@ public class ServerDriver implements UosDriver
 		response.addParameter("retorno", toJson(toReturn));
 	}
 	
-
-	
 	/**
 	 * Procura uma partida, retornando ou a partida ou uma exceção
 	 * @param nomePartida A partida a ser procurada
@@ -267,19 +276,49 @@ public class ServerDriver implements UosDriver
 		return Either.createRight(theMatch);
 	}
 	
-//	/**
-//	 * Retorna todos os clientes associados com esse servidor
-//	 * @return
-//	 */
-//	private List<String> getClients(final String nomePartida)
-//	{
-//		synchronized(lock)
-//		{
-//			Match partida = mapaPartidas.get(nomePartida);
-//			partida.g
-//			eMatch.getRight().executarMudanca(state);
-//		}
-//		
-//	}
-	
+	/**
+	 * Notifica todos os clientes de uma atualização no servidor
+	 * @return Um Either que contém uma exceção ou um boolean true
+	 */
+	private Either<Exception, Boolean> notifyClients(final String nomePartida, final String stateJson)
+	{
+		//A chamada genérica, a mesma para todos eles
+		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
+		call.addParameter("nomePartida", nomePartida);
+		call.addParameter("state", stateJson);
+
+		//TODO: granularizar o lock se for o caso. De qualquer forma assim está bom porquê
+		//chamadas de notify devem esperar umas às outras
+		synchronized(lock)
+		{
+			final Match partida = mapaPartidas.get(nomePartida);
+			
+			if (partida == null)
+			{
+				final Exception exception = new IllegalArgumentException("Não existe partida para o nome passado");
+				return Either.createLeft(exception);
+			}
+			
+			final Function1<Player, String> lift = Reflections.lift(Player.class, "getIdJogador");
+			final SetSharp<String> jogadores = SetSharp.from(partida.getJogadores()).map(lift);
+
+			for(DriverData curDriver : gateway.listDrivers(CLIENT_DRIVER_NAME))
+			{
+				//TODO: Perceba que não há garantia de ser enviado para todos os jogadores.
+				//E também não é verificada a resolução da mensagem (erro ou não)
+				if (jogadores.contains(curDriver.getDevice().getName()))
+				{
+					try
+					{
+						gateway.callService(curDriver.getDevice(), call);
+					}
+					catch (ServiceCallException e)
+					{
+						return Either.createLeft((Exception) e);
+					}
+				}
+			}
+		}
+		return Either.createRight(true);
+	}
 }

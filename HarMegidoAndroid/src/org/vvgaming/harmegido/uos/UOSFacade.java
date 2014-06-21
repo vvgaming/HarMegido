@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 
 public class UOSFacade
 {
-	private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
-	// private static final String SERVER_IP = "192.168.0.100";
+	// private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
+	private static final String SERVER_IP = "187.104.210.79";
 
 	// //////////////////////////////// UOS //////////////////////////////////
 	private static UOS uos;
@@ -22,10 +22,7 @@ public class UOSFacade
 		if (uos == null)
 		{
 			startUos();
-			while (!uosStarted)
-			{
-
-			}
+			while (!uosStarted) { }
 		}
 		return uos;
 	}
@@ -38,13 +35,14 @@ public class UOSFacade
 		}
 		UOSLogging.setLevel(Level.ALL);
 		uos = new UOS();
+
 		new AsyncTask<Void, Void, Void>()
 		{
-			protected Void doInBackground(Void... params)
+			@Override
+			protected Void doInBackground(final Void... params)
 			{
-
-				ClientMode.Properties props = new ClientMode.Properties();
-
+				final ClientMode.Properties props = new ClientMode.Properties();
+				props.put("ubiquitos.driver.deploylist", ClientDriver.class.getName());
 				props.setServer(SERVER_IP);
 				uos.start(props);
 				uosStarted = true;
@@ -52,13 +50,14 @@ public class UOSFacade
 				return null;
 			}
 		}.execute();
-
 	}
 
 	public static void stopUos()
 	{
 		if (uos == null)
+		{
 			return;
+		}
 		uos.stop();
 		uos = null;
 		driverFacade = null;
@@ -89,7 +88,8 @@ public class UOSFacade
 		}
 		new AsyncTask<Void, Void, Void>()
 		{
-			protected Void doInBackground(Void... params)
+			@Override
+			protected Void doInBackground(final Void... params)
 			{
 
 				try
@@ -109,7 +109,6 @@ public class UOSFacade
 				return null;
 			}
 		}.execute();
-
 	}
 
 	private static void createFacade()

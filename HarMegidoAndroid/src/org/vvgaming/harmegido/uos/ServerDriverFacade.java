@@ -4,6 +4,7 @@ import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
 import java.util.List;
+import java.util.Map;
 
 import org.unbiquitous.uos.core.UOS;
 import org.unbiquitous.uos.core.driverManager.DriverData;
@@ -118,17 +119,9 @@ public class ServerDriverFacade
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("duracao", duracao.toString());
 
-		final Either<Exception, Response> response = callService("criarPartida", arg1, arg2);
-
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-		
-		final String jsonStr = response.getRight().getResponseData("retorno").toString();
-		return Either.createRight(fromJson(jsonStr, Match.class));
+		return callServiceUnwrap("criarPartida", arg1, arg2);
 	}
-	
+
 	/**
 	 * Encontra a partida ativa que o jogador passado como parâmetro está jogando, se ela existir
 	 * @param jogador O jogador cuja partida será buscada
@@ -138,15 +131,7 @@ public class ServerDriverFacade
 	public Either<Exception, Match> encontrarPartida(final Player jogador)
 	{
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("idJogador", jogador.getIdJogador());
-		final Either<Exception, Response> response = callService("encontrarPartida", arg1);
-
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-		
-		final String jsonStr = response.getRight().getResponseData("retorno").toString();
-		return Either.createRight(fromJson(jsonStr, Match.class));
+		return callServiceUnwrap("encontrarPartida", arg1);
 	}
 
 	/**
@@ -225,15 +210,9 @@ public class ServerDriverFacade
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("state", toJson(mState));
 		
-		final Either<Exception, Response> response = callService("runState", arg1, arg2);
-		
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-		return Either.createRight(true);
+		return callServiceUnwrap("runState", arg1, arg2);
 	}
-	
+
 	/**
 	 * Lista todas as partidas neste momento
 	 * @return Uma instância de {@link Either} que conterá uma lista com o nome das partidas ativas,
@@ -242,27 +221,33 @@ public class ServerDriverFacade
 	@SuppressWarnings("unchecked")
 	public Either<Exception, List<String>> listarPartidas()
 	{
-		final Either<Exception, Response> response = callService("listarPartidas");
-		
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-
-		final String eitherString = response.getRight().getResponseData("retorno").toString();
-		final List<String> fromJson = ((Either<Exception, List<String>>) fromJson(eitherString, Either.class)).getRight();
-		return Either.createRight(fromJson);
+		return callServiceUnwrap("listarPartidas");
 	}
 
 	/**
-	 * Chamada genérica para um serviço deste server.
+	 * Lista todas as partidas e o número de jogadores em cada um dos times
+	 * @return Um instância de {@link Either} que conterá a lista de todas as partidas e quantos jogadores
+	 * de cada tipo existem nela, ou a exceção em caso de erro
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, List<Map<String, Map<TeamType, Integer>>>> listarJogadores()
+	{
+		return callServiceUnwrap("listarJogadores");
+	}
+
+	/**
+	 * Chama um serviço do server driver, retornando a resposta. <br/>
+	 * ATENÇÃO: Esse método exige que o serviço chamado retorne um atributo de nome "retorno". Do contrário
+	 * será disparada uma exceção.
+	 * Para os casos que houver um atributo de resposta de nome "retorno", será retornado o seu valor. <br/>
+	 * Em caso contrário, será retornado uma exceção.
 	 * 
 	 * @param serviceName O nome do serviço a ser chamado
 	 * @param params Os parâmetros a serem repassados para o serviço
-	 * @return Uma instância de {@link Either} que irá conter o retorno ou a exceção no caso de erro.
+	 * @return Uma instância de {@link Either} que irá conter a resposta ou a exceção no caso de erro.
 	 */
 	@SuppressWarnings("unchecked")
-	private Either<Exception, Response> callService(final String serviceName, final Tuple2<String, Object>... params)
+	private <A> Either<Exception, A> callServiceUnwrap(final String serviceName, final Tuple2<String, Object>... params)
 	{
 		final Call call = new Call(HAR_MEGIDO_DRIVER, serviceName);
 
@@ -278,22 +263,17 @@ public class ServerDriverFacade
 		{
 			final Response response = uos.getGateway().callService(device, call);
 			final Object responseData = response.getResponseData("retorno");
-			
+
 			//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
 			//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
-			if (responseData != null)
+			if (responseData == null)
 			{
-				//Extrai o either do retorno, para verificar se é exceção. Se for, repassa a exceção
-				final Either<Exception, Response> extractedEither = fromJson(responseData.toString(), Either.class);
-
-				if (extractedEither.isLeft())
-				{
-					return extractedEither;
-				}
+				final String mensagem = "O serviço " + serviceName + " não possui um atributo de resposta de nome 'retorno'";
+				final Exception exception = new IllegalStateException(mensagem);
+				return Either.createLeft(exception);
 			}
-
-			//Cria um Either para a response recebida
-			return Either.createRight(response);
+			//Repassa o Either extraído do retorno
+			return (Either<Exception, A>) fromJson(responseData.toString(), Either.class);
 		}
 		catch (Exception e)
 		{

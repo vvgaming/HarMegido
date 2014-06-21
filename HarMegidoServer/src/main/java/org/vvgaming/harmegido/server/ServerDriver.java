@@ -23,6 +23,8 @@ import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.lib.model.match.PlayerChangeDisenchant;
+import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 
 import com.github.detentor.codex.monads.Either;
 
@@ -166,6 +168,13 @@ public class ServerDriver implements UosDriver
 			{
 				eMatch.getRight().executarMudanca(state);
 			}
+			
+			//Verifica o tipo de alteração
+			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
+			{
+				//Tem que propagar a alteração para todos os clientes
+				//TODO: Colocar o código que comunica aos clientes
+			}
 			response.addParameter("retorno", toJson(Either.createRight(true)));
 		}
 	}
@@ -257,4 +266,20 @@ public class ServerDriver implements UosDriver
 		}
 		return Either.createRight(theMatch);
 	}
+	
+//	/**
+//	 * Retorna todos os clientes associados com esse servidor
+//	 * @return
+//	 */
+//	private List<String> getClients(final String nomePartida)
+//	{
+//		synchronized(lock)
+//		{
+//			Match partida = mapaPartidas.get(nomePartida);
+//			partida.g
+//			eMatch.getRight().executarMudanca(state);
+//		}
+//		
+//	}
+	
 }

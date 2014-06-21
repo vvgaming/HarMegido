@@ -2,7 +2,6 @@ package org.vvgaming.harmegido.theGame.mainNodes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.vvgaming.harmegido.R;
@@ -12,7 +11,6 @@ import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
-import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
@@ -119,10 +117,7 @@ public class N3SelecaoPartida extends NHMMainNode
 									@Override
 									public Void apply()
 									{
-										// FIXME arrumar isso aqui, não pra criar a partida, mas pega-la de algum lugar
-										final Match m = Match.from(partida, new Date(), MatchDuration.FIVE_MINUTES);
-										// /
-										RootNode.getInstance().changeMainNode(new N4SelecaoChar(m));
+										RootNode.getInstance().changeMainNode(new N4SelecaoChar(partida));
 										return null;
 									}
 								}, true));

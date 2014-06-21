@@ -10,20 +10,21 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
-import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
-import org.vvgaming.harmegido.lib.model.Match;
+import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.util.RandomNames;
+import org.vvgaming.harmegido.uos.UOSFacade;
 
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.monads.Option;
 
 /**
@@ -38,7 +39,7 @@ public class N4SelecaoChar extends NHMMainNode
 
 	protected static final int QTD_NOMES = 3;
 
-	private final Match MATCH;
+	private final String NOME_PARTIDA;
 
 	private NToggleButton anjosTglBtn;
 	private NToggleButton demoniosTglBtn;
@@ -51,9 +52,9 @@ public class N4SelecaoChar extends NHMMainNode
 
 	private RandomNames rnd;
 
-	public N4SelecaoChar(final Match match)
+	public N4SelecaoChar(final String nomePartida)
 	{
-		this.MATCH = match;
+		this.NOME_PARTIDA = nomePartida;
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class N4SelecaoChar extends NHMMainNode
 		bgImg.setHeightKeepingRatio(getGameHeight());
 
 		// título com o nome da partida
-		NText title = new NText((int) getGameWidth(.5f), 0, MATCH.getNomePartida());
+		NText title = new NText((int) getGameWidth(.5f), 0, NOME_PARTIDA);
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/Radio Trust.ttf");
 		title.paint.setTextAlign(Align.CENTER);
 		title.vAlign = NText.VerticalAlign.TOP;
@@ -91,7 +92,7 @@ public class N4SelecaoChar extends NHMMainNode
 		timeTglGroup = new NGroupToggleButton(demoniosTglBtn, anjosTglBtn);
 		timeTglGroup.setOnToggleChange(getTeamSelectionFunction());
 
-		orientacao = new NText(getGameWidth(.5f), getGameHeight(.95f), "");
+		orientacao = new NText(getGameWidth(.5f), getGameHeight(.90f), "");
 		orientacao.face = getDefaultFace();
 		orientacao.paint.setTextAlign(Align.CENTER);
 		orientacao.vAlign = VerticalAlign.MIDDLE;
@@ -183,7 +184,7 @@ public class N4SelecaoChar extends NHMMainNode
 						final NButtonText btn = new NButtonText(texto);
 						addSubNode(btn);
 						mine.add(btn);
-						
+
 						btn.setOnClickFunction(new Function0<Void>()
 						{
 
@@ -191,13 +192,17 @@ public class N4SelecaoChar extends NHMMainNode
 							public Void apply()
 							{
 								sendConsoleMsg("Entrando na partida...");
-								// FIXME como vou saber meu device pra criar um player? no way...
-								// Player.from(playerName, device, time)
-								// UOSFacade.getDriverFacade().adicionarJogador(MATCH, nome);
-								//
-								// Incoerencia ele me pedir a partida tb, sendo que a lista vem com string
 
-								addSubNode(new NTimer(1000, entrarNaPartida));
+								Player p = Player.from(nome, "qualquer um " + Math.random());
+								Either<Exception, Boolean> resposta = UOSFacade.getDriverFacade().adicionarJogador(NOME_PARTIDA, p);
+								if (resposta.isRight() && resposta.getRight())
+								{
+									RootNode.getInstance().changeMainNode(new N5Partida());
+								}
+								else
+								{
+									sendConsoleMsg("Falha ao entrar na partida...");
+								}
 
 								return null;
 							}
@@ -218,17 +223,5 @@ public class N4SelecaoChar extends NHMMainNode
 			node.kill();
 		}
 	}
-
-	private static final Function0<Void> entrarNaPartida = new Function0<Void>()
-	{
-
-		@Override
-		public Void apply()
-		{
-			RootNode.getInstance().changeMainNode(new N5Partida());
-			return null;
-		}
-
-	};
 
 }

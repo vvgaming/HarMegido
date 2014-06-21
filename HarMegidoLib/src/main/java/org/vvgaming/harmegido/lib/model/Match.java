@@ -83,6 +83,7 @@ public class Match
 	 */
 	public boolean isAtiva()
 	{
+		//TODO: Colocar a restrição da pontuação
 		return getHoraFimMilis() > new Date().getTime();
 	}
 	

@@ -13,28 +13,27 @@ import com.github.detentor.codex.monads.Option;
  * 
  * @author Vinicius Nogueira
  */
-public abstract class NButton extends GameNode {
+public abstract class NButton extends GameNode
+{
 
 	private Option<Function0<Void>> onClickFunction = Option.empty();
 
-	public NButton() {
+	public NButton()
+	{
 		super();
 	}
 
 	@Override
-	public void init() {
-		super.init();
+	protected void update(long delta)
+	{
 	}
 
 	@Override
-	protected void update(long delta) {
-	}
-
-	@Override
-	public boolean onTouch(MotionEvent event) {
-		if (onClickFunction.notEmpty()
-				&& event.getAction() == MotionEvent.ACTION_DOWN
-				&& getBoundingRect().contains(event.getX(), event.getY())) {
+	public boolean onTouch(MotionEvent event)
+	{
+		if (onClickFunction.notEmpty() && event.getAction() == MotionEvent.ACTION_DOWN
+				&& getBoundingRect().contains(event.getX(), event.getY()))
+		{
 			onClickFunction.get().apply();
 			return true;
 		}
@@ -43,7 +42,8 @@ public abstract class NButton extends GameNode {
 
 	public abstract RectF getBoundingRect();
 
-	public void setOnClickFunction(Function0<Void> onClickFunction) {
+	public void setOnClickFunction(Function0<Void> onClickFunction)
+	{
 		this.onClickFunction = Option.from(onClickFunction);
 	}
 

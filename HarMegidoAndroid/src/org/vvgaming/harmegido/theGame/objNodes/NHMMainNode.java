@@ -31,7 +31,7 @@ public class NHMMainNode extends GameNode
 			lastText.kill();
 		}
 		// guarda sempre a referencia a antiga para matá-la antes de uma nova
-		final NHMConsoleText lastText = new NHMConsoleText(text, timer);
+		lastText = new NHMConsoleText(text, timer);
 		addSubNode(lastText);
 	}
 

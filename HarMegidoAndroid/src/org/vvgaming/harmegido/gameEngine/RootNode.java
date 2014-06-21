@@ -5,12 +5,12 @@ import org.vvgaming.harmegido.gameEngine.util.AssetManager;
 import android.app.Activity;
 
 /**
- * Uma implementação de um {@link GameNode} raiz, que inicia o jogo, e tem
- * algumas particularidades
+ * Uma implementação de um {@link GameNode} raiz, que inicia o jogo, e tem algumas particularidades
  * 
  * @author Vinicius Nogueira
  */
-public class RootNode extends GameNode {
+public class RootNode extends GameNode
+{
 
 	private final AssetManager assetManager;
 	private GameNode mainNode;
@@ -19,25 +19,28 @@ public class RootNode extends GameNode {
 
 	private boolean visible = true;
 
-	private RootNode(final Activity act, final GameNode mainNode) {
-		if (act == null || mainNode == null) {
-			throw new IllegalArgumentException(
-					"activity ou mainNode nulos, isso não é permitido...");
+	private RootNode(final Activity act, final GameNode mainNode)
+	{
+		if (act == null || mainNode == null)
+		{
+			throw new IllegalArgumentException("activity ou mainNode nulos, isso não é permitido...");
 		}
 		assetManager = new AssetManager(act);
 		this.mainNode = mainNode;
 	}
 
 	@Override
-	public void init() {
+	public void init()
+	{
 		super.init();
 		addSubNode(mainNode);
 	}
 
-	public void changeMainNode(final GameNode newMainNode) {
-		if (newMainNode == null) {
-			throw new IllegalArgumentException(
-					"mainNode nulo? isso não é permitido...");
+	public void changeMainNode(final GameNode newMainNode)
+	{
+		if (newMainNode == null)
+		{
+			throw new IllegalArgumentException("mainNode nulo? isso não é permitido...");
 		}
 		mainNode.kill();
 		mainNode = newMainNode;
@@ -45,57 +48,69 @@ public class RootNode extends GameNode {
 	}
 
 	@Override
-	public void update(long delta) {
+	public void update(final long delta)
+	{
 	}
 
 	@Override
-	public boolean isVisible() {
+	public boolean isVisible()
+	{
 		return visible;
 	}
 
-	public void setVisible(boolean visible) {
+	public void setVisible(final boolean visible)
+	{
 		this.visible = visible;
 	}
 
-	public int getWidth() {
+	public int getWidth()
+	{
 		return width;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(final int width)
+	{
 		this.width = width;
 
 	}
 
-	public int getHeight() {
+	public int getHeight()
+	{
 		return height;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(final int height)
+	{
 		this.height = height;
 	}
 
-	public AssetManager getAssetManager() {
+	public AssetManager getAssetManager()
+	{
 		return assetManager;
 	}
 
 	private static RootNode instance;
 
-	public static RootNode getInstance() {
-		if (instance == null) {
-			throw new IllegalStateException(
-					"RootNode não inicializado ainda. Utilize o método create().");
+	public static RootNode getInstance()
+	{
+		if (instance == null)
+		{
+			throw new IllegalStateException("RootNode não inicializado ainda. Utilize o método create().");
 		}
 		return instance;
 	}
 
 	@Override
-	public void kill() {
+	public void kill()
+	{
 		super.kill();
 		instance = null;
 	}
 
-	public static RootNode create(final Activity act, final GameNode mainNode) {
-		if (instance == null) {
+	public static RootNode create(final Activity act, final GameNode mainNode)
+	{
+		if (instance == null)
+		{
 			instance = new RootNode(act, mainNode);
 		}
 		return instance;

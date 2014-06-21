@@ -262,18 +262,25 @@ public class ServerDriverFacade
 		try
 		{
 			final Response response = uos.getGateway().callService(device, call);
-			final Object responseData = response.getResponseData("retorno");
-
-			//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
-			//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
-			if (responseData == null)
+			
+			if (response.getError() == null || response.getError().isEmpty())
 			{
-				final String mensagem = "O serviço " + serviceName + " não possui um atributo de resposta de nome 'retorno'";
-				final Exception exception = new IllegalStateException(mensagem);
-				return Either.createLeft(exception);
+				final Object responseData = response.getResponseData("retorno");
+
+				//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
+				//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
+				if (responseData == null)
+				{
+					final String mensagem = "O serviço " + serviceName + " não possui um atributo de resposta de nome 'retorno'";
+					final Exception exception = new IllegalStateException(mensagem);
+					return Either.createLeft(exception);
+				}
+				//Repassa o Either extraído do retorno
+				return (Either<Exception, A>) fromJson(responseData.toString(), Either.class);
 			}
-			//Repassa o Either extraído do retorno
-			return (Either<Exception, A>) fromJson(responseData.toString(), Either.class);
+			
+			final Exception exception = new IllegalStateException(response.getError());
+			return Either.createLeft(exception);
 		}
 		catch (Exception e)
 		{

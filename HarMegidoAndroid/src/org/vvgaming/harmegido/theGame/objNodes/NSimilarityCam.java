@@ -23,7 +23,8 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinicius Nogueira
  */
-public class NSimilarityCam extends LazyInitGameNode {
+public class NSimilarityCam extends LazyInitGameNode
+{
 
 	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
 	private Bitmap lastFrame;
@@ -37,10 +38,13 @@ public class NSimilarityCam extends LazyInitGameNode {
 	private Option<Tuple2<Bitmap, Mat>> registrado = Option.empty();
 	private Option<Float> comparacao = Option.empty();
 
-	public NSimilarityCam(final Ponto center, final float width) {
-		addToInit(new Function0<Void>() {
+	public NSimilarityCam(final Ponto center, final float width)
+	{
+		addToInit(new Function0<Void>()
+		{
 			@Override
-			public Void apply() {
+			public Void apply()
+			{
 				NSimilarityCam.this.matriz.setCenter(center);
 				NSimilarityCam.this.matriz.setWidthKeepingRatio(width);
 				return null;
@@ -49,8 +53,10 @@ public class NSimilarityCam extends LazyInitGameNode {
 	}
 
 	@Override
-	public void preInit() {
-		if (cam == null) {
+	public void preInit()
+	{
+		if (cam == null)
+		{
 			cam = new FeaturesSimilarityCam();
 			// cam = new HistogramaSimilarityCam();
 		}
@@ -59,14 +65,16 @@ public class NSimilarityCam extends LazyInitGameNode {
 	}
 
 	@Override
-	public void update(long delta) {
+	public void update(final long delta)
+	{
 		final Mat lastFrameMat = cam.getLastFrame().rgba().clone();
 		lastFrame = OCVUtil.getInstance().toBmp(lastFrameMat);
 		OCVUtil.getInstance().releaseMat(lastFrameMat);
 
 		skipCount++;
 
-		if (skipCount > SKIP_LIMIT) {
+		if (skipCount > SKIP_LIMIT)
+		{
 			comparacao = cam.compara();
 			skipCount = 0;
 		}
@@ -74,48 +82,53 @@ public class NSimilarityCam extends LazyInitGameNode {
 	}
 
 	@Override
-	public void render(Canvas canvas) {
-		Paint alphed = new Paint();
+	public void render(final Canvas canvas)
+	{
+		final Paint alphed = new Paint();
 		alphed.setAlpha(100);
-		Paint natural = new Paint();
+		final Paint natural = new Paint();
 		final Matrix matrix = matriz.getMatrix();
 		canvas.drawBitmap(lastFrame, matrix, natural);
-		if (registrado.notEmpty()) {
+		if (registrado.notEmpty())
+		{
 			final Bitmap regFrame = registrado.get().getVal1();
 			canvas.drawBitmap(regFrame, matrix, alphed);
 		}
 	}
 
 	@Override
-	public boolean isDead() {
+	public boolean isDead()
+	{
 		return false;
 	}
 
 	@Override
-	public void end() {
+	public void end()
+	{
 		cam.disconnectCamera();
 	}
 
-	public void onClick() {
+	public void onClick()
+	{
 
 		registrado = Option.from(cam.snapshot());
-		if (!registrado.isEmpty()) {
+		if (!registrado.isEmpty())
+		{
 			cam.observar(registrado.get());
 		}
 
 	}
 
-	public boolean isOkResultado() {
-		if (comparacao.notEmpty()) {
+	public boolean isOkResultado()
+	{
+		if (comparacao.notEmpty())
+		{
 			return cam.isSimilarEnough(comparacao.get());
-		} else {
+		}
+		else
+		{
 			return false;
 		}
-	}
-
-	@Override
-	public boolean isVisible() {
-		return true;
 	}
 
 }

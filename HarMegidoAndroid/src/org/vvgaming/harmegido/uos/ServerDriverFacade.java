@@ -136,65 +136,65 @@ public class ServerDriverFacade
 
 	/**
 	 * Adiciona o jogador na partida informada
-	 * @param partida A partida à qual o jogador deve ser vinculado
+	 * @param nomePartida O nome da partida à qual o jogador deve ser vinculado
 	 * @param jogador O jogador a ser vinculado à partida
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador foi adicionado, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> adicionarJogador(final Match partida, final Player jogador)
+	public Either<Exception, Boolean> adicionarJogador(final String nomePartida, final Player jogador)
 	{
-		return executarEstado(partida, MatchState.adicionarJogador(jogador));
+		return executarEstado(nomePartida, MatchState.adicionarJogador(jogador));
 	}
 	
 	/**
 	 * Remove um jogador da partida informada
-	 * @param partida A partida à qual o jogador deve ser desvinculado
+	 * @param nomePartida O nome da partida à qual o jogador deve ser desvinculado
 	 * @param jogador O jogador a ser desvinculado da partida
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador foi removido, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> removerJogador(final Match partida, final Player jogador)
+	public Either<Exception, Boolean> removerJogador(final String nomePartida, final Player jogador)
 	{
-		return executarEstado(partida, MatchState.removerJogador(jogador));
+		return executarEstado(nomePartida, MatchState.removerJogador(jogador));
 	}
 	
 	/**
 	 * Muda o time de um jogador da partida informada
-	 * @param partida A partida que o jogador pertence
+	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador cujo time será alterado
 	 * @param novoTime O novo time do jogador
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador teve o time trocado, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> mudarTime(final Match partida, final Player jogador, final TeamType novoTime)
+	public Either<Exception, Boolean> mudarTime(final String nomePartida, final Player jogador, final TeamType novoTime)
 	{
-		return executarEstado(partida, MatchState.mudarTime(jogador, novoTime));
+		return executarEstado(nomePartida, MatchState.mudarTime(jogador, novoTime));
 	}
 	
 	/**
 	 * Cria um encantamento para o jogador e a imagem informados
-	 * @param partida A partida que o jogador pertence
+	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador que está efetuando o encantamento
 	 * @param imagem A imagem do objeto encantado
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador encantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> encantarObjeto(final Match partida, final Player jogador, final EnchantmentImage imagem)
+	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final EnchantmentImage imagem)
 	{
-		return executarEstado(partida, MatchState.encantar(jogador, imagem));
+		return executarEstado(nomePartida, MatchState.encantar(jogador, imagem));
 	}
 	
 	/**
 	 * Cria um desencantamento para o jogador e o encantamento informados
-	 * @param partida A partida que o jogador pertence
+	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador que está efetuando o encantamento
 	 * @param encantamento O encantamento a ser desencantado
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador desencantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> desencantarObjeto(final Match partida, final Player jogador, final Enchantment encantamento)
+	public Either<Exception, Boolean> desencantarObjeto(final String nomePartida, final Player jogador, final Enchantment encantamento)
 	{
-		return executarEstado(partida, MatchState.desencantar(jogador, encantamento));
+		return executarEstado(nomePartida, MatchState.desencantar(jogador, encantamento));
 	}
 	
 	/**
@@ -205,9 +205,9 @@ public class ServerDriverFacade
 	 * que ocorreu em caso contrário 
 	 */
 	@SuppressWarnings("unchecked")
-	private Either<Exception, Boolean> executarEstado(final Match partida, final MatchState mState)
+	private Either<Exception, Boolean> executarEstado(final String nomePartida, final MatchState mState)
 	{
-		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("state", toJson(mState));
 		
 		return callServiceUnwrap("runState", arg1, arg2);

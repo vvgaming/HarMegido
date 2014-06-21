@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 
 public class UOSFacade
 {
-	// private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
-	private static final String SERVER_IP = "187.104.210.79";
+	private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
+	// private static final String SERVER_IP = "192.168.0.100";
 
 	// //////////////////////////////// UOS //////////////////////////////////
 	private static UOS uos;
@@ -22,7 +22,9 @@ public class UOSFacade
 		if (uos == null)
 		{
 			startUos();
-			while (!uosStarted) { }
+			while (!uosStarted)
+			{
+			}
 		}
 		return uos;
 	}

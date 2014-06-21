@@ -1,7 +1,11 @@
 package org.vvgaming.harmegido.lib.util;
 
-import java.lang.reflect.Constructor;
 import java.text.DateFormat;
+
+import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.lib.util.wrappers.EitherWrapper;
+import org.vvgaming.harmegido.lib.util.wrappers.ExceptionWrapper;
+import org.vvgaming.harmegido.lib.util.wrappers.MatchStateWrapper;
 
 import com.github.detentor.codex.monads.Either;
 import com.google.gson.Gson;
@@ -48,6 +52,12 @@ public final class JSONTransformer
 		{
 			return getGson().toJson(new ExceptionWrapper((Exception) source));
 		}
+		else if (source instanceof MatchState)
+		{
+			final MatchState mState = (MatchState) source;
+			final String theJson =  getGson().toJson(source);
+			return getGson().toJson(new MatchStateWrapper(mState.getClass().getName(), theJson));
+		}
 		return getGson().toJson(source);
 	}
 
@@ -68,6 +78,10 @@ public final class JSONTransformer
 		{
 			return (T) getGson().fromJson(source, ExceptionWrapper.class).getException();
 		}
+		else if (classOf.getName().equals(MatchState.class.getName()))
+		{
+			return (T) getGson().fromJson(source, MatchStateWrapper.class).getMatchState();
+		}
 		return getGson().fromJson(source, classOf);
 	}
 
@@ -82,100 +96,4 @@ public final class JSONTransformer
 	{
 		return theClass != null && (theClass.equals(ofClass) || isSubclass(theClass.getSuperclass(), ofClass));
 	}
-	
-	/**
-	 * Um wrapper pro Either funcionar com o JSON
-	 */
-	private static final class EitherWrapper
-	{
-		private final String eJson;
-		private final String elementClass;
-		private final EitherType type;
-		
-		public EitherWrapper(final Either<?, ?> either)
-		{
-			super();
-			
-			if (either.isLeft())
-			{
-				this.type = EitherType.LEFT;
-				this.elementClass = either.getLeft().getClass().getName();
-				eJson = toJson(either.getLeft());
-			}
-			else
-			{
-				this.type = EitherType.RIGHT;
-				this.elementClass = either.getRight().getClass().getName();
-				eJson = toJson(either.getRight());
-			}
-		}
-		
-		/**
-		 * Retorna o Either representado por esta classe.
-		 * @return A instância de Either guardada por esta classe
-		 */
-		@SuppressWarnings("unchecked")
-		public <B, A> Either<B, A> getEither()
-		{
-			try
-			{
-				//Recria recursivamente o valor deste Either
-				final Object element = fromJson(eJson, Class.forName(elementClass));
-
-				if (type == EitherType.LEFT)
-				{
-					return (Either<B, A>) Either.createLeft(element);
-				}
-				return (Either<B, A>) Either.createRight(element);
-			}
-			catch (ClassNotFoundException e)
-			{
-				throw new IllegalArgumentException(e);
-			}
-		}
-		
-		public enum EitherType
-		{
-			LEFT, RIGHT;
-		}
-	}
-	
-	/**
-	 * Um wrapper pra transformar exceção em JSON
-	 */
-	private static final class ExceptionWrapper
-	{
-		private final String exceptionClass;
-		private final String message;
-		private final StackTraceElement[] stackTrace;
-		
-		public ExceptionWrapper(final Exception exception)
-		{
-			super();
-			
-			exceptionClass = exception.getClass().getName();
-			stackTrace = exception.getStackTrace();
-			message = exception.getMessage();
-		}
-		
-		/**
-		 * Retorna a exceção que esta classe representa
-		 * @return A exceção representada por esta classe.
-		 */
-		public Exception getException()
-		{
-			try
-			{
-				final Constructor<?> constructor = Class.forName(exceptionClass).getDeclaredConstructor(String.class);
-				final Exception toReturn = (Exception) constructor.newInstance(message);
-				toReturn.setStackTrace(stackTrace);
-				return toReturn;
-			}
-			catch (Exception e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
 }

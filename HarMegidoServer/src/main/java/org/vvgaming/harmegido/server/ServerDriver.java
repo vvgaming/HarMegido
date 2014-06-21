@@ -44,8 +44,11 @@ public class ServerDriver implements UosDriver
 {
 	private UpDriver definition;
 	//TODO: Extrair essa constante para alguma outra parte
-	private String DRIVER_NAME = "uos.harmegido.server";
-	private String CLIENT_DRIVER_NAME = "uos.harmegido.client";
+	private static final String DRIVER_NAME = "uos.harmegido.server";
+	private static final String CLIENT_DRIVER_NAME = "uos.harmegido.client";
+	
+	//Tempo a esperar para remover uma partida que já acabou
+	private static final long CLEANUP_TIME = 30000;
 	
 	//Segura a referência ao Gateway
 	private Gateway gateway;
@@ -180,13 +183,14 @@ public class ServerDriver implements UosDriver
 				eMatch.getRight().executarMudanca(state);
 			}
 			
+			response.addParameter("retorno", toJson(Either.createRight(true)));
+			
 			//Verifica o tipo de alteração
 			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
 			{
 				//TODO: Colocar algum código para fazer algo com o retorno
 				notifyClients(CLIENT_DRIVER_NAME, stateJson);
 			}
-			response.addParameter("retorno", toJson(Either.createRight(true)));
 		}
 	}
 	
@@ -273,6 +277,17 @@ public class ServerDriver implements UosDriver
 			final RuntimeException theValue = new IllegalArgumentException("A partida procurada não existe");
 			return Either.createLeft(theValue);
 		}
+		else if ((theMatch.getFimPartida().getTime() + CLEANUP_TIME) < new Date().getTime())
+		{
+			//A partida existia, mas já terminou faz tempo. Nesse caso, deve-se removê-la
+			synchronized(lock)
+			{
+				theMatch = mapaPartidas.remove(nomePartida);
+			}
+			final RuntimeException theValue = new IllegalArgumentException("A partida procurada não existe");
+			return Either.createLeft(theValue);
+		}
+
 		return Either.createRight(theMatch);
 	}
 	

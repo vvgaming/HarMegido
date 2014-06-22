@@ -230,7 +230,7 @@ public class ServerDriverFacade
 	 * de cada tipo existem nela, ou a exceção em caso de erro
 	 */
 	@SuppressWarnings("unchecked")
-	public Either<Exception, List<Map<String, Map<TeamType, Integer>>>> listarJogadores()
+	public Either<Exception, Map<String, Map<TeamType, Integer>>> listarJogadores()
 	{
 		return callServiceUnwrap("listarJogadores");
 	}

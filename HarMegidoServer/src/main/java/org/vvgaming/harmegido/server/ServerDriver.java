@@ -222,7 +222,7 @@ public class ServerDriver implements UosDriver
 	 */
 	public void listarJogadores(Call call, Response response, CallContext callContext)
 	{
-		final List<Map<String, Map<TeamType, Integer>>> listaPartidas = new ArrayList<Map<String, Map<TeamType, Integer>>>();
+		final Map<String, Map<TeamType, Integer>> mapaRetorno = new HashMap<String, Map<TeamType, Integer>>();
 		
 		//Trava até terminar de ler
 		synchronized(lock)
@@ -246,15 +246,12 @@ public class ServerDriver implements UosDriver
 						mapaValores.put(curJogador.getTime(), valorAnterior + 1);
 					}
 					
-					//Adiciona o mapa na lista
-					final Map<String, Map<TeamType, Integer>> mapa = new HashMap<String, Map<TeamType, Integer>>();
-					mapa.put(match.getNomePartida(), mapaValores);
-					listaPartidas.add(mapa);
+					mapaRetorno.put(match.getNomePartida(), mapaValores);
 				}
 			}
 		}
 
-		final Either<RuntimeException, List<Map<String, Map<TeamType, Integer>>>> toReturn = Either.createRight(listaPartidas);
+		final Either<RuntimeException, Map<String, Map<TeamType, Integer>>> toReturn = Either.createRight(mapaRetorno);
 		response.addParameter("retorno", toJson(toReturn));
 	}
 	

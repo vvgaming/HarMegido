@@ -1,12 +1,10 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
-import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.RootNode;
-import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
+import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 
 import android.graphics.Paint.Align;
@@ -46,10 +44,7 @@ public class N2Intro extends NHMMainNode
 		title.size = getBigFontSize();
 		title.vAlign = VerticalAlign.BOTTOM;
 
-		NImage bgImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.bg_intro));
-		bgImg.setHeightKeepingRatio(getGameHeight());
-
-		addSubNode(bgImg, 0);
+		addSubNode(new NHMBackground(), 0);
 		addSubNode(orientacao, 1);
 		addSubNode(toqueParaComeçar, 1);
 		addSubNode(title, 1);

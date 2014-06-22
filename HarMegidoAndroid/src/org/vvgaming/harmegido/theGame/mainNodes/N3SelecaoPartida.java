@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
-import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
+import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
 import org.vvgaming.harmegido.theGame.util.RandomNames;
@@ -60,9 +59,6 @@ public class N3SelecaoPartida extends NHMMainNode
 		nenhumaPartida.pos = nenhumaPartida.pos.translate(0, getGameHeight(.2f));
 		nenhumaPartida.text = "procurando partidas...";
 
-		NImage bgImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.bg_intro));
-		bgImg.setHeightKeepingRatio(getGameHeight());
-
 		final NText criarPartidaTexto = nenhumaPartida.clone();
 		criarPartidaTexto.text = "Criar nova partida";
 		criarPartidaTexto.pos = new Ponto(getGameWidth(.5f), getGameHeight(.8f));
@@ -78,7 +74,7 @@ public class N3SelecaoPartida extends NHMMainNode
 			}
 		});
 
-		addSubNode(bgImg, 0);
+		addSubNode(new NHMBackground(), 0);
 		addSubNode(orientacao, 1);
 		addSubNode(hr, 1);
 		addSubNode(nenhumaPartida, 1);

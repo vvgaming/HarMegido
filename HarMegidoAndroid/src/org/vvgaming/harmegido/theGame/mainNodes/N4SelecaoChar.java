@@ -15,6 +15,7 @@ import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.util.RandomNames;
 import org.vvgaming.harmegido.uos.UOSFacade;
@@ -41,6 +42,8 @@ public class N4SelecaoChar extends NHMMainNode
 
 	private final String NOME_PARTIDA;
 
+	private NHMBackground background;
+
 	private NToggleButton anjosTglBtn;
 	private NToggleButton demoniosTglBtn;
 	private NGroupToggleButton timeTglGroup;
@@ -65,10 +68,6 @@ public class N4SelecaoChar extends NHMMainNode
 		// gerador de nomes aleatorios
 		rnd = new RandomNames(getGameAssetManager());
 
-		// imagem de fundo
-		NImage bgImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.bg_intro));
-		bgImg.setHeightKeepingRatio(getGameHeight());
-
 		// título com o nome da partida
 		NText title = new NText((int) getGameWidth(.5f), 0, NOME_PARTIDA);
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/Radio Trust.ttf");
@@ -77,13 +76,13 @@ public class N4SelecaoChar extends NHMMainNode
 		title.size = getBigFontSize();
 
 		// botão de seleção dos demonios
-		final NButtonImage demoniosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f), getGameHeight(.35f)),
+		final NButtonImage demoniosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f), getGameHeight(.4f)),
 				getGameAssetManager().getBitmap(R.drawable.morgana)));
 		demoniosBtn.getImage().setWidthKeepingRatio(getGameWidth(.4f));
 		demoniosTglBtn = new NToggleButton(demoniosBtn);
 
 		// botão de seleção dos anjos
-		final NButtonImage anjosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.75f), getGameHeight(.35f)), getGameAssetManager()
+		final NButtonImage anjosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.75f), getGameHeight(.4f)), getGameAssetManager()
 				.getBitmap(R.drawable.kayle)));
 		anjosBtn.getImage().setWidthKeepingRatio(getGameWidth(.4f));
 		anjosTglBtn = new NToggleButton(anjosBtn);
@@ -97,7 +96,8 @@ public class N4SelecaoChar extends NHMMainNode
 		orientacao.paint.setTextAlign(Align.CENTER);
 		orientacao.vAlign = VerticalAlign.MIDDLE;
 
-		addSubNode(bgImg, 0);
+		background = new NHMBackground();
+		addSubNode(background, 0);
 		addSubNode(title, 1);
 		addSubNode(timeTglGroup, 1);
 		addSubNode(orientacao, 1);
@@ -134,6 +134,7 @@ public class N4SelecaoChar extends NHMMainNode
 					case 0:
 						// demonios
 						getGameAssetManager().playSound(R.raw.morgana);
+						background.goToDemonsColor();
 						mine = demoniosNomesBtns;
 						opposite = anjosNomesBtns;
 						// centralizado no botao dos demonios
@@ -142,6 +143,7 @@ public class N4SelecaoChar extends NHMMainNode
 					case 1:
 						// anjos
 						getGameAssetManager().playSound(R.raw.kayle);
+						background.goToAngelColor();
 						mine = anjosNomesBtns;
 						opposite = demoniosNomesBtns;
 						// centralizado no botao dos demonios

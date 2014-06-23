@@ -58,6 +58,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+        
+         <activity
+            android:name="org.vvgaming.harmegido.test.interfaceTest.InterfaceTestActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="org.vvgaming.harmegido.test.Main"
             android:configChanges="keyboardHidden|orientation"

@@ -71,8 +71,12 @@ public class NInterfaceCharTest extends NHMMainNode {
 	public void update(final long delta) {
 		if (timeTglGroup.getToggledIndex().isEmpty()) {
 			orientacao.text = "Selecione seu time...";
+		} else if (timeTglGroup.getToggledIndex().get() == 0) {
+			orientacao.text = "Demonios...";
+		} else if (timeTglGroup.getToggledIndex().get() == 1) {
+			orientacao.text = "Anjos...";
 		} else {
-			orientacao.text = "Escolha seu nome\n e entrará na partida...";
+			orientacao.text = "Que isso?";
 		}
 	}
 

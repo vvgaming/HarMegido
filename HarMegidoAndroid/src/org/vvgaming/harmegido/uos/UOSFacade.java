@@ -24,7 +24,6 @@ public class UOSFacade
 			startUos();
 			while (!uosStarted)
 			{
-
 			}
 		}
 		return uos;
@@ -38,13 +37,14 @@ public class UOSFacade
 		}
 		UOSLogging.setLevel(Level.ALL);
 		uos = new UOS();
+
 		new AsyncTask<Void, Void, Void>()
 		{
-			protected Void doInBackground(Void... params)
+			@Override
+			protected Void doInBackground(final Void... params)
 			{
-
-				ClientMode.Properties props = new ClientMode.Properties();
-
+				final ClientMode.Properties props = new ClientMode.Properties();
+				props.put("ubiquitos.driver.deploylist", ClientDriver.class.getName());
 				props.setServer(SERVER_IP);
 				uos.start(props);
 				uosStarted = true;
@@ -52,13 +52,14 @@ public class UOSFacade
 				return null;
 			}
 		}.execute();
-
 	}
 
 	public static void stopUos()
 	{
 		if (uos == null)
+		{
 			return;
+		}
 		uos.stop();
 		uos = null;
 		driverFacade = null;
@@ -89,7 +90,8 @@ public class UOSFacade
 		}
 		new AsyncTask<Void, Void, Void>()
 		{
-			protected Void doInBackground(Void... params)
+			@Override
+			protected Void doInBackground(final Void... params)
 			{
 
 				try
@@ -109,7 +111,6 @@ public class UOSFacade
 				return null;
 			}
 		}.execute();
-
 	}
 
 	private static void createFacade()

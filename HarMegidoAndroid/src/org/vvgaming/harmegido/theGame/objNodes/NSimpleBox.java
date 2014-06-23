@@ -5,42 +5,55 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.geometry.Retangulo;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
-public class NSimpleBox extends GameNode {
+import com.github.detentor.codex.product.Tuple3;
+
+public class NSimpleBox extends GameNode
+{
 
 	private final Paint color = new Paint();
 
 	private final Retangulo ret;
 
-	public NSimpleBox(int x, int y, int w, int h, int colorR, int colorG,
-			int colorB, int colorA) {
+	public NSimpleBox(int x, int y, int w, int h, int colorR, int colorG, int colorB, int colorA)
+	{
 		color.setARGB(colorA, colorR, colorG, colorB);
 		ret = new Retangulo(new Ponto(x, y), w, h);
 
 	}
 
-	public NSimpleBox(int x, int y, int w, int h, int colorR, int colorG,
-			int colorB) {
+	public NSimpleBox(int x, int y, int w, int h, int colorR, int colorG, int colorB)
+	{
 		this(x, y, w, h, colorR, colorG, colorB, 255);
 	}
 
 	@Override
-	public void update(long delta) {
+	public void update(long delta)
+	{
 
 	}
 
 	@Override
-	public void render(Canvas canvas) {
+	public void render(Canvas canvas)
+	{
 		canvas.drawRect(ret.toAndroidCanvasRect(), color);
 	}
 
-	public void setColor(int r, int g, int b) {
+	public void setColor(int r, int g, int b)
+	{
 		color.setARGB(255, r, g, b);
 	}
 
-	public void setColor(int a, int r, int g, int b) {
+	public void setColor(int a, int r, int g, int b)
+	{
 		color.setARGB(a, r, g, b);
 	}
 
+	public Tuple3<Integer, Integer, Integer> getColor()
+	{
+		final int colorNumber = color.getColor();
+		return Tuple3.from(Color.red(colorNumber), Color.green(colorNumber), Color.blue(colorNumber));
+	}
 }

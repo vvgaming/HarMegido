@@ -1,13 +1,12 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
-import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
+import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.uos.UOSFacade;
 
 import android.graphics.Paint.Align;
-import android.graphics.Typeface;
 
 import com.github.detentor.codex.function.Function0;
 
@@ -16,7 +15,7 @@ import com.github.detentor.codex.function.Function0;
  * 
  * @author Vinicius Nogueira
  */
-public class N1Loading extends GameNode
+public class N1Loading extends NHMMainNode
 {
 
 	private NText texto;
@@ -32,11 +31,9 @@ public class N1Loading extends GameNode
 		final String textoStr = getLoadingText();
 
 		texto = new NText((int) getGameWidth(.5f), (int) getGameHeight(.5f), textoStr);
-		final Typeface font = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/Radio Trust.ttf");
-		texto.face = font;
+		texto.face = getDefaultFace();
 		texto.paint.setTextAlign(Align.CENTER);
 		texto.vAlign = NText.VerticalAlign.MIDDLE;
-		texto.size = 50;
 
 		addSubNode(texto);
 

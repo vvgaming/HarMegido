@@ -4,6 +4,7 @@ import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
 import java.util.List;
+import java.util.Map;
 
 import org.unbiquitous.uos.core.UOS;
 import org.unbiquitous.uos.core.driverManager.DriverData;
@@ -118,78 +119,82 @@ public class ServerDriverFacade
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("duracao", duracao.toString());
 
-		final Either<Exception, Response> response = callService("criarPartida", arg1, arg2);
+		return callServiceUnwrap("criarPartida", arg1, arg2);
+	}
 
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-		
-		final String jsonStr = response.getRight().getResponseData("retorno").toString();
-		return Either.createRight(fromJson(jsonStr, Match.class));
+	/**
+	 * Encontra a partida ativa que o jogador passado como parâmetro está jogando, se ela existir
+	 * @param jogador O jogador cuja partida será buscada
+	 * @return Uma instância de {@link Either} que conterá a partida, ou uma exceção em caso contrário
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Match> encontrarPartida(final Player jogador)
+	{
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("idJogador", jogador.getIdJogador());
+		return callServiceUnwrap("encontrarPartida", arg1);
 	}
 
 	/**
 	 * Adiciona o jogador na partida informada
-	 * @param partida A partida à qual o jogador deve ser vinculado
+	 * @param nomePartida O nome da partida à qual o jogador deve ser vinculado
 	 * @param jogador O jogador a ser vinculado à partida
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador foi adicionado, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> adicionarJogador(final Match partida, final Player jogador)
+	public Either<Exception, Boolean> adicionarJogador(final String nomePartida, final Player jogador)
 	{
-		return executarEstado(partida, MatchState.adicionarJogador(jogador));
+		return executarEstado(nomePartida, MatchState.adicionarJogador(jogador));
 	}
 	
 	/**
 	 * Remove um jogador da partida informada
-	 * @param partida A partida à qual o jogador deve ser desvinculado
+	 * @param nomePartida O nome da partida à qual o jogador deve ser desvinculado
 	 * @param jogador O jogador a ser desvinculado da partida
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador foi removido, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> removerJogador(final Match partida, final Player jogador)
+	public Either<Exception, Boolean> removerJogador(final String nomePartida, final Player jogador)
 	{
-		return executarEstado(partida, MatchState.removerJogador(jogador));
+		return executarEstado(nomePartida, MatchState.removerJogador(jogador));
 	}
 	
 	/**
 	 * Muda o time de um jogador da partida informada
-	 * @param partida A partida que o jogador pertence
+	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador cujo time será alterado
 	 * @param novoTime O novo time do jogador
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador teve o time trocado, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> mudarTime(final Match partida, final Player jogador, final TeamType novoTime)
+	public Either<Exception, Boolean> mudarTime(final String nomePartida, final Player jogador, final TeamType novoTime)
 	{
-		return executarEstado(partida, MatchState.mudarTime(jogador, novoTime));
+		return executarEstado(nomePartida, MatchState.mudarTime(jogador, novoTime));
 	}
 	
 	/**
 	 * Cria um encantamento para o jogador e a imagem informados
-	 * @param partida A partida que o jogador pertence
+	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador que está efetuando o encantamento
 	 * @param imagem A imagem do objeto encantado
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador encantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> encantarObjeto(final Match partida, final Player jogador, final EnchantmentImage imagem)
+	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final EnchantmentImage imagem)
 	{
-		return executarEstado(partida, MatchState.encantar(jogador, imagem));
+		return executarEstado(nomePartida, MatchState.encantar(jogador, imagem));
 	}
 	
 	/**
 	 * Cria um desencantamento para o jogador e o encantamento informados
-	 * @param partida A partida que o jogador pertence
+	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador que está efetuando o encantamento
 	 * @param encantamento O encantamento a ser desencantado
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador desencantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> desencantarObjeto(final Match partida, final Player jogador, final Enchantment encantamento)
+	public Either<Exception, Boolean> desencantarObjeto(final String nomePartida, final Player jogador, final Enchantment encantamento)
 	{
-		return executarEstado(partida, MatchState.desencantar(jogador, encantamento));
+		return executarEstado(nomePartida, MatchState.desencantar(jogador, encantamento));
 	}
 	
 	/**
@@ -200,20 +205,14 @@ public class ServerDriverFacade
 	 * que ocorreu em caso contrário 
 	 */
 	@SuppressWarnings("unchecked")
-	private Either<Exception, Boolean> executarEstado(final Match partida, final MatchState mState)
+	private Either<Exception, Boolean> executarEstado(final String nomePartida, final MatchState mState)
 	{
-		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", partida.getNomePartida());
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
 		final Tuple2<String, Object> arg2 = Tuple2.<String, Object> from("state", toJson(mState));
 		
-		final Either<Exception, Response> response = callService("runState", arg1, arg2);
-		
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-		return Either.createRight(true);
+		return callServiceUnwrap("runState", arg1, arg2);
 	}
-	
+
 	/**
 	 * Lista todas as partidas neste momento
 	 * @return Uma instância de {@link Either} que conterá uma lista com o nome das partidas ativas,
@@ -222,27 +221,33 @@ public class ServerDriverFacade
 	@SuppressWarnings("unchecked")
 	public Either<Exception, List<String>> listarPartidas()
 	{
-		final Either<Exception, Response> response = callService("listarPartidas");
-		
-		if (response.isLeft())
-		{
-			return Either.createLeft(response.getLeft());
-		}
-
-		final String eitherString = response.getRight().getResponseData("retorno").toString();
-		final List<String> fromJson = ((Either<Exception, List<String>>) fromJson(eitherString, Either.class)).getRight();
-		return Either.createRight(fromJson);
+		return callServiceUnwrap("listarPartidas");
 	}
 
 	/**
-	 * Chamada genérica para um serviço deste server.
+	 * Lista todas as partidas e o número de jogadores em cada um dos times
+	 * @return Um instância de {@link Either} que conterá a lista de todas as partidas e quantos jogadores
+	 * de cada tipo existem nela, ou a exceção em caso de erro
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Map<String, Map<TeamType, Integer>>> listarJogadores()
+	{
+		return callServiceUnwrap("listarJogadores");
+	}
+
+	/**
+	 * Chama um serviço do server driver, retornando a resposta. <br/>
+	 * ATENÇÃO: Esse método exige que o serviço chamado retorne um atributo de nome "retorno". Do contrário
+	 * será disparada uma exceção.
+	 * Para os casos que houver um atributo de resposta de nome "retorno", será retornado o seu valor. <br/>
+	 * Em caso contrário, será retornado uma exceção.
 	 * 
 	 * @param serviceName O nome do serviço a ser chamado
 	 * @param params Os parâmetros a serem repassados para o serviço
-	 * @return Uma instância de {@link Either} que irá conter o retorno ou a exceção no caso de erro.
+	 * @return Uma instância de {@link Either} que irá conter a resposta ou a exceção no caso de erro.
 	 */
 	@SuppressWarnings("unchecked")
-	private Either<Exception, Response> callService(final String serviceName, final Tuple2<String, Object>... params)
+	private <A> Either<Exception, A> callServiceUnwrap(final String serviceName, final Tuple2<String, Object>... params)
 	{
 		final Call call = new Call(HAR_MEGIDO_DRIVER, serviceName);
 
@@ -257,23 +262,25 @@ public class ServerDriverFacade
 		try
 		{
 			final Response response = uos.getGateway().callService(device, call);
-			final Object responseData = response.getResponseData("retorno");
 			
-			//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
-			//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
-			if (responseData != null)
+			if (response.getError() == null || response.getError().isEmpty())
 			{
-				//Extrai o either do retorno, para verificar se é exceção. Se for, repassa a exceção
-				final Either<Exception, Response> extractedEither = fromJson(responseData.toString(), Either.class);
+				final Object responseData = response.getResponseData("retorno");
 
-				if (extractedEither.isLeft())
+				//Se houver um parâmetro 'retorno', é porquê a resposta é uma instância de Either.
+				//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
+				if (responseData == null)
 				{
-					return extractedEither;
+					final String mensagem = "O serviço " + serviceName + " não possui um atributo de resposta de nome 'retorno'";
+					final Exception exception = new IllegalStateException(mensagem);
+					return Either.createLeft(exception);
 				}
+				//Repassa o Either extraído do retorno
+				return (Either<Exception, A>) fromJson(responseData.toString(), Either.class);
 			}
-
-			//Cria um Either para a response recebida
-			return Either.createRight(response);
+			
+			final Exception exception = new IllegalStateException(response.getError());
+			return Either.createLeft(exception);
 		}
 		catch (Exception e)
 		{

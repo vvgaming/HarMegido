@@ -89,6 +89,12 @@ public class NImage extends GameNode {
 	public RectF getBoundingRect() {
 		return matriz.getBoundingRect();
 	}
+
+	public Ponto getCenter()
+	{
+		return matriz.getCenter();
+	}
+	
 	
 	
 

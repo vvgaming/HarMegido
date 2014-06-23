@@ -14,7 +14,8 @@ import com.github.detentor.codex.function.Function0;
  * 
  * @author Vinicius Nogueira
  */
-public class NToggleButton extends GameNode {
+public class NToggleButton extends GameNode
+{
 
 	private final NButton button;
 
@@ -23,29 +24,35 @@ public class NToggleButton extends GameNode {
 	private boolean toggled = false;
 	private Paint paint;
 
-	public NToggleButton(NButton button) {
+	public NToggleButton(NButton button)
+	{
 		super();
 		this.button = button;
 	}
 
 	@Override
-	public void init() {
+	public void init()
+	{
 		super.init();
 		paint = new Paint();
 		paint.setStyle(Style.STROKE);
 		paint.setARGB(255, 255, 255, 255);
 		paint.setStrokeWidth(6);
-		setOnClickFunction(new Function0<Void>() {
-			@Override
-			public Void apply() {
-				return null;
-			}
-		});
+		// TODO nem lembro pq coloquei isso aqui, mas estava dando pau e comentei...
+		// quando lembrar o pq, tenho que mover para outro lugar pois esse trecho está sobrescrevendo as funções adicionadas antes do init e
+		// isso não é bom
+		// setOnClickFunction(new Function0<Void>() {
+		// @Override
+		// public Void apply() {
+		// return null;
+		// }
+		// });
 		addSubNode(button);
 	}
 
 	@Override
-	protected void update(long delta) {
+	protected void update(long delta)
+	{
 		boundingBox = getBoundingRect();
 		boundingBox.left -= padding;
 		boundingBox.top -= padding;
@@ -54,18 +61,23 @@ public class NToggleButton extends GameNode {
 	}
 
 	@Override
-	protected void render(Canvas canvas) {
+	protected void render(Canvas canvas)
+	{
 		super.render(canvas);
-		if (toggled) {
+		if (toggled)
+		{
 			canvas.drawRect(boundingBox, paint);
 		}
 	}
 
-	public void setOnClickFunction(final Function0<Void> onClickFunction) {
-		button.setOnClickFunction(new Function0<Void>() {
+	public void setOnClickFunction(final Function0<Void> onClickFunction)
+	{
+		button.setOnClickFunction(new Function0<Void>()
+		{
 
 			@Override
-			public Void apply() {
+			public Void apply()
+			{
 				toggle();
 				onClickFunction.apply();
 				return null;
@@ -73,19 +85,23 @@ public class NToggleButton extends GameNode {
 		});
 	}
 
-	public void toggle() {
+	public void toggle()
+	{
 		toggled = !toggled;
 	}
 
-	public void toggle(boolean toggled) {
+	public void toggle(boolean toggled)
+	{
 		this.toggled = toggled;
 	}
 
-	public RectF getBoundingRect() {
+	public RectF getBoundingRect()
+	{
 		return button.getBoundingRect();
 	}
 
-	public NButton getButton() {
+	public NButton getButton()
+	{
 		return button;
 	}
 

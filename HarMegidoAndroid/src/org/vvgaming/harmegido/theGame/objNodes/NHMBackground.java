@@ -4,53 +4,76 @@ import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.GameNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
-import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
+import org.vvgaming.harmegido.gameEngine.nodes.fx.NPaintFade;
+import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
 
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.product.Tuple3;
 
 /**
- * Implementação de um background padrão para o jogo Harmegido, com nuvens se movendo, mudança de cores e etc
+ * Implementação de um background padrão para o jogo Harmegido, com nuvens se
+ * movendo, mudança de cores e etc
  * 
  * @author Vinicius Nogueira
  */
-public class NHMBackground extends GameNode
-{
+public class NHMBackground extends GameNode {
 
 	private NSimpleBox box;
 	private NImage fundo;
 	private NImage asaAnjo;
+	private NImage asaAnjoOposta;
 	private NImage asaDemonio;
+	private NImage asaDemonioOposta;
 	private int movingSignal = 1;
 
 	private float COLOR_CHANGE_SPEED = 255.0f / 2000;
 
-	private Tuple3<Integer, Integer, Integer> destinyColor = Tuple3.from(100, 100, 100);
+	private Tuple3<Integer, Integer, Integer> destinyColor = Tuple3.from(100,
+			100, 100);
 
 	@Override
-	protected void init()
-	{
+	protected void init() {
 		super.init();
 
 		box = new NSimpleBox(0, 0, getGameWidth(), getGameHeight(), 0, 0, 0);
-		fundo = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.fundo));
+		fundo = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)),
+				getGameAssetManager().getBitmap(R.drawable.fundo));
 		fundo.setHeightKeepingRatio(getGameHeight());
 
-		asaAnjo = new NImage(new Ponto(getGameWidth(.86f), getGameHeight(.25f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
+		asaAnjo = new NImage(
+				new Ponto(getGameWidth(.86f), getGameHeight(.25f)),
+				getGameAssetManager().getBitmap(R.drawable.asa_anjo));
 		asaAnjo.setHeightKeepingRatio(getGameHeight(.55f));
-		asaDemonio = new NImage(new Ponto(getGameWidth(.17f), getGameHeight(.25f)), getGameAssetManager().getBitmap(R.drawable.asa_demonio));
+
+		asaAnjoOposta = new NImage(new Ponto(getGameWidth(.23f),
+				getGameHeight(.25f)), getGameAssetManager().getBitmap(
+				R.drawable.asa_anjo));
+		asaAnjoOposta.setHeightKeepingRatio(getGameHeight(.55f));
+		asaAnjoOposta.sethFlip(true);
+		asaAnjoOposta.getPaint().setAlpha(0);
+
+		asaDemonio = new NImage(new Ponto(getGameWidth(.17f),
+				getGameHeight(.25f)), getGameAssetManager().getBitmap(
+				R.drawable.asa_demonio));
 		asaDemonio.setHeightKeepingRatio(getGameHeight(.55f));
+
+		asaDemonioOposta = new NImage(new Ponto(getGameWidth(.92f),
+				getGameHeight(.25f)), getGameAssetManager().getBitmap(
+				R.drawable.asa_demonio));
+		asaDemonioOposta.setHeightKeepingRatio(getGameHeight(.55f));
+		asaDemonioOposta.sethFlip(true);
+		asaDemonioOposta.getPaint().setAlpha(0);
 
 		addSubNode(box);
 		addSubNode(fundo, 1);
 		addSubNode(asaDemonio, 2);
+		addSubNode(asaDemonioOposta, 2);
 		addSubNode(asaAnjo, 2);
-		addSubNode(new NTimer(15000, new Function0<Void>()
-		{
+		addSubNode(asaAnjoOposta, 2);
+		addSubNode(new NTimer(15000, new Function0<Void>() {
 
 			@Override
-			public Void apply()
-			{
+			public Void apply() {
 				movingSignal = (movingSignal == 1 ? -1 : 1);
 				return null;
 			}
@@ -58,20 +81,39 @@ public class NHMBackground extends GameNode
 
 	}
 
-	public void goToAngelColor()
-	{
+	public void goToAngelColor() {
 		destinyColor = Tuple3.from(43, 167, 203);
+
+		if (asaAnjo.getPaint().getAlpha() != 255) {
+			addSubNode(new NPaintFade(asaAnjo.getPaint(), true, 1000));
+		}
+		addSubNode(new NPaintFade(asaAnjoOposta.getPaint(), true, 1000));
+
+		addSubNode(new NPaintFade(asaDemonio.getPaint(), false, 1000));
+		if (asaDemonioOposta.getPaint().getAlpha() != 0) {
+			addSubNode(new NPaintFade(asaDemonioOposta.getPaint(), false, 1000));
+		}
 	}
 
-	public void goToDemonsColor()
-	{
+	public void goToDemonsColor() {
 		destinyColor = Tuple3.from(255, 0, 0);
+
+		if (asaDemonio.getPaint().getAlpha() != 255) {
+			addSubNode(new NPaintFade(asaDemonio.getPaint(), true, 1000));
+		}
+		addSubNode(new NPaintFade(asaDemonioOposta.getPaint(), true, 1000));
+
+		addSubNode(new NPaintFade(asaAnjo.getPaint(), false, 1000));
+
+		if (asaAnjoOposta.getPaint().getAlpha() != 0) {
+			addSubNode(new NPaintFade(asaAnjoOposta.getPaint(), false, 1000));
+		}
 	}
 
 	@Override
-	protected void update(long delta)
-	{
-		fundo.setCenter(fundo.getCenter().translate(movingSignal * ((20.0f / 1000) * delta), 0));
+	protected void update(long delta) {
+		fundo.setCenter(fundo.getCenter().translate(
+				movingSignal * ((20.0f / 1000) * delta), 0));
 
 		Tuple3<Integer, Integer, Integer> atual = box.getColor();
 
@@ -79,17 +121,20 @@ public class NHMBackground extends GameNode
 		// R
 		int val1Signal = destinyColor.getVal1() - atual.getVal1() > 0 ? 1 : -1;
 		atual.setVal1((int) (atual.getVal1() + (val1Signal * step)));
-		if ((val1Signal > 0 && atual.getVal1() > destinyColor.getVal1()) || (val1Signal < 0 && atual.getVal1() < destinyColor.getVal1()))
+		if ((val1Signal > 0 && atual.getVal1() > destinyColor.getVal1())
+				|| (val1Signal < 0 && atual.getVal1() < destinyColor.getVal1()))
 			atual.setVal1(destinyColor.getVal1());
 		// G
 		int val2Signal = destinyColor.getVal2() - atual.getVal2() > 0 ? 1 : -1;
 		atual.setVal2((int) (atual.getVal2() + (val2Signal * step)));
-		if ((val2Signal > 0 && atual.getVal2() > destinyColor.getVal2()) || (val2Signal < 0 && atual.getVal2() < destinyColor.getVal2()))
+		if ((val2Signal > 0 && atual.getVal2() > destinyColor.getVal2())
+				|| (val2Signal < 0 && atual.getVal2() < destinyColor.getVal2()))
 			atual.setVal2(destinyColor.getVal2());
 		// B
 		int val3Signal = destinyColor.getVal3() - atual.getVal3() > 0 ? 1 : -1;
 		atual.setVal3((int) (atual.getVal3() + (val3Signal * step)));
-		if ((val3Signal > 0 && atual.getVal3() > destinyColor.getVal3()) || (val3Signal < 0 && atual.getVal3() < destinyColor.getVal3()))
+		if ((val3Signal > 0 && atual.getVal3() > destinyColor.getVal3())
+				|| (val3Signal < 0 && atual.getVal3() < destinyColor.getVal3()))
 			atual.setVal3(destinyColor.getVal3());
 
 		box.setColor(atual.getVal1(), atual.getVal2(), atual.getVal3());

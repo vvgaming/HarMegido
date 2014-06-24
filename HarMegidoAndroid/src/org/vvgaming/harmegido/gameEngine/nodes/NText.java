@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 /**
- * Uma implementação de {@link GameObject} que dispõe e manipula texto
+ * Uma implementação de {@link GameNode} que dispõe e manipula texto
  * 
  * @author Vinicius Nogueira
  */

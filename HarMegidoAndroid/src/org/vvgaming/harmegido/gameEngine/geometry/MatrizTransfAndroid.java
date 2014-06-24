@@ -12,15 +12,18 @@ public class MatrizTransfAndroid {
 
 	private final Matrix matrix;
 
-	private float rotation = 0;
-
 	private final float srcWidth;
 	private final float srcHeight;
+
+	private float rotation = 0;
 
 	private float dstWidth;
 	private float dstHeight;
 
 	private Ponto center = new Ponto(0, 0);
+
+	private boolean hFlip = false;
+	private boolean vFlip = false;
 
 	public MatrizTransfAndroid(float srcWidth, float srcHeight) {
 		this(0, srcWidth, srcHeight, srcWidth, srcHeight, new Ponto(0, 0));
@@ -42,6 +45,16 @@ public class MatrizTransfAndroid {
 
 	private void refreshMatrix() {
 		matrix.reset();
+		
+		if (hFlip) {
+			matrix.postScale(-1, 1);
+			matrix.postTranslate(dstWidth, 0);
+		}
+		if (vFlip) {
+			matrix.postScale(1, -1);
+			matrix.postTranslate(0, dstHeight);
+		}
+		
 		matrix.postScale(dstWidth / srcWidth, dstHeight / srcHeight);
 		matrix.postTranslate(center.x - dstWidth / 2, center.y - dstHeight / 2);
 		matrix.postRotate(rotation, center.x, center.y);
@@ -83,6 +96,24 @@ public class MatrizTransfAndroid {
 
 	public void setScale(final float scale) {
 		setScale(scale, scale);
+	}
+
+	public void sethFlip(boolean hFlip) {
+		this.hFlip = hFlip;
+		refreshMatrix();
+	}
+
+	public void setvFlip(boolean vFlip) {
+		this.vFlip = vFlip;
+		refreshMatrix();
+	}
+
+	public boolean ishFlip() {
+		return hFlip;
+	}
+
+	public boolean isvFlip() {
+		return vFlip;
 	}
 
 	public float getRotation() {

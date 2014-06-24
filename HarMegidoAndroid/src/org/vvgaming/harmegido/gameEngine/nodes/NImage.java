@@ -6,6 +6,7 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 /**
@@ -16,6 +17,8 @@ import android.graphics.RectF;
 public class NImage extends GameNode {
 
 	private boolean visible = true;
+
+	private final Paint paint;
 
 	private Bitmap bmp;
 
@@ -30,6 +33,7 @@ public class NImage extends GameNode {
 		this.bmp = bmp;
 		matriz = new MatrizTransfAndroid(bmp.getWidth(), bmp.getHeight());
 		matriz.setCenter(center);
+		paint = new Paint();
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class NImage extends GameNode {
 
 	@Override
 	public void render(Canvas canvas) {
-		canvas.drawBitmap(bmp, matriz.getMatrix(), null);
+		canvas.drawBitmap(bmp, matriz.getMatrix(), paint);
 	}
 
 	@Override
@@ -86,16 +90,26 @@ public class NImage extends GameNode {
 		matriz.setScale(scale);
 	}
 
+	
+	
+	public void sethFlip(boolean hFlip) {
+		matriz.sethFlip(hFlip);
+	}
+
+	public void setvFlip(boolean vFlip) {
+		matriz.setvFlip(vFlip);
+	}
+
 	public RectF getBoundingRect() {
 		return matriz.getBoundingRect();
 	}
 
-	public Ponto getCenter()
-	{
+	public Ponto getCenter() {
 		return matriz.getCenter();
 	}
-	
-	
-	
+
+	public Paint getPaint() {
+		return paint;
+	}
 
 }

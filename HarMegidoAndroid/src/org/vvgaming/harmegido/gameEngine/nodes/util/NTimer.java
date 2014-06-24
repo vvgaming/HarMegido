@@ -1,11 +1,11 @@
-package org.vvgaming.harmegido.gameEngine.nodes;
+package org.vvgaming.harmegido.gameEngine.nodes.util;
 
 import org.vvgaming.harmegido.gameEngine.GameNode;
 
 import com.github.detentor.codex.function.Function0;
 
 /**
- * {@link GameObject} bem simples que serve para contar tempo para realizar determinadas ações
+ * {@link GameNode} bem simples que serve para contar tempo para realizar determinadas ações
  * 
  * @author Vinicius Nogueira
  */

@@ -3,7 +3,7 @@ package org.vvgaming.harmegido.theGame.mainNodes;
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
-import org.vvgaming.harmegido.gameEngine.nodes.NTextBlinking;
+import org.vvgaming.harmegido.gameEngine.nodes.fx.NBlinker;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 
@@ -33,10 +33,11 @@ public class N2Intro extends NHMMainNode
 		orientacao.vAlign = NText.VerticalAlign.MIDDLE;
 
 		String toqParaComecarStr = "Toque na tela para começar...";
-		NTextBlinking toqueParaComeçar = new NTextBlinking((int) getGameWidth(.5f), (int) getGameHeight(.9f), toqParaComecarStr);
-		toqueParaComeçar.face = getDefaultFace();
-		toqueParaComeçar.paint.setTextAlign(Align.CENTER);
-		toqueParaComeçar.vAlign = NText.VerticalAlign.MIDDLE;
+		NText toqueParaComecarText = new NText((int) getGameWidth(.5f), (int) getGameHeight(.9f), toqParaComecarStr);
+		toqueParaComecarText.face = getDefaultFace();
+		toqueParaComecarText.paint.setTextAlign(Align.CENTER);
+		toqueParaComecarText.vAlign = NText.VerticalAlign.MIDDLE;
+		NBlinker blinkingFxToqueParaComecar = new NBlinker(toqueParaComecarText);
 
 		NText title = new NText((int) getGameWidth(.5f), (int) getGameHeight(.1f), "Har Megido");
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/dc_o.ttf");
@@ -44,9 +45,11 @@ public class N2Intro extends NHMMainNode
 		title.size = getBigFontSize();
 		title.vAlign = VerticalAlign.BOTTOM;
 
+		addSubNode(blinkingFxToqueParaComecar);
+		
 		addSubNode(new NHMBackground(), 0);
 		addSubNode(orientacao, 1);
-		addSubNode(toqueParaComeçar, 1);
+		addSubNode(toqueParaComecarText, 1);
 		addSubNode(title, 1);
 
 	}

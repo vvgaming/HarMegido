@@ -2,7 +2,7 @@ package org.vvgaming.harmegido.theGame.objNodes;
 
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
-import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
+import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

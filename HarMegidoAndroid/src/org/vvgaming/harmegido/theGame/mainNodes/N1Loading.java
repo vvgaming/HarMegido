@@ -2,7 +2,7 @@ package org.vvgaming.harmegido.theGame.mainNodes;
 
 import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
-import org.vvgaming.harmegido.gameEngine.nodes.NTimer;
+import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.uos.UOSFacade;
 

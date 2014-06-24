@@ -119,24 +119,29 @@ public class NHMBackground extends GameNode {
 
 		float step = delta * COLOR_CHANGE_SPEED;
 		// R
-		int val1Signal = destinyColor.getVal1() - atual.getVal1() > 0 ? 1 : -1;
-		atual.setVal1((int) (atual.getVal1() + (val1Signal * step)));
-		if ((val1Signal > 0 && atual.getVal1() > destinyColor.getVal1())
-				|| (val1Signal < 0 && atual.getVal1() < destinyColor.getVal1()))
-			atual.setVal1(destinyColor.getVal1());
+		atual.setVal1(calculaNovoValor(atual.getVal1(), destinyColor.getVal1(),
+				step));
 		// G
-		int val2Signal = destinyColor.getVal2() - atual.getVal2() > 0 ? 1 : -1;
-		atual.setVal2((int) (atual.getVal2() + (val2Signal * step)));
-		if ((val2Signal > 0 && atual.getVal2() > destinyColor.getVal2())
-				|| (val2Signal < 0 && atual.getVal2() < destinyColor.getVal2()))
-			atual.setVal2(destinyColor.getVal2());
+		atual.setVal2(calculaNovoValor(atual.getVal2(), destinyColor.getVal2(),
+				step));
 		// B
-		int val3Signal = destinyColor.getVal3() - atual.getVal3() > 0 ? 1 : -1;
-		atual.setVal3((int) (atual.getVal3() + (val3Signal * step)));
-		if ((val3Signal > 0 && atual.getVal3() > destinyColor.getVal3())
-				|| (val3Signal < 0 && atual.getVal3() < destinyColor.getVal3()))
-			atual.setVal3(destinyColor.getVal3());
+		atual.setVal3(calculaNovoValor(atual.getVal3(), destinyColor.getVal3(),
+				step));
 
 		box.setColor(atual.getVal1(), atual.getVal2(), atual.getVal3());
+	}
+
+	private int calculaNovoValor(int atual, int destino, float step) {
+		int retorno;
+
+		int signal = destino - atual > 0 ? 1 : -1;
+		retorno = (int) (atual + (signal * step));
+
+		if ((signal > 0 && retorno > destino)
+				|| (signal < 0 && retorno < destino)) {
+			return destino;
+		}
+
+		return retorno;
 	}
 }

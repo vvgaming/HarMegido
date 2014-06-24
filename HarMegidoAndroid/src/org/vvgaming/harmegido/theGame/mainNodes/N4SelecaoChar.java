@@ -134,7 +134,7 @@ public class N4SelecaoChar extends NHMMainNode
 					case 0:
 						// demonios
 						getGameAssetManager().playSound(R.raw.morgana);
-						background.goToDemonsColor();
+						background.goToDemonsStyle();
 						mine = demoniosNomesBtns;
 						opposite = anjosNomesBtns;
 						// centralizado no botao dos demonios
@@ -143,7 +143,7 @@ public class N4SelecaoChar extends NHMMainNode
 					case 1:
 						// anjos
 						getGameAssetManager().playSound(R.raw.kayle);
-						background.goToAngelColor();
+						background.goToAngelStyle();
 						mine = anjosNomesBtns;
 						opposite = demoniosNomesBtns;
 						// centralizado no botao dos demonios

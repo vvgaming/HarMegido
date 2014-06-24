@@ -81,7 +81,7 @@ public class NHMBackground extends GameNode {
 
 	}
 
-	public void goToAngelColor() {
+	public void goToAngelStyle() {
 		destinyColor = Tuple3.from(43, 167, 203);
 
 		if (asaAnjo.getPaint().getAlpha() != 255) {
@@ -95,7 +95,7 @@ public class NHMBackground extends GameNode {
 		}
 	}
 
-	public void goToDemonsColor() {
+	public void goToDemonsStyle() {
 		destinyColor = Tuple3.from(255, 0, 0);
 
 		if (asaDemonio.getPaint().getAlpha() != 255) {

@@ -91,7 +91,10 @@ public class NImage extends GameNode {
 	}
 
 	
-	
+	public void setBmp(Bitmap bmp) {
+		this.bmp = bmp;
+	}
+
 	public void sethFlip(boolean hFlip) {
 		matriz.sethFlip(hFlip);
 	}

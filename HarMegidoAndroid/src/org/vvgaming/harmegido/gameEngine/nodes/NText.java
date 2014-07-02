@@ -18,6 +18,24 @@ public class NText extends GameNode
 	public enum VerticalAlign
 	{
 		TOP, BOTTOM, MIDDLE;
+		
+		public float getY(NText fromText)
+		{
+			final int nLines = fromText.text.split("\n").length;
+			
+			switch (this)
+			{
+				case TOP:
+					return fromText.pos.y + (nLines * fromText.size);
+				case BOTTOM:
+					return fromText.pos.y;
+				case MIDDLE:
+					return fromText.pos.y - ((nLines * fromText.size) / 2);
+				default:
+					throw new IllegalArgumentException("Alinhamento vertical desconhecido: " + this);
+			}
+		}
+		
 	}
 
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -65,21 +83,8 @@ public class NText extends GameNode
 	public void render(Canvas canvas)
 	{
 		final String[] splitByLine = text.split("\n");
-		float yStart = pos.y;
-		switch (vAlign)
-		{
-		case TOP:
-			yStart = pos.y + (splitByLine.length * size);
-			break;
-		case BOTTOM:
-			yStart = pos.y;
-			break;
-		case MIDDLE:
-			yStart = pos.y - ((splitByLine.length * size) / 2);
-			break;
-		default:
-			throw new IllegalArgumentException("Alinhamento vertical desconhecido: " + vAlign);
-		}
+		float yStart = vAlign.getY(this);
+
 		for (int i = 0; i < splitByLine.length; i++)
 		{
 			canvas.drawText(splitByLine[i], pos.x, yStart + (i * size), paint);

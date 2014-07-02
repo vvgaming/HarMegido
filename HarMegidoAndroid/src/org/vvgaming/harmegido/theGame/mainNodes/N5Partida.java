@@ -32,7 +32,7 @@ public class N5Partida extends NHMMainNode
 		resultBox = new NSimpleBox(0, 0, getGameWidth(), getGameHeight(), 100, 0, 0, 100);
 
 		bgImg = new NImage(new Ponto(getGameWidth() / 2, getGameHeight() / 2), getGameAssetManager().getBitmap(R.drawable.bg));
-		bgImg.setHeightKeepingRatio(getGameHeight());
+		bgImg.setHeight(getGameHeight(), true);
 
 		NText text = new NText(getGameWidth() / 2, getGameHeight() / 10, "Har Megido");
 		text.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/dc_o.ttf");

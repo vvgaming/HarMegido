@@ -38,29 +38,29 @@ public class NHMBackground extends GameNode {
 		box = new NSimpleBox(0, 0, getGameWidth(), getGameHeight(), 0, 0, 0);
 		fundo = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)),
 				getGameAssetManager().getBitmap(R.drawable.fundo));
-		fundo.setHeightKeepingRatio(getGameHeight());
+		fundo.setHeight(getGameHeight(), true);
 
 		asaAnjo = new NImage(
 				new Ponto(getGameWidth(.86f), getGameHeight(.25f)),
 				getGameAssetManager().getBitmap(R.drawable.asa_anjo));
-		asaAnjo.setHeightKeepingRatio(getGameHeight(.55f));
+		asaAnjo.setHeight(getGameHeight(.55f), true);
 
 		asaAnjoOposta = new NImage(new Ponto(getGameWidth(.23f),
 				getGameHeight(.25f)), getGameAssetManager().getBitmap(
 				R.drawable.asa_anjo));
-		asaAnjoOposta.setHeightKeepingRatio(getGameHeight(.55f));
+		asaAnjoOposta.setHeight(getGameHeight(.55f), true);
 		asaAnjoOposta.sethFlip(true);
 		asaAnjoOposta.getPaint().setAlpha(0);
 
 		asaDemonio = new NImage(new Ponto(getGameWidth(.17f),
 				getGameHeight(.25f)), getGameAssetManager().getBitmap(
 				R.drawable.asa_demonio));
-		asaDemonio.setHeightKeepingRatio(getGameHeight(.55f));
+		asaDemonio.setHeight(getGameHeight(.55f), true);
 
 		asaDemonioOposta = new NImage(new Ponto(getGameWidth(.92f),
 				getGameHeight(.25f)), getGameAssetManager().getBitmap(
 				R.drawable.asa_demonio));
-		asaDemonioOposta.setHeightKeepingRatio(getGameHeight(.55f));
+		asaDemonioOposta.setHeight(getGameHeight(.55f), true);
 		asaDemonioOposta.sethFlip(true);
 		asaDemonioOposta.getPaint().setAlpha(0);
 

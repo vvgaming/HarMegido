@@ -70,12 +70,32 @@ public class NImage extends GameNode {
 		matriz.setDimensions(width, height);
 	}
 
-	public void setWidthKeepingRatio(final float width) {
-		matriz.setWidthKeepingRatio(width);
+	public void setWidth(float width) {
+		matriz.setWidth(width);
 	}
 
-	public void setHeightKeepingRatio(final float height) {
-		matriz.setHeightKeepingRatio(height);
+	/**
+	 * Define a largura da imagem, mantendo a proporção, se selecionado.
+	 * @param width A nova largura da imagem
+	 * @param keepAspectRatio Se marcado, a altura da imagem também será alterada,
+	 * de forma a manter a proporção
+	 */
+	public void setWidth(float width, boolean keepAspectRatio) {
+		matriz.setWidth(width, keepAspectRatio);
+	}
+
+	public void setHeight(float height) {
+		matriz.setHeight(height);
+	}
+
+	/**
+	 * Define a altura da imagem, mantendo a proporção, se selecionado.
+	 * @param height A nova altura da imagem
+	 * @param keepAspectRatio Se marcado, a largura da imagem também será alterada,
+	 * de forma a manter a proporção
+	 */
+	public void setHeight(float height, boolean keepAspectRatio) {
+		matriz.setHeight(height, keepAspectRatio);
 	}
 
 	public void setRotation(final float rotation) {

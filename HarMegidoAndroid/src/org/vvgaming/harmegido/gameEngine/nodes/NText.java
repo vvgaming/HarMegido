@@ -33,13 +33,18 @@ public class NText extends GameNode
 	{
 		this(0, 0, "");
 	}
+	
+	public NText(Ponto ponto, String text)
+	{
+		paint.setARGB(255, 255, 255, 255);
+		pos = ponto;
+		paint.setTypeface(face);
+		this.text = text;
+	}
 
 	public NText(float x, float y, String text)
 	{
-		paint.setARGB(255, 255, 255, 255);
-		pos = new Ponto(x, y);
-		paint.setTypeface(face);
-		this.text = text;
+		this(new Ponto(x, y), text);
 	}
 
 	@Override

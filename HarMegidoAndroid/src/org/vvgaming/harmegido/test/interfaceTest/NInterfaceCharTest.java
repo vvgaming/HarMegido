@@ -77,7 +77,7 @@ public class NInterfaceCharTest extends NHMMainNode {
 		tipoTime = TeamType.LIGHT;
 		
 		charImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.40f)), getImage());
-		charImg.setWidthKeepingRatio(getGameWidth(.70f));
+		charImg.setWidth(getGameWidth(.70f), true);
 		
 //		// botão de seleção dos demonios
 		final NButtonText proximoBtn = new NButtonText(new NText(getGameWidth(.10f), getGameHeight(.90f), "próximo"));

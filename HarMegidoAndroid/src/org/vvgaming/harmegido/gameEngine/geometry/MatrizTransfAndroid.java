@@ -65,17 +65,37 @@ public class MatrizTransfAndroid {
 		this.dstHeight = height;
 		refreshMatrix();
 	}
-
-	public void setWidthKeepingRatio(final float width) {
-		this.dstWidth = width;
-		this.dstHeight = (srcHeight / srcWidth) * width;
-		refreshMatrix();
+	
+	public void setWidth(final float width)
+	{
+		setWidth(width, false);
 	}
-
-	public void setHeightKeepingRatio(final float height) {
-		this.dstHeight = height;
-		this.dstWidth = (srcWidth / srcHeight) * height;
-		refreshMatrix();
+	
+	/**
+	 * Define a largura da imagem, mantendo a proporção, se selecionado.
+	 * @param width A nova largura da imagem
+	 * @param keepAspectRatio Se marcado, a altura da imagem também será alterada,
+	 * de forma a manter a proporção
+	 */
+	public void setWidth(final float width, final boolean keepAspectRatio)
+	{
+		setDimensions(width, keepAspectRatio ? (srcHeight / srcWidth) * width : dstHeight);
+	}
+	
+	public void setHeight(final float height)
+	{
+		setWidth(height, false);
+	}
+	
+	/**
+	 * Define a altura da imagem, mantendo a proporção, se selecionado.
+	 * @param height A nova altura da imagem
+	 * @param keepAspectRatio Se marcado, a largura da imagem também será alterada,
+	 * de forma a manter a proporção
+	 */
+	public void setHeight(final float height, final boolean keepAspectRatio)
+	{
+		setDimensions(keepAspectRatio ? (srcWidth / srcHeight) * height : dstWidth, height);
 	}
 
 	public void setRotation(float rotation) {

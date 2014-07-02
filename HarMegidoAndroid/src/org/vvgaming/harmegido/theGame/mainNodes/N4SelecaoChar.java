@@ -78,13 +78,13 @@ public class N4SelecaoChar extends NHMMainNode
 		// botão de seleção dos demonios
 		final NButtonImage demoniosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f), getGameHeight(.4f)),
 				getGameAssetManager().getBitmap(R.drawable.morgana)));
-		demoniosBtn.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+		demoniosBtn.getImage().setWidth(getGameWidth(.4f), true);
 		demoniosTglBtn = new NToggleButton(demoniosBtn);
 
 		// botão de seleção dos anjos
 		final NButtonImage anjosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.75f), getGameHeight(.4f)), getGameAssetManager()
 				.getBitmap(R.drawable.kayle)));
-		anjosBtn.getImage().setWidthKeepingRatio(getGameWidth(.4f));
+		anjosBtn.getImage().setWidth(getGameWidth(.4f), true);
 		anjosTglBtn = new NToggleButton(anjosBtn);
 
 		// agrupando os toogles de demonios e anjos

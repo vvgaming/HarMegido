@@ -46,7 +46,7 @@ public class NSimilarityCam extends LazyInitGameNode
 			public Void apply()
 			{
 				NSimilarityCam.this.matriz.setCenter(center);
-				NSimilarityCam.this.matriz.setWidthKeepingRatio(width);
+				NSimilarityCam.this.matriz.setWidth(width, true);
 				return null;
 			}
 		});

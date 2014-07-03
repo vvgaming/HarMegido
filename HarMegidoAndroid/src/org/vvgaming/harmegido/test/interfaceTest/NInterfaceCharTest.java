@@ -1,26 +1,27 @@
 package org.vvgaming.harmegido.test.interfaceTest;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
-import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
-import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint.Align;
 
 import com.github.detentor.codex.function.Function0;
+import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Menu de opções para criar seu char antes de entrar na partida. <br/>
@@ -33,37 +34,16 @@ public class NInterfaceCharTest extends NHMMainNode {
 
 	private NHMBackground background;
 
-	private NToggleButton anjosTglBtn;
-	private NToggleButton demoniosTglBtn;
-	private NGroupToggleButton timeTglGroup;
-	
-	private NImage charImg;
-
 	private NText orientacao;
 	private TeamType tipoTime;
 	private int curPos = 0;
+
+	private List<GameChar> angels;
+	private List<GameChar> demons;
 	
-	private final List<Integer> angelImg = Arrays.asList(R.drawable.angel01, 
-													     R.drawable.angel02, 
-													     R.drawable.angel03, 
-													     R.drawable.angel04, 
-													     R.drawable.angel05,
-													     R.drawable.angel06,
-													     R.drawable.angel07,
-													     R.drawable.angel08, 
-													     R.drawable.angel09,
-													     R.drawable.angel10);
-	
-	private final List<Integer> demonImg = Arrays.asList(R.drawable.demon01, 
-													     R.drawable.demon02, 
-													     R.drawable.demon03, 
-													     R.drawable.demon04, 
-													     R.drawable.demon05,
-													     R.drawable.demon06,
-													     R.drawable.demon07,
-													     R.drawable.demon08, 
-													     R.drawable.demon09,
-													     R.drawable.demon10);
+	private NImage charImg;
+	private NText nomeChar;
+	private NText flavorText;
 	
 
 	public NInterfaceCharTest() {
@@ -74,13 +54,19 @@ public class NInterfaceCharTest extends NHMMainNode {
 		
 		super.init();
 		
+		angels = loadChars("angel");
+		demons = loadChars("demon");
+		
 		tipoTime = TeamType.LIGHT;
 		
 		charImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.40f)), getImage());
-		charImg.setWidth(getGameWidth(.70f), true);
+		charImg.setWidth(getGameWidth(.65f), true);
+		
+		nomeChar = new NText(getGameWidth(.5f), getGameHeight(.10f), getCurChar().getName());
+		nomeChar.setWidth(getGameWidth(.65f));
 		
 //		// botão de seleção dos demonios
-		final NButtonText proximoBtn = new NButtonText(new NText(getGameWidth(.10f), getGameHeight(.90f), "próximo"));
+		final NButtonText proximoBtn = new NButtonText(new NText(getGameWidth(.10f), getGameHeight(.95f), "próximo"));
 //
 		proximoBtn.setOnClickFunction(new Function0<Void>() {
 			@Override
@@ -91,12 +77,12 @@ public class NInterfaceCharTest extends NHMMainNode {
 					curPos = 0;
 				}
 				
-				atualizarImagem();
+				atualizarChar();
 				return null;
 			}
 		});
 		
-		final NButtonText trocarTimeBtn = new NButtonText(new NText(getGameWidth(.65f), getGameHeight(.90f), "trocar"));
+		final NButtonText trocarTimeBtn = new NButtonText(new NText(getGameWidth(.65f), getGameHeight(.10f), "trocar"));
 		//
 		trocarTimeBtn.setOnClickFunction(new Function0<Void>() {
 					@Override
@@ -113,7 +99,7 @@ public class NInterfaceCharTest extends NHMMainNode {
 							curPos = 0;
 						}
 						
-						atualizarImagem();
+						atualizarChar();
 						
 						return null;
 					}
@@ -142,13 +128,64 @@ public class NInterfaceCharTest extends NHMMainNode {
 		addSubNode(charImg, 1);
 		addSubNode(proximoBtn, 1);
 		addSubNode(trocarTimeBtn, 1);
+//		addSubNode(nomeChar);
 //		addSubNode(timeTglGroup, 1);
 //		addSubNode(orientacao, 1);
 	}
 	
-	private void atualizarImagem()
+	private GameChar getCurChar()
 	{
+		if (tipoTime == TeamType.LIGHT)
+		{
+			return angels.get(curPos);
+		}
+		else
+		{
+			return demons.get(curPos);
+		}
+	}
+	
+	private void atualizarChar()
+	{
+		nomeChar.text = getCurChar().getName();
 		charImg.setBmp(getImage());
+	}
+	
+	private List<GameChar> loadChars(final String prefix)
+	{
+		final int fileId = idFromName(prefix + "s" , "raw");
+		final List<Tuple2<String, String>> charNames = parseFile(getGameAssetManager().getRawTextFile(fileId));
+		final List<GameChar> toReturn = new ArrayList<>();
+		
+		for (int i = 1; i < 11; i++)
+		{
+			final String fileName = prefix + (i < 10 ? "0" : "") + i;
+			final Tuple2<String, String> curTuple = charNames.get(i-1);
+			toReturn.add(new GameChar(curTuple.getVal1(), curTuple.getVal2(), idFromName(fileName, "drawable")));
+		}
+		
+		return toReturn;
+	}
+	
+	private List<Tuple2<String, String>> parseFile(final String theFile)
+	{
+		List<Tuple2<String, String>> toReturn = new ArrayList<>();
+		
+		Matcher mat = Pattern.compile("([^{]+)\\{([^}]+)\\}").matcher(theFile);
+		
+		while (mat.find())
+		{
+			toReturn.add(Tuple2.from(mat.group(1), mat.group(2)));
+		}
+		
+		return toReturn;
+	}
+	
+	private int idFromName(final String theName, final String theFolder)
+	{
+		final Activity activity = getGameAssetManager().getActivity();
+		final String packName = activity.getPackageName();
+		return activity.getResources().getIdentifier(theName, theFolder, packName);
 	}
 	
 	private Bitmap getImage()
@@ -157,37 +194,17 @@ public class NInterfaceCharTest extends NHMMainNode {
 		
 		if (tipoTime == TeamType.DARK)
 		{
-			imgCode = demonImg.get(curPos);
-
-			charImg.setBmp(getGameAssetManager().getBitmap(demonImg.get(curPos)));
+			imgCode = demons.get(curPos).getResId();
 		}
 		else
 		{
-			imgCode = angelImg.get(curPos);
+			imgCode = angels.get(curPos).getResId();
 		}
 		
 		final Resources theResource = getGameAssetManager().getActivity().getResources();
 		return BitmapFactory.decodeResource(theResource, imgCode);
 	}
 	
-	/**
-	 * Retorna o prefixo dos arquivos de imagem a partir do tipo passado como parâmetro
-	 */
-	private String getPrefix(final TeamType fromType)
-	{
-		switch(fromType)
-		{
-			case DARK:
-				return "demon";
-			case LIGHT: 
-				return "angel";
-			default:
-				throw new IllegalArgumentException("Tipo não reconhecido: " + fromType);
-		}
-	}
-	
-	
-
 	@Override
 	public void update(final long delta) {
 //		if (timeTglGroup.getToggledIndex().isEmpty()) {

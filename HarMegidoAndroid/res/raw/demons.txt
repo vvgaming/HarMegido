@@ -1,72 +1,49 @@
-Bael
-Agares
-Vassago
-Samigina
-Barbas
-Valefar
-Aamon
-Barbatos
-Paimon
-Buer
-Gusion
-Sitri
-Beleth
-Leraje
-Eligos
-Zepar
-Botis
-Bathin
-Sallos
-Purson
-Marax
-Ipos
-Aim
-Naberius
-Glasya-Labolas
-Buné
-Ronové
-Berith
-Astaroth
-Forneus
-Foras
-Asmodeus
-Gäap
-Furfur
-Marchosias
-Stolas
-Phenex
-Halphas
-Malphas
-Räum
-Focalor
-Vepar
-Sabnock
-Shax
-Viné
-Bifrons
-Vual
-Häagenti
-Crocell
-Furcas
-Balam
-Alloces
-Camio
-Murmur
-Orobas
-Gremory
-Ose
-Amy
-Orias
-Vapula
-Zagan
-Valac
-Andras
-Flauros
-Andrealphus
-Cimeies
-Amdusias
-Belial
-Decarabia
-Seere
-Dantalion
-Andromalius
+Beleth, o Adorador de Sangue
+{
+	Sangue é sagrado para aqueles cujo Deus é a guerra.
+}
+Lúcifer, o Príncipe da Morte
+{
+	Alguns dizem que o tempo é cíclico e que a história 
+	inevitavelmente se repete. Minha vontade pertence 
+	somente a mim. Ela não se curvará a nada nem a ninguém.
+}
+Asmodeus, o Ceifador do Abismo
+{
+	As trancas do inferno foram abertas com as chaves do sofrimento, 
+	do desespero e de sangue.
+}
+Liliana, a Corrompida
+{
+	Não há vítimas suficientes para saciar a sua sede de retribuição.
+}
+Astaroth, o Pastor dos Caídos
+{
+	A dor é uma maneira rude de assegurar obediência, 
+	mas é barata e abundante.
+}
+Baphomet, o Demônio Sorridente
+{
+	Não importa quantos eu mate, sempre existem mais a caçar.
+	Eu sorrio só de pensar nisso.
+}
+Sarkhan Vol, o Destruidor
+{
+	Palavras são um desperdício de tempo. 
+	Destruição é uma linguagem que todos compreendem.
+}
+Phage, a Intocável
+{
+	A destruição que o toque de Phage pode causar
+	só é rivalizada pela escuridão em seu coração.
+}
+Visara, a Pavorosa
+{
+	Uma aparição é um conto de um assassinato cruel recontado
+	toda a vez que ela encontra uma vítima.
+}
+Bael, o Escravizador
+{
+	Seus escravos suplicam pela morte mais do que desejam a liberdade.
+	Ele os nega ambos.
+}

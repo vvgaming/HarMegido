@@ -42,7 +42,7 @@ public class N2Intro extends NHMMainNode
 		NText title = new NText((int) getGameWidth(.5f), (int) getGameHeight(.1f), "Har Megido");
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/dc_o.ttf");
 		title.paint.setTextAlign(Align.CENTER);
-		title.size = getBigFontSize();
+		title.setSize(getBigFontSize());
 		title.vAlign = VerticalAlign.BOTTOM;
 
 		addSubNode(blinkingFxToqueParaComecar);

@@ -73,7 +73,7 @@ public class N4SelecaoChar extends NHMMainNode
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/Radio Trust.ttf");
 		title.paint.setTextAlign(Align.CENTER);
 		title.vAlign = NText.VerticalAlign.TOP;
-		title.size = getBigFontSize();
+		title.setSize(getBigFontSize());
 
 		// botão de seleção dos demonios
 		final NButtonImage demoniosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f), getGameHeight(.4f)),

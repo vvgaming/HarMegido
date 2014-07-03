@@ -5,6 +5,7 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 
 /**
@@ -14,36 +15,11 @@ import android.graphics.Typeface;
  */
 public class NText extends GameNode
 {
-
-	public enum VerticalAlign
-	{
-		TOP, BOTTOM, MIDDLE;
-		
-		public float getY(NText fromText)
-		{
-			final int nLines = fromText.text.split("\n").length;
-			
-			switch (this)
-			{
-				case TOP:
-					return fromText.pos.y + (nLines * fromText.size);
-				case BOTTOM:
-					return fromText.pos.y;
-				case MIDDLE:
-					return fromText.pos.y - ((nLines * fromText.size) / 2);
-				default:
-					throw new IllegalArgumentException("Alinhamento vertical desconhecido: " + this);
-			}
-		}
-		
-	}
-
 	public Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	public Typeface face;
 	public String text;
 	public Ponto pos;
 	public VerticalAlign vAlign = VerticalAlign.MIDDLE;
-	public Integer size;
 
 	private boolean visible = true;
 
@@ -68,14 +44,20 @@ public class NText extends GameNode
 	@Override
 	public void init()
 	{
-		if(size == null)
-		size = getSmallFontSize();
+		if (paint.getTextSize() == 0.0f)
+		{
+			paint.setTextSize(getSmallFontSize());
+		}
+	}
+	
+	public void setSize(final float newSize)
+	{
+		paint.setTextSize(newSize);
 	}
 
 	@Override
 	public void update(long delta)
 	{
-		paint.setTextSize(size);
 		paint.setTypeface(face);
 	}
 
@@ -84,11 +66,32 @@ public class NText extends GameNode
 	{
 		final String[] splitByLine = text.split("\n");
 		float yStart = vAlign.getY(this);
+		float size = paint.getTextSize();
 
 		for (int i = 0; i < splitByLine.length; i++)
 		{
 			canvas.drawText(splitByLine[i], pos.x, yStart + (i * size), paint);
 		}
+	}
+	
+	/**
+	 * Redimensiona o tamanho da fonte do texto de forma  
+	 * @param desiredWidth o tamanho desejado
+	 */
+	public void setWidth(float desiredWidth) 
+	{
+	    final float testTextSize = 24f;
+
+	    // Get the bounds of the text, using our testTextSize.
+	    paint.setTextSize(testTextSize);
+	    Rect bounds = new Rect();
+	    paint.getTextBounds(text, 0, text.length(), bounds);
+
+	    // Calculate the desired size as a proportion of our testTextSize.
+	    float desiredTextSize = testTextSize * desiredWidth / bounds.width();
+
+	    // Set the paint for that size.
+	    paint.setTextSize(desiredTextSize);
 	}
 
 	@Override
@@ -111,13 +114,35 @@ public class NText extends GameNode
 	{
 		NText retorno = new NText();
 		retorno.face = face;
-		retorno.size = size;
 		retorno.visible = visible;
 		retorno.paint = new Paint(paint);
 		retorno.face = face;
 		retorno.pos = pos;
 		retorno.text = text;
 		return retorno;
+	}
+	
+	public enum VerticalAlign
+	{
+		TOP, BOTTOM, MIDDLE;
+		
+		public float getY(NText fromText)
+		{
+			final int nLines = fromText.text.split("\n").length;
+			final float size = fromText.paint.getTextSize();
+			
+			switch (this)
+			{
+				case TOP:
+					return fromText.pos.y + (nLines * size);
+				case BOTTOM:
+					return fromText.pos.y;
+				case MIDDLE:
+					return fromText.pos.y - ((nLines * size) / 2);
+				default:
+					throw new IllegalArgumentException("Alinhamento vertical desconhecido: " + this);
+			}
+		}
 	}
 
 }

@@ -37,7 +37,7 @@ public class N5Partida extends NHMMainNode
 		NText text = new NText(getGameWidth() / 2, getGameHeight() / 10, "Har Megido");
 		text.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/dc_o.ttf");
 		text.paint.setTextAlign(Align.CENTER);
-		text.size = 140;
+		text.setSize(140);
 		text.vAlign = VerticalAlign.BOTTOM;
 
 		addSubNode(bg, 0);

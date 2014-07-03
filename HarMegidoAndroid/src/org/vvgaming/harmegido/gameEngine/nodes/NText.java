@@ -20,6 +20,7 @@ public class NText extends GameNode
 	public String text;
 	public Ponto pos;
 	public VerticalAlign vAlign = VerticalAlign.MIDDLE;
+	private float size;
 
 	private boolean visible = true;
 
@@ -44,20 +45,21 @@ public class NText extends GameNode
 	@Override
 	public void init()
 	{
-		if (paint.getTextSize() == 0.0f)
+		if (size == 0.0f)
 		{
-			paint.setTextSize(getSmallFontSize());
+			size = getSmallFontSize();
 		}
 	}
 	
 	public void setSize(final float newSize)
 	{
-		paint.setTextSize(newSize);
+		paint.setTextSize(size = newSize);
 	}
 
 	@Override
 	public void update(long delta)
 	{
+		paint.setTextSize(size);
 		paint.setTypeface(face);
 	}
 
@@ -66,7 +68,6 @@ public class NText extends GameNode
 	{
 		final String[] splitByLine = text.split("\n");
 		float yStart = vAlign.getY(this);
-		float size = paint.getTextSize();
 
 		for (int i = 0; i < splitByLine.length; i++)
 		{
@@ -129,7 +130,7 @@ public class NText extends GameNode
 		public float getY(NText fromText)
 		{
 			final int nLines = fromText.text.split("\n").length;
-			final float size = fromText.paint.getTextSize();
+			final float size = fromText.size;
 			
 			switch (this)
 			{

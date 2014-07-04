@@ -33,7 +33,7 @@ public class SquareButton extends GameNode {
 	@Override
 	public void render(Canvas canvas) {
 		canvas.drawRect(ret.toAndroidCanvasRect(), white);
-		canvas.drawText(text, ret.origem.x, ret.origem.y + ret.h / 2, black);
+		canvas.drawText(text, ret.origem.x, ret.origem.y + ret.height / 2, black);
 	}
 
 }

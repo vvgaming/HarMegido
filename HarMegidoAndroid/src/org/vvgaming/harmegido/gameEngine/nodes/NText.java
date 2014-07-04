@@ -53,7 +53,7 @@ public class NText extends GameNode
 	
 	public void setSize(final float newSize)
 	{
-		paint.setTextSize(size = newSize);
+		this.size = newSize;
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class NText extends GameNode
 	{
 		final String[] splitByLine = text.split("\n");
 		float yStart = vAlign.getY(this);
-
+		
 		for (int i = 0; i < splitByLine.length; i++)
 		{
 			canvas.drawText(splitByLine[i], pos.x, yStart + (i * size), paint);
@@ -76,23 +76,40 @@ public class NText extends GameNode
 	}
 	
 	/**
-	 * Redimensiona o tamanho da fonte do texto de forma  
+	 * Redimensiona o tamanho da fonte do texto de forma a caber
+	 * dentro da largura passada como parâmetro
 	 * @param desiredWidth o tamanho desejado
 	 */
 	public void setWidth(float desiredWidth) 
 	{
+		if (text.isEmpty())
+		{
+			return;
+		}
+		
+		final String[] linhas = text.split("\n");
+		
+		int maxIndex = 0;
+		int prevSize = -1;
+		
+		//Encontra qual a linha com o maior texto
+		for (int i = 0; i < linhas.length; i++)
+		{
+			int curSize = getTextBounds(linhas[i]).width();
+			if (curSize > prevSize)
+			{
+				prevSize = curSize;
+				maxIndex = i;
+			}
+		}
+		
+		//Redimensiona a caixa de acordo com a linha de maior texto
 	    final float testTextSize = 24f;
-
-	    // Get the bounds of the text, using our testTextSize.
 	    paint.setTextSize(testTextSize);
 	    Rect bounds = new Rect();
-	    paint.getTextBounds(text, 0, text.length(), bounds);
-
-	    // Calculate the desired size as a proportion of our testTextSize.
-	    float desiredTextSize = testTextSize * desiredWidth / bounds.width();
-
-	    // Set the paint for that size.
-	    paint.setTextSize(desiredTextSize);
+	    paint.getTextBounds(linhas[maxIndex], 0, linhas[maxIndex].length(), bounds);
+	    size = testTextSize * desiredWidth / bounds.width();
+	    paint.setTextSize(size);
 	}
 
 	@Override
@@ -121,6 +138,47 @@ public class NText extends GameNode
 		retorno.pos = pos;
 		retorno.text = text;
 		return retorno;
+	}
+	
+
+	private Rect getTextBounds(final String theText)
+	{
+		final Rect toReturn = new Rect();
+		
+		if (theText == "")
+		{
+			return toReturn;
+		}
+		
+		final String[] linhas = theText.split("\n");
+		
+		int maxWidth = 0;
+		int totalHeight = 0;
+		
+		for (int i = 0; i < linhas.length; i++)
+		{
+			paint.getTextBounds(linhas[i], 0, linhas[i].length(), toReturn);
+			
+			if (toReturn.width() > maxWidth)
+			{
+				maxWidth = toReturn.width();
+			}
+			
+			totalHeight += toReturn.height();
+		}
+		
+		toReturn.bottom = toReturn.top + totalHeight;
+		toReturn.right = toReturn.left + maxWidth;
+		
+		return toReturn;
+	}
+	
+	/**
+	 * Retorna o menor retângulo que cabe o texto deste componente
+	 */
+	public Rect getTextBounds()
+	{
+		return getTextBounds(text);
 	}
 	
 	public enum VerticalAlign

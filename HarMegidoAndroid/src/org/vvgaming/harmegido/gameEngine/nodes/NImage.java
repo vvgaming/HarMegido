@@ -16,11 +16,9 @@ import android.graphics.RectF;
  */
 public class NImage extends GameNode {
 
-	private boolean visible = true;
-
 	private final Paint paint;
-
 	private Bitmap bmp;
+	private boolean visible = true;
 
 	// matriz de transformações
 	private MatrizTransfAndroid matriz;
@@ -39,6 +37,15 @@ public class NImage extends GameNode {
 	@Override
 	public void update(long delta) {
 
+	}
+	
+	/**
+	 * Retorna a posição X e Y da imagem
+	 */
+	public Ponto getPos()
+	{
+		final Ponto center = matriz.getCenter();
+		return new Ponto(center.x - (matriz.getDstWidth() / 2), center.y -  (matriz.getDstHeight() / 2));
 	}
 
 	@Override
@@ -68,6 +75,16 @@ public class NImage extends GameNode {
 
 	public void setDimensions(final float width, final float height) {
 		matriz.setDimensions(width, height);
+	}
+	
+	public float getHeight()
+	{
+		return matriz.getDstHeight();
+	}
+	
+	public float getWidth()
+	{
+		return matriz.getDstWidth();
 	}
 
 	public void setWidth(float width) {
@@ -109,10 +126,13 @@ public class NImage extends GameNode {
 	public void setScale(final float scale) {
 		matriz.setScale(scale);
 	}
-
 	
 	public void setBmp(Bitmap bmp) {
 		this.bmp = bmp;
+	}
+	
+	public Bitmap getBmp() {
+		return bmp;
 	}
 
 	public void sethFlip(boolean hFlip) {
@@ -134,5 +154,5 @@ public class NImage extends GameNode {
 	public Paint getPaint() {
 		return paint;
 	}
-
+	
 }

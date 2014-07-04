@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
-import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
@@ -18,7 +17,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Paint.Align;
+import android.graphics.Rect;
 
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.product.Tuple2;
@@ -34,7 +33,6 @@ public class NInterfaceCharTest extends NHMMainNode {
 
 	private NHMBackground background;
 
-	private NText orientacao;
 	private TeamType tipoTime;
 	private int curPos = 0;
 
@@ -62,9 +60,11 @@ public class NInterfaceCharTest extends NHMMainNode {
 		charImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.40f)), getImage());
 		charImg.setWidth(getGameWidth(.65f), true);
 		
-		nomeChar = new NText(getGameWidth(.5f), getGameHeight(.10f), getCurChar().getName());
-		nomeChar.setWidth(getGameWidth(.65f));
-		
+		nomeChar = new NText(new Ponto(0, 0), getCurChar().getName());
+		flavorText = new NText(new Ponto(0, 0), getCurChar().getFlavorText());
+
+		atualizarChar(); //atualiza as posições dos botões
+
 //		// botão de seleção dos demonios
 		final NButtonText proximoBtn = new NButtonText(new NText(getGameWidth(.10f), getGameHeight(.95f), "próximo"));
 //
@@ -118,36 +118,39 @@ public class NInterfaceCharTest extends NHMMainNode {
 		// agrupando os toogles de demonios e anjos
 //		timeTglGroup = new NGroupToggleButton(demoniosTglBtn, anjosTglBtn);
 
-		orientacao = new NText(getGameWidth(.5f), getGameHeight(.90f), "");
-		orientacao.face = getDefaultFace();
-		orientacao.paint.setTextAlign(Align.CENTER);
-		orientacao.vAlign = VerticalAlign.MIDDLE;
-
 		background = new NHMBackground();
 		addSubNode(background, 0);
 		addSubNode(charImg, 1);
 		addSubNode(proximoBtn, 1);
 		addSubNode(trocarTimeBtn, 1);
-//		addSubNode(nomeChar);
+		addSubNode(flavorText, 1);
+		addSubNode(nomeChar, 1);
 //		addSubNode(timeTglGroup, 1);
 //		addSubNode(orientacao, 1);
 	}
 	
 	private GameChar getCurChar()
 	{
-		if (tipoTime == TeamType.LIGHT)
-		{
-			return angels.get(curPos);
-		}
-		else
-		{
-			return demons.get(curPos);
-		}
+		return tipoTime == TeamType.LIGHT ? angels.get(curPos) :  demons.get(curPos);
 	}
 	
 	private void atualizarChar()
 	{
+		final Ponto charPos = charImg.getPos();
+		
+		//Altera as informações do nome do char
 		nomeChar.text = getCurChar().getName();
+		nomeChar.setWidth(charImg.getWidth());
+		final Rect nomeCharRect = nomeChar.getTextBounds();
+		nomeChar.pos = new Ponto(charPos.x, charPos.y - (nomeCharRect.height() / 2));
+		
+		//Altera as informações do flavor text
+		flavorText.text = getCurChar().getFlavorText();
+		flavorText.setWidth(charImg.getWidth());
+		final Rect flavorRect = flavorText.getTextBounds();
+		flavorText.pos = new Ponto(charPos.x, charPos.y + charImg.getHeight() + flavorRect.height());
+		
+		//Troca o bmp do char
 		charImg.setBmp(getImage());
 	}
 	
@@ -169,15 +172,13 @@ public class NInterfaceCharTest extends NHMMainNode {
 	
 	private List<Tuple2<String, String>> parseFile(final String theFile)
 	{
-		List<Tuple2<String, String>> toReturn = new ArrayList<>();
-		
-		Matcher mat = Pattern.compile("([^{]+)\\{([^}]+)\\}").matcher(theFile);
-		
+		final List<Tuple2<String, String>> toReturn = new ArrayList<>();
+		final Matcher mat = Pattern.compile("([^{]+)\\{([^}]+)\\}").matcher(theFile);
+
 		while (mat.find())
 		{
-			toReturn.add(Tuple2.from(mat.group(1), mat.group(2)));
+			toReturn.add(Tuple2.from(mat.group(1).trim(), mat.group(2).trim()));
 		}
-		
 		return toReturn;
 	}
 	

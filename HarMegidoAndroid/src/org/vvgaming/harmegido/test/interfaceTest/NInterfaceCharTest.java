@@ -1,6 +1,7 @@
 package org.vvgaming.harmegido.test.interfaceTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +32,8 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinicius Nogueira
  */
-public class NInterfaceCharTest extends NHMMainNode {
+public class NInterfaceCharTest extends NHMMainNode
+{
 
 	private NHMBackground background;
 
@@ -45,11 +47,13 @@ public class NInterfaceCharTest extends NHMMainNode {
 	private NText nomeChar;
 	private NText flavorText;
 
-	public NInterfaceCharTest() {
+	public NInterfaceCharTest()
+	{
 	}
 
 	@Override
-	public void init() {
+	public void init()
+	{
 
 		super.init();
 
@@ -58,24 +62,28 @@ public class NInterfaceCharTest extends NHMMainNode {
 
 		tipoTime = TeamType.LIGHT;
 
-		charImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.40f)),
-				getImage());
+		charImg = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.40f)), getImage());
 		charImg.setWidth(getGameWidth(.65f), true);
 
 		nomeChar = new NText(new Ponto(0, 0), getCurChar().getName());
+		nomeChar.vAlign = VerticalAlign.BOTTOM;
+		nomeChar.paint.setTextAlign(Align.LEFT);
+		
 		flavorText = new NText(new Ponto(0, 0), getCurChar().getFlavorText());
 
 		atualizarChar(); // atualiza as posições dos botões
 
 		// // botão de seleção dos demonios
-		final NButtonText proximoBtn = new NButtonText(new NText(
-				getGameWidth(.10f), getGameHeight(.95f), "próximo"));
+		final NButtonText proximoBtn = new NButtonText(new NText(getGameWidth(.10f), getGameHeight(.95f), "próximo"));
 		//
-		proximoBtn.setOnClickFunction(new Function0<Void>() {
+		proximoBtn.setOnClickFunction(new Function0<Void>()
+		{
 			@Override
-			public Void apply() {
+			public Void apply()
+			{
 
-				if (++curPos > 9) {
+				if (++curPos > 9)
+				{
 					curPos = 0;
 				}
 
@@ -84,17 +92,21 @@ public class NInterfaceCharTest extends NHMMainNode {
 			}
 		});
 
-		final NButtonText trocarTimeBtn = new NButtonText(new NText(
-				getGameWidth(.65f), getGameHeight(.10f), "trocar"));
+		final NButtonText trocarTimeBtn = new NButtonText(new NText(getGameWidth(.65f), getGameHeight(.10f), "trocar"));
 		//
-		trocarTimeBtn.setOnClickFunction(new Function0<Void>() {
+		trocarTimeBtn.setOnClickFunction(new Function0<Void>()
+		{
 			@Override
-			public Void apply() {
+			public Void apply()
+			{
 
-				if (tipoTime == TeamType.DARK) {
+				if (tipoTime == TeamType.DARK)
+				{
 					tipoTime = TeamType.LIGHT;
 					curPos = 0;
-				} else {
+				}
+				else
+				{
 					tipoTime = TeamType.DARK;
 					curPos = 0;
 				}
@@ -129,82 +141,97 @@ public class NInterfaceCharTest extends NHMMainNode {
 		// addSubNode(orientacao, 1);
 	}
 
-	private GameChar getCurChar() {
-		return tipoTime == TeamType.LIGHT ? angels.get(curPos) : demons
-				.get(curPos);
+	private GameChar getCurChar()
+	{
+		return tipoTime == TeamType.LIGHT ? angels.get(curPos) : demons.get(curPos);
 	}
 
-	private void atualizarChar() {
+	private void atualizarChar()
+	{
 		final Ponto charPos = charImg.getPos();
 
 		// Altera as informações do nome do char
 		nomeChar.text = getCurChar().getName();
 		nomeChar.setWidth(charImg.getWidth());
-		nomeChar.vAlign = VerticalAlign.BOTTOM;
-		nomeChar.paint.setTextAlign(Align.LEFT);
-		nomeChar.pos = new Ponto(charPos.x, charPos.y);
+		nomeChar.pos = new Ponto(charPos.x, charPos.y - getGameHeight(0.02f));
 
 		// Altera as informações do flavor text
 		flavorText.text = getCurChar().getFlavorText();
 		flavorText.setWidth(charImg.getWidth());
 		final Rect flavorRect = flavorText.getTextBounds();
-		flavorText.pos = new Ponto(charPos.x, charPos.y + charImg.getHeight()
-				+ flavorRect.height());
+		flavorText.pos = new Ponto(charPos.x, charPos.y + charImg.getHeight() + flavorRect.height());
 
 		// Troca o bmp do char
 		charImg.setBmp(getImage());
 	}
 
-	private List<GameChar> loadChars(final String prefix) {
+	private List<GameChar> loadChars(final String prefix)
+	{
 		final int fileId = idFromName(prefix + "s", "raw");
-		final List<Tuple2<String, String>> charNames = parseFile(getGameAssetManager()
-				.getRawTextFile(fileId));
+		final List<Tuple2<String, String>> charNames = parseFile(getGameAssetManager().getRawTextFile(fileId));
 		final List<GameChar> toReturn = new ArrayList<>();
 
-		for (int i = 1; i < 11; i++) {
+		for (int i = 1; i < 11; i++)
+		{
 			final String fileName = prefix + (i < 10 ? "0" : "") + i;
 			final Tuple2<String, String> curTuple = charNames.get(i - 1);
-			toReturn.add(new GameChar(curTuple.getVal1(), curTuple.getVal2(),
-					idFromName(fileName, "drawable")));
+			toReturn.add(new GameChar(curTuple.getVal1(), curTuple.getVal2(), idFromName(fileName, "drawable")));
 		}
 
 		return toReturn;
 	}
 
-	private List<Tuple2<String, String>> parseFile(final String theFile) {
+	private List<Tuple2<String, String>> parseFile(final String theFile)
+	{
 		final List<Tuple2<String, String>> toReturn = new ArrayList<>();
-		final Matcher mat = Pattern.compile("([^{]+)\\{([^}]+)\\}").matcher(
-				theFile);
+		final Matcher mat = Pattern.compile("([^{]+)\\{([^}]+)\\}").matcher(theFile);
 
-		while (mat.find()) {
-			toReturn.add(Tuple2.from(mat.group(1).trim(), mat.group(2).trim()));
+		while (mat.find())
+		{
+			toReturn.add(Tuple2.from(mapName(mat.group(1).trim()), mat.group(2).trim()));
 		}
 		return toReturn;
 	}
+	
+	/**
+	 * Aumenta o tamanho do nome, de forma que todos tenham mais ou menos o mesmo tamanho
+	 */
+	private String mapName(final String oriName)
+	{
+		final int maxSize = 32; //arbitrário
+		final char[] toAdd = new char[(maxSize - oriName.length()) / 2];
+		Arrays.fill(toAdd, ' ');
+		final String theStr = String.valueOf(toAdd);
+		return theStr + oriName + theStr; 
+	}
 
-	private int idFromName(final String theName, final String theFolder) {
+	private int idFromName(final String theName, final String theFolder)
+	{
 		final Activity activity = getGameAssetManager().getActivity();
 		final String packName = activity.getPackageName();
-		return activity.getResources().getIdentifier(theName, theFolder,
-				packName);
+		return activity.getResources().getIdentifier(theName, theFolder, packName);
 	}
 
-	private Bitmap getImage() {
+	private Bitmap getImage()
+	{
 		int imgCode = 0;
 
-		if (tipoTime == TeamType.DARK) {
+		if (tipoTime == TeamType.DARK)
+		{
 			imgCode = demons.get(curPos).getResId();
-		} else {
+		}
+		else
+		{
 			imgCode = angels.get(curPos).getResId();
 		}
 
-		final Resources theResource = getGameAssetManager().getActivity()
-				.getResources();
+		final Resources theResource = getGameAssetManager().getActivity().getResources();
 		return BitmapFactory.decodeResource(theResource, imgCode);
 	}
 
 	@Override
-	public void update(final long delta) {
+	public void update(final long delta)
+	{
 		// if (timeTglGroup.getToggledIndex().isEmpty()) {
 		// orientacao.text = "Selecione seu time...";
 		// } else if (timeTglGroup.getToggledIndex().get() == 0) {

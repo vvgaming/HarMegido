@@ -18,8 +18,8 @@ public class RandomNames
 	{
 		super();
 		rnd = new Random();
-		angels = Arrays.asList(assetManager.getRawTextFile(R.raw.angels).split("\n"));
-		demons = Arrays.asList(assetManager.getRawTextFile(R.raw.demons).split("\n"));
+		angels = Arrays.asList(assetManager.getRawTextFile(R.raw.anjos).split("\n"));
+		demons = Arrays.asList(assetManager.getRawTextFile(R.raw.demonios).split("\n"));
 		if (angels.isEmpty() || demons.isEmpty())
 		{
 			throw new IllegalArgumentException("arquivo dos nomes de anjos e/ou demonios está vazio");

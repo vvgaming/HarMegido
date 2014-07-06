@@ -142,6 +142,23 @@ public class Match
 		}
 		return toReturn;
 	}
+	
+	/**
+	 * Retorna uma lista de encantamentos associados com esta partida. <br/>
+	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, portanto mudanças estruturais nos jogadores
+	 * retornados não afetarão esta partida.
+	 * @return Uma lista com os encantamentos desta partida.
+	 */
+	public List<Enchantment> getEncantamentos()
+	{
+		final List<Enchantment> toReturn = new ArrayList<Enchantment>();
+		
+		for (Enchantment enchant : encantamentos)
+		{
+			toReturn.add(enchant.copy());
+		}
+		return toReturn;
+	}
 
 	/**
 	 * Executa a mudança de estado para esta partida, a partir da mudança passada como parâmetro.

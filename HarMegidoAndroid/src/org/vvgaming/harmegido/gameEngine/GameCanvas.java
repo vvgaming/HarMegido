@@ -5,39 +5,43 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 /**
- * Implementa��o de um canvas para jogos. Este canvas implementa uma Thread e
- * recebe um {@link AbstractGameScene} para renderizar seus objetos controlando
- * o loop.
+ * Implementação de um canvas para jogos. Este canvas implementa uma Thread e recebe um {@link RootNode} para renderizar seus objetos
+ * controlando o loop.
  * 
  * @author Vinicius Nogueira
  */
 @SuppressLint("ViewConstructor")
-public class GameCanvas extends SurfaceView implements Callback {
+public class GameCanvas extends SurfaceView implements Callback
+{
 
 	private LoopThread loopThread;
 	private int fpsLock = 30;
 	private boolean showFps = false;
 	private RootNode root;
 
-	public GameCanvas(final Context context, final RootNode theRoot) {
+	public GameCanvas(final Context context, final RootNode theRoot)
+	{
 		super(context);
 		getHolder().addCallback(this);
 		this.root = theRoot;
 	}
 
 	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
+	public boolean onTouchEvent(final MotionEvent event)
+	{
 		return root.onRealTouch(event);
 	}
 
 	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
+	public void surfaceCreated(final SurfaceHolder holder)
+	{
 		root.setWidth(getWidth());
 		root.setHeight(getHeight());
 
@@ -48,8 +52,8 @@ public class GameCanvas extends SurfaceView implements Callback {
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
+	public void surfaceChanged(final SurfaceHolder holder, final int format, final int width, final int height)
+	{
 
 		loopThread.setTheHolder(holder);
 		root.setWidth(width);
@@ -57,54 +61,69 @@ public class GameCanvas extends SurfaceView implements Callback {
 	}
 
 	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
+	public void surfaceDestroyed(final SurfaceHolder holder)
+	{
 		root.kill();
+		try
+		{
+			// espera a thread encerrar
+			loopThread.join();
+		}
+		catch (final InterruptedException ignored)
+		{
+			Log.e("erro harmegido", "erro harmegido", ignored);
+		}
 		loopThread = null;
 	}
 
-	private class LoopThread extends Thread {
+	private class LoopThread extends Thread
+	{
 
 		private SurfaceHolder theHolder;
 
-		public LoopThread(SurfaceHolder theHolder) {
+		public LoopThread(final SurfaceHolder theHolder)
+		{
 			super();
 			this.theHolder = theHolder;
 		}
 
-		public void setTheHolder(SurfaceHolder theHolder) {
+		public void setTheHolder(final SurfaceHolder theHolder)
+		{
 			this.theHolder = theHolder;
 		}
 
 		@Override
-		public void run() {
+		public void run()
+		{
 
 			final int MIN_DELAY = 1000 / fpsLock;
 
-			Paint cinza = new Paint();
+			final Paint cinza = new Paint();
 			cinza.setARGB(255, 255, 255, 255);
 
-			Paint preto = new Paint();
+			final Paint preto = new Paint();
 			preto.setARGB(255, 0, 0, 0);
 
 			// criando um retangulo do tamanho m�ximo para limpar a tela
 			Canvas canvas = theHolder.lockCanvas();
-			Rect retanguloMaximo = new Rect(0, 0, canvas.getWidth(),
-					canvas.getHeight());
+			final Rect retanguloMaximo = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
 			theHolder.unlockCanvasAndPost(canvas);
 
 			long delta = 0;
 
-			while (!root.isDead()) {
+			while (!root.isDead())
+			{
 
-				long initFrame = System.currentTimeMillis();
+				final long initFrame = System.currentTimeMillis();
 
 				canvas = theHolder.lockCanvas();
-				if (canvas == null) {
-					// se n�o tiver canvas, pula pra pr�xima passada
+				if (canvas == null)
+				{
+					// se não tiver canvas, pula pra próxima passada
 					// (provavelmente vai abortar)
-					// isso � para resolver uma NPE quando surfaceDestroyed �
-					// chamado e vai provavelmente abortar na pr�xima passada
-					// TODO verificar se essa solu��o � boa mesmo, ou se n�o,
+					// isso é para resolver uma NPE quando surfaceDestroyed é
+					// chamado e vai provavelmente abortar na próxima passada
+					// TODO verificar se essa solução é boa mesmo, ou se não,
 					// bolar uma melhor
 					continue;
 				}
@@ -114,19 +133,18 @@ public class GameCanvas extends SurfaceView implements Callback {
 				root.realUpdate(delta);
 				root.realRender(canvas);
 
-				if (showFps) {
-					canvas.drawText("fps: "
-							+ (delta != 0 ? 1000 / delta : "-----"), 10, 10,
-							cinza);
+				if (showFps)
+				{
+					canvas.drawText("fps: " + (delta != 0 ? 1000 / delta : "-----"), 10, 10, cinza);
 				}
 
 				theHolder.unlockCanvasAndPost(canvas);
 
-				// c�lculo parcial do delta
+				// cálculo parcial do delta
 				delta = System.currentTimeMillis() - initFrame;
 				// espera um pouco por causa do fpslock
 				delay(MIN_DELAY - delta);
-				// c�lculo definitivo do tempo gasto neste frame
+				// cálculo definitivo do tempo gasto neste frame
 				delta = System.currentTimeMillis() - initFrame;
 
 			}
@@ -136,26 +154,35 @@ public class GameCanvas extends SurfaceView implements Callback {
 
 	}
 
-	private void delay(long milis) {
+	private void delay(final long milis)
+	{
 		if (milis < 0)
+		{
 			return;
-		try {
+		}
+		try
+		{
 			Thread.sleep(milis);
-		} catch (InterruptedException e) {
+		}
+		catch (final InterruptedException e)
+		{
 			e.printStackTrace();
 		}
 
 	}
 
-	public void setFpsLock(int fpsLock) {
+	public void setFpsLock(final int fpsLock)
+	{
 		this.fpsLock = fpsLock;
 	}
 
-	public boolean isShowFps() {
+	public boolean isShowFps()
+	{
 		return showFps;
 	}
 
-	public void setShowFps(boolean showFps) {
+	public void setShowFps(final boolean showFps)
+	{
 		this.showFps = showFps;
 	}
 

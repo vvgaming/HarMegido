@@ -7,14 +7,16 @@ import java.util.Date;
  */
 public class Disenchantment extends Spell
 {
+	//Essa referência é guardada somente antes de desencantar, para evitar a referência circular.
+	//O motivo dessa variável existir aqui é só pra auxiliar no cálculo da pontuação do desencantamento.
 	private final Enchantment encantamento;
 
 	protected Disenchantment(final Player jogador, final Date timestamp, final Enchantment encantamento)
 	{
 		// salva o estado do jogador na hora do desencantamento
 		super(jogador.copy(), new Date(timestamp.getTime()));
+		this.encantamento = encantamento.copy(); // salva o estado do encantamento ANTES de encantar
 		encantamento.desencantar(this); // faz o efeito colateral pra salvar o estado
-		this.encantamento = encantamento.copy(); // salva o estado do encantamento
 	}
 
 	/**

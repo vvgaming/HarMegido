@@ -12,7 +12,7 @@ import com.github.detentor.codex.monads.Option;
 public class Enchantment extends Spell implements Copyable
 {
 	private final byte[] histogram; // Informação necessária para desencantar
-	private Option<Disenchantment> desencantamento;
+	private Option<Disenchantment> desencantamento = Option.empty();
 
 	protected Enchantment(final Player enchanter, final Date enchantTime, final  byte[] histogram)
 	{

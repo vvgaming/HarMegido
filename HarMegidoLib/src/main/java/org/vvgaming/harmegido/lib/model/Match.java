@@ -16,8 +16,6 @@ import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeRemove;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeTeam;
 
-import com.github.detentor.codex.monads.Option;
-
 /**
  * Representa uma partida no HarMegido
  */
@@ -186,56 +184,67 @@ public class Match
 		else if (stateChange instanceof PlayerChangeTeam)
 		{
 			final PlayerChangeTeam pct = (PlayerChangeTeam) stateChange;
-			final Player mJogador = jogadores.get(pct.getJogador().getIdJogador());
-
-			if (mJogador == null)
-			{
-				throw new IllegalArgumentException("Erro: Jogador não pertence à partida");
-			}
+			final Player mJogador = getJogador(pct.getJogador().getIdJogador());
 			mJogador.trocarDeTime(pct.getNovoTime());
 		}
 		else if (stateChange instanceof PlayerChangeEnchant)
 		{
 			final PlayerChangeEnchant pce = (PlayerChangeEnchant) stateChange;
-			final Player mJogador = jogadores.get(pce.getJogador().getIdJogador());
+			final Player mJogador = getJogador(pce.getJogador().getIdJogador());
 			encantamentos.add(mJogador.encantar(new Date(), pce.getEnchantmentImage()));
 		}
 		else if (stateChange instanceof PlayerChangeDisenchant)
 		{
 			final PlayerChangeDisenchant pcd = (PlayerChangeDisenchant) stateChange;
-			final Player mJogador = jogadores.get(pcd.getJogador().getIdJogador());
-			final Option<Enchantment> enchant = getEnchantment(pcd.getEncantamento());
-			
-			if (! enchant.isEmpty())
-			{
-				throw new IllegalArgumentException("Erro: Encantamento não encontrado");
-			}
+			final Player mJogador = getJogador(pcd.getJogador().getIdJogador());
+			final Enchantment enchant = getEnchantment(pcd.getEncantamento());
+		
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
-			mJogador.desencantar(enchant.get(), new Date());				
+			mJogador.desencantar(enchant, new Date());				
 		}
 		else
 		{
 			throw new IllegalArgumentException("O tipo de stateChange não é reconhecido: " + stateChange.getClass());
 		}
 	}
+	
+	/**
+	 * Retorna o jogador desta partida com o id informado. 
+	 * @param idJogador O identificador do jogador a ser encontrado
+	 * @return A referência ao jogador com o id informado.
+	 * @throws IllegalArgumentException Se o jogador não pertencer a esta partida
+	 */
+	private Player getJogador(final String idJogador)
+	{
+		final Player mJogador = jogadores.get(idJogador);
+
+		if (mJogador == null)
+		{
+			throw new IllegalArgumentException("Erro: Jogador não pertence à partida");
+		}
+		
+		return mJogador;
+	}
 
 	/**
 	 * Retorna o encantamento desta partida que contém a mesma identificação que
-	 * o encantamento passado como parâmetro, se ele existir.
+	 * o encantamento passado como parâmetro.
 	 * @param encantamento O encantamento a ser procurado nesta partida
 	 * @return A referência ao encantamento que possui o mesmo identficador
 	 * que o encantamento passado como parâmetro
+	 * @throws IllegalArgumentException No caso do encantamento não ser encontrado
 	 */
-	private Option<Enchantment> getEnchantment(final Enchantment encantamento)
+	private Enchantment getEnchantment(final Enchantment encantamento)
 	{
 		for (Enchantment enchant : encantamentos)
 		{
 			if (Arrays.equals(enchant.getHistogram(), encantamento.getHistogram()))
 			{
-				return Option.from(enchant);
+				return enchant;
 			}
 		}
-		return Option.empty();
+		
+		throw new IllegalArgumentException("Erro: Encantamento não pertence à partida");
 	}
 	
 	/**

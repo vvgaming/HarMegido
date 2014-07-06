@@ -25,7 +25,7 @@ public class Match
 	private final MatchDuration duracao;
 
 	// Usando mapa porque o Set não tem método get
-	private final Map<Player, Player> jogadores = new HashMap<Player, Player>();
+	private final Map<String, Player> jogadores = new HashMap<String, Player>();
 	private final Set<Enchantment> encantamentos = new HashSet<Enchantment>();
 
 	private Match(final String nomePartida, final Date inicio, final MatchDuration duracao)
@@ -156,7 +156,7 @@ public class Match
 		{
 			final PlayerChangeAdd pca = (PlayerChangeAdd) stateChange;
 			// modificações estruturais no jogador não refletirão no jogador da partida.
-			jogadores.put(pca.getJogador(), pca.getJogador().copy());
+			jogadores.put(pca.getJogador().getIdJogador(), pca.getJogador().copy());
 		}
 		else if (stateChange instanceof PlayerChangeRemove)
 		{

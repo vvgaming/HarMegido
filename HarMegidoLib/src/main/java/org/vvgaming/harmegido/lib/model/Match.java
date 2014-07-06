@@ -118,12 +118,12 @@ public class Match
 	/**
 	 * Retorna <tt>true</tt> se esta partida contém o jogador passado como parâmetro
 	 * 
-	 * @param jogador O jogador a ser verificado se pertence a essa partida
+	 * @param idJogador O identificador do jogador a ser verificado se pertence a essa partida
 	 * @return <tt>true</tt> se esta partida contém o jogador, ou <tt>false</tt> do contrário
 	 */
-	public boolean contemJogador(final Player jogador)
+	public boolean contemJogador(final String idJogador)
 	{
-		return jogadores.containsKey(jogador.getIdJogador());
+		return jogadores.containsKey(idJogador);
 	}
 	
 	/**
@@ -166,8 +166,7 @@ public class Match
 		else if (stateChange instanceof PlayerChangeTeam)
 		{
 			final PlayerChangeTeam pct = (PlayerChangeTeam) stateChange;
-
-			final Player mJogador = jogadores.get(pct.getJogador());
+			final Player mJogador = jogadores.get(pct.getJogador().getIdJogador());
 
 			if (mJogador == null)
 			{

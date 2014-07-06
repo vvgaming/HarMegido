@@ -21,17 +21,17 @@ public class Player implements Copyable
 		this.time = time;
 	}
 
-	/**
-	 * Cria um novo jogador a partir de um nome e do seu identificador do dispositivo
-	 * 
-	 * @param playerName O nome do jogador
-	 * @param device O identificador único do dispositivo do jogador
-	 * @return Uma instância de um jogador, inicializado com as informações passadas como parâmetro
-	 */
-	public static Player from(final String playerName, final String device)
-	{
-		return from(playerName, device, null);
-	}
+//	/**
+//	 * Cria um novo jogador a partir de um nome e do seu identificador do dispositivo
+//	 * 
+//	 * @param playerName O nome do jogador
+//	 * @param device O identificador único do dispositivo do jogador
+//	 * @return Uma instância de um jogador, inicializado com as informações passadas como parâmetro
+//	 */
+//	public static Player from(final String playerName, final String device)
+//	{
+//		return from(playerName, device, null);
+//	}
 
 	/**
 	 * Cria um novo jogador a partir de um nome, identificador do dispositivo e qual time ele pertence.
@@ -51,6 +51,11 @@ public class Player implements Copyable
 		if (device == null || device == "")
 		{
 			throw new IllegalArgumentException("O identificador do dispositivo do jogador não pode ser nulo nem vazio");
+		}
+		
+		if (time == null)
+		{
+			throw new IllegalArgumentException("O time não pode estar nulo.");
 		}
 
 		return new Player(playerName, device, time);
@@ -83,7 +88,7 @@ public class Player implements Copyable
 	
 
 	/**
-	 * Cria um encantamento a partir da data/hora passada como par�metro
+	 * Cria um encantamento a partir da data/hora passada como parâmetro
 	 * 
 	 * @param timestamp A data/hora que o encantamento aconteceu
 	 * @param imagem A imagem do objeto a ser encantado

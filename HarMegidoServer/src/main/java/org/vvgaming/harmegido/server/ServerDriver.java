@@ -140,7 +140,7 @@ public class ServerDriver implements UosDriver
 			{
 				final Match curMatch = curEntry.getValue();
 				
-				if (curMatch.isAtiva() && curMatch.contemJogador(Player.from(" ", idJogador)))
+				if (curMatch.isAtiva() && curMatch.contemJogador(idJogador))
 				{
 					partida = curMatch;
 					break;

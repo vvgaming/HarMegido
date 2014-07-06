@@ -1,7 +1,7 @@
 package org.vvgaming.harmegido.lib.model;
 
 /**
- * Esse enum representa os tipos poss�veis de time
+ * Esse enum representa os tipos possíveis de time
  */
 public enum TeamType
 {

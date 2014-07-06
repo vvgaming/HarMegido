@@ -161,7 +161,7 @@ public class Match
 		else if (stateChange instanceof PlayerChangeRemove)
 		{
 			final PlayerChangeRemove pcr = (PlayerChangeRemove) stateChange;
-			jogadores.remove(pcr.getJogador());
+			jogadores.remove(pcr.getJogador().getIdJogador());
 		}
 		else if (stateChange instanceof PlayerChangeTeam)
 		{

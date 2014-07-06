@@ -160,6 +160,8 @@ public class ServerDriverFacade
 	
 	/**
 	 * Muda o time de um jogador da partida informada
+	 * ATENÇÃO: A alteração se dará no servidor, ou seja, a variável jogador passada como parâmetro não
+	 * será alterada pelo método.
 	 * @param nomePartida O nome da partida que o jogador pertence
 	 * @param jogador O jogador cujo time será alterado
 	 * @param novoTime O novo time do jogador

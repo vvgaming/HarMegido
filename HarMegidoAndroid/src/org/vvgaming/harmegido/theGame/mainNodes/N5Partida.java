@@ -16,6 +16,7 @@ import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
 import android.view.MotionEvent;
 
 import com.github.detentor.codex.function.Function1;
+import com.github.detentor.codex.monads.Option;
 
 public class N5Partida extends NHMMainNode
 {
@@ -85,6 +86,29 @@ public class N5Partida extends NHMMainNode
 		final NGroupToggleButton tglGroup = new NGroupToggleButton(tglEncantar, tglDesencantar);
 		tglGroup.toggle(0);
 
+		tglGroup.setOnToggleChange(new Function1<Option<Integer>, Void>()
+		{
+			@Override
+			public Void apply(Option<Integer> arg0)
+			{
+				if (arg0.notEmpty())
+				{
+					switch (arg0.get())
+					{
+					case 0:
+						sendConsoleMsg("Toque na tela para encantar");
+						break;
+					case 1:
+						sendConsoleMsg("desencantarrrr...");
+						break;
+					default:
+						throw new IllegalArgumentException("Modo desconhecido: " + arg0.get());
+					}
+				}
+				return null;
+			}
+		});
+
 		addSubNode(bg, 0);
 		addSubNode(cam, 1);
 
@@ -141,7 +165,11 @@ public class N5Partida extends NHMMainNode
 			return true;
 		case MotionEvent.ACTION_UP:
 			charging = false;
-			cam.pararEncantamento();
+			if (cam.pararEncantamento())
+			{
+				getGameAssetManager().playSound(R.raw.encantament_falha);
+				sendConsoleMsg("Cancelado");
+			}
 			progressBar.reset();
 			return true;
 

@@ -162,13 +162,18 @@ public class NHMEnchantingCam extends LazyInitGameNode
 		}
 	}
 
-	public void pararEncantamento()
+	public boolean pararEncantamento()
 	{
-		cam.stopObservar();
-		status = Status.OCIOSO;
-		this.callbackFimEncantamento = Option.empty();
-		if (encantamentoTimer != null)
-			encantamentoTimer.kill();
+		if (!status.equals(Status.OCIOSO))
+		{
+			cam.stopObservar();
+			status = Status.OCIOSO;
+			this.callbackFimEncantamento = Option.empty();
+			if (encantamentoTimer != null)
+				encantamentoTimer.kill();
+			return true;
+		}
+		return false;
 	}
 
 }

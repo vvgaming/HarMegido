@@ -45,11 +45,11 @@ public class NHMBackground extends GameNode {
 				getGameAssetManager().getBitmap(R.drawable.asa_anjo));
 		asaAnjo.setHeight(getGameHeight(.55f), true);
 
-		asaAnjoOposta = new NImage(new Ponto(getGameWidth(.23f),
+		asaAnjoOposta = new NImage(new Ponto(getGameWidth(.13f),
 				getGameHeight(.25f)), getGameAssetManager().getBitmap(
 				R.drawable.asa_anjo));
-		asaAnjoOposta.setHeight(getGameHeight(.55f), true);
 		asaAnjoOposta.sethFlip(true);
+		asaAnjoOposta.setHeight(getGameHeight(.55f), true);
 		asaAnjoOposta.getPaint().setAlpha(0);
 
 		asaDemonio = new NImage(new Ponto(getGameWidth(.17f),
@@ -57,11 +57,11 @@ public class NHMBackground extends GameNode {
 				R.drawable.asa_demonio));
 		asaDemonio.setHeight(getGameHeight(.55f), true);
 
-		asaDemonioOposta = new NImage(new Ponto(getGameWidth(.92f),
+		asaDemonioOposta = new NImage(new Ponto(getGameWidth(.83f),
 				getGameHeight(.25f)), getGameAssetManager().getBitmap(
 				R.drawable.asa_demonio));
-		asaDemonioOposta.setHeight(getGameHeight(.55f), true);
 		asaDemonioOposta.sethFlip(true);
+		asaDemonioOposta.setHeight(getGameHeight(.55f), true);
 		asaDemonioOposta.getPaint().setAlpha(0);
 
 		addSubNode(box);

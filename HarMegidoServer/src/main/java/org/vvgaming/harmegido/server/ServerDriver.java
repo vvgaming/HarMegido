@@ -131,6 +131,7 @@ public class ServerDriver implements UosDriver
 	 */
 	public void encontrarPartida(Call call, Response response, CallContext callContext)
 	{
+		final String dummyName = String.valueOf(Long.MAX_VALUE);
 		final String idJogador = call.getParameter("idJogador").toString();
 		Match partida = null;
 		
@@ -138,9 +139,11 @@ public class ServerDriver implements UosDriver
 		{
 			for (Entry<String, Match> curEntry : mapaPartidas.entrySet())
 			{
-				if (curEntry.getValue().isAtiva() && curEntry.getValue().contemJogador(Player.from("", idJogador)))
+				Match curMatch = curEntry.getValue();
+				
+				if (curMatch.isAtiva() && curMatch.contemJogador(Player.from(dummyName, idJogador)))
 				{
-					partida = curEntry.getValue();
+					partida = curMatch;
 					break;
 				}
 			}

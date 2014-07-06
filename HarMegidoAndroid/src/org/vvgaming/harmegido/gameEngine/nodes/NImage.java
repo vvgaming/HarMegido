@@ -72,13 +72,6 @@ public class NImage extends GameNode
 	}
 
 	@Override
-	public void end()
-	{
-		bmp.recycle();
-		bmp = null;
-	}
-
-	@Override
 	public boolean isVisible()
 	{
 		return visible;

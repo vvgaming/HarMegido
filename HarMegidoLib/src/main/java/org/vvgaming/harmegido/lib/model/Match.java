@@ -1,6 +1,7 @@
 package org.vvgaming.harmegido.lib.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,8 @@ import org.vvgaming.harmegido.lib.model.match.PlayerChangeDisenchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeRemove;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeTeam;
+
+import com.github.detentor.codex.monads.Option;
 
 /**
  * Representa uma partida no HarMegido
@@ -194,13 +197,21 @@ public class Match
 		else if (stateChange instanceof PlayerChangeEnchant)
 		{
 			final PlayerChangeEnchant pce = (PlayerChangeEnchant) stateChange;
-			encantamentos.add(pce.getJogador().encantar(new Date(), pce.getEnchantmentImage()));
+			final Player mJogador = jogadores.get(pce.getJogador().getIdJogador());
+			encantamentos.add(mJogador.encantar(new Date(), pce.getEnchantmentImage()));
 		}
 		else if (stateChange instanceof PlayerChangeDisenchant)
 		{
 			final PlayerChangeDisenchant pcd = (PlayerChangeDisenchant) stateChange;
+			final Player mJogador = jogadores.get(pcd.getJogador().getIdJogador());
+			final Option<Enchantment> enchant = getEnchantment(pcd.getEncantamento());
+			
+			if (! enchant.isEmpty())
+			{
+				throw new IllegalArgumentException("Erro: Encantamento não encontrado");
+			}
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
-			pcd.getJogador().desencantar(pcd.getEncantamento(), new Date());
+			mJogador.desencantar(enchant.get(), new Date());				
 		}
 		else
 		{
@@ -208,6 +219,25 @@ public class Match
 		}
 	}
 
+	/**
+	 * Retorna o encantamento desta partida que contém a mesma identificação que
+	 * o encantamento passado como parâmetro, se ele existir.
+	 * @param encantamento O encantamento a ser procurado nesta partida
+	 * @return A referência ao encantamento que possui o mesmo identficador
+	 * que o encantamento passado como parâmetro
+	 */
+	private Option<Enchantment> getEnchantment(final Enchantment encantamento)
+	{
+		for (Enchantment enchant : encantamentos)
+		{
+			if (Arrays.equals(enchant.getHistogram(), encantamento.getHistogram()))
+			{
+				return Option.from(enchant);
+			}
+		}
+		return Option.empty();
+	}
+	
 	/**
 	 * Esse enum representa a duração de uma partida
 	 */

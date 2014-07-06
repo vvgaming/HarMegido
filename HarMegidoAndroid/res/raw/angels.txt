@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Akroma, o Anjo da Ira
 {
 Ira não é pecado quando
@@ -57,4 +58,53 @@ Adriel, a Purificadora
 Sua habilidade em batalha somente
 pode ser comparada à sua vontade
 de fazer justiça.
+=======
+Akroma, o Anjo da Ira
+{
+Ira não é pecado quando infligida nos merecedores.
+}
+Yahweh, a Encarnação de Deus
+{
+Não mais terão os justos que se curvar perante o mal.
+}
+Metatron, o Anjo de Cem Braços
+{
+Bem cedo Metatron descobriu que mais braços o 
+permitia desenvolver seus maiores dons: proteger e atacar.
+}
+Reya, a Portadora da Alvorada
+{
+Nascida com asas de luz e uma espada de fé, essa encarnação
+celestial incorpora tanto a justiça como a pureza.
+}
+Castiel, o Anjo Cavaleiro
+{
+A combinação perfeita entre a ferocidade do mais celestial 
+dos seres e da mais majestosa das criaturas.
+}
+Elspeh, a Senhora do Universo
+{
+A questão não é se eu posso ler mentes. 
+É se eu já encontrei alguma digna de ser lida.
+}
+Michael, a Mão da Justiça
+{
+Alguns anjos protegem os humildes e inocentes.
+Outros procuram e castigam o mal em qualquer lugar que ele se espreita.
+}
+A Inominável
+{
+Eu erradicarei da realidade toda a memória de sua existência
+Você será destruído, e ninguém se lamentará.
+}
+Jace, o Anjo Mago
+{
+Algum dia alguém me superará. 
+Mas não será hoje, e não será você.
+}
+Adriel, a Purificadora
+{
+Sua habilidade em batalha somente pode ser 
+comparada à sua vontade de fazer justiça.
+>>>>>>> branch 'master' of https://github.com/vvgaming/harmegido
 }

@@ -80,6 +80,16 @@ public class Main extends Activity {
 						startActivity(i);
 					}
 				});
+	
+		((Button) findViewById(R.id.btnStateTest))
+		.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getApplicationContext(),
+						TesteState.class);
+				startActivity(i);
+			}
+		});
 
 		((Button) findViewById(R.id.btnTesteInterface))
 				.setOnClickListener(new View.OnClickListener() {

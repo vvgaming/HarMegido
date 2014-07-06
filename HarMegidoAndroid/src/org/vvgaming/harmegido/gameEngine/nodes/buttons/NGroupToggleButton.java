@@ -44,7 +44,7 @@ public class NGroupToggleButton extends GameNode {
 		}
 	}
 
-	private void toggle(final int index) {
+	public void toggle(final int index) {
 		int oldIndex = toggledIndex.getOrElse(-1);
 		for (NToggleButton tglingBtn : btns) {
 			tglingBtn.toggle(false);

@@ -17,7 +17,6 @@ import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
-import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
@@ -181,7 +180,7 @@ public class ServerDriverFacade
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador encantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final EnchantmentImage imagem)
+	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final byte[] imagem)
 	{
 		return executarEstado(nomePartida, MatchState.encantar(jogador, imagem));
 	}

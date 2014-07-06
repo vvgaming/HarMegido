@@ -3,7 +3,6 @@ package org.vvgaming.harmegido.lib.model;
 import java.util.Date;
 
 import org.vvgaming.harmegido.lib.util.Copyable;
-import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 import com.github.detentor.codex.monads.Option;
 
@@ -12,10 +11,10 @@ import com.github.detentor.codex.monads.Option;
  */
 public class Enchantment extends Spell implements Copyable
 {
-	private final EnchantmentImage histogram; // Informação necessária para desencantar
+	private final byte[] histogram; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento;
 
-	protected Enchantment(final Player enchanter, final Date enchantTime, final EnchantmentImage histogram)
+	protected Enchantment(final Player enchanter, final Date enchantTime, final  byte[] histogram)
 	{
 		//copia para guardar o estado do jogador no momento do encantamento
 		super(enchanter.copy(), new Date(enchantTime.getTime()));
@@ -31,7 +30,7 @@ public class Enchantment extends Spell implements Copyable
 	 * @param histogram O histograma que representa a imagem
 	 * @return O encantamento feito pelo jogador na data/hora passados como parâmetro
 	 */
-	public static Enchantment from(final Player jogador, final Date timestamp, final EnchantmentImage histogram)
+	public static Enchantment from(final Player jogador, final Date timestamp, final  byte[] histogram)
 	{
 		return new Enchantment(jogador, timestamp, histogram);
 	}
@@ -55,6 +54,11 @@ public class Enchantment extends Spell implements Copyable
 	{
 		// TODO: efetivar o c�lculo
 		return 0;
+	}
+	
+	public byte[] getHistogram()
+	{
+		return histogram;
 	}
 
 	public Enchantment copy()

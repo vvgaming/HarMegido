@@ -3,7 +3,6 @@ package org.vvgaming.harmegido.lib.model.match;
 import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
-import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 /**
  * Representa a troca de estado de uma partida. ADT (Algebraic Data-Type). <br/>
@@ -54,7 +53,7 @@ public abstract class MatchState
 	 * @param enchantImage A imagem que representa o objeto encantado
 	 * @return Um mudança de estado que representa a criação do encantamento pelo jogador
 	 */
-	public static MatchState encantar(final Player jogador, final EnchantmentImage enchantImage)
+	public static MatchState encantar(final Player jogador, final byte[] enchantImage)
 	{
 		if (enchantImage == null)
 		{

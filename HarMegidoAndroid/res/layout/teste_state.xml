@@ -26,11 +26,35 @@
        android:layout_height="wrap_content"
        android:text="Entrar na Partida" />
        
+       <Button
+       android:id="@+id/btnSairPartida"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Sair da Partida" />
+       
         <Button
        android:id="@+id/btnEncontrarPartida"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:text="Encontrar a Partida" />
+        
+       <Button
+       android:id="@+id/btnListarJogadores"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Listar Jogadores" />
+       
+       <Button
+       android:id="@+id/btnMudarTime"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Mudar Time" />
+        
+        <Button
+       android:id="@+id/btnEncantar"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Encantar" />
        
        <TextView
        android:id="@+id/txtViewRetorno"

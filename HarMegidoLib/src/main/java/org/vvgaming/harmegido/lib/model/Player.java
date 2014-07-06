@@ -3,7 +3,6 @@ package org.vvgaming.harmegido.lib.model;
 import java.util.Date;
 
 import org.vvgaming.harmegido.lib.util.Copyable;
-import org.vvgaming.harmegido.lib.util.EnchantmentImage;
 
 /**
  * Essa classe modela uma entidade jogador do jogo
@@ -94,7 +93,7 @@ public class Player implements Copyable
 	 * @param imagem A imagem do objeto a ser encantado
 	 * @return Um encantamento criado por este jogador
 	 */
-	public Enchantment encantar(final Date timestamp, final EnchantmentImage imagem)
+	public Enchantment encantar(final Date timestamp, final  byte[] imagem)
 	{
 		return Enchantment.from(this, timestamp, imagem);
 	}

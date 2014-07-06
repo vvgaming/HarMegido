@@ -77,6 +77,21 @@ public class TesteState extends Activity
 			}
 		});
 		
+		((Button) findViewById(R.id.btnSairPartida)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if (partida == null)
+				{
+					setText("Crie uma partida antes de sair.");
+					return;
+				}
+				Either<Exception, Boolean> retorno = sdf.removerJogador(partida.getNomePartida(), jogador);
+				setText(formatarRetorno(retorno));
+			}
+		});
+		
 		((Button) findViewById(R.id.btnEncontrarPartida)).setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -108,14 +123,20 @@ public class TesteState extends Activity
 			}
 		});
 		
-//		((Button) findViewById(R.id.btnEncantar)).setOnClickListener(new View.OnClickListener()
-//		{
-//			@Override
-//			public void onClick(View v)
-//			{
-//				Either<Exception, Match> retorno = sdf.encantarObjeto(nomePartida, jogador, imagem);
-//			}
-//		});
+		((Button) findViewById(R.id.btnEncantar)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if (partida == null)
+				{
+					setText("Crie uma partida antes de encantar.");
+					return;
+				}
+				Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, new byte[10]);
+				setText(formatarRetorno(retorno));
+			}
+		});
 		
 		//métodos
 //		sdf.adicionarJogador(nomePartida, jogador) 						//OK
@@ -125,8 +146,8 @@ public class TesteState extends Activity
 //		sdf.encontrarPartida(jogador)									//OK
 //		sdf.listarJogadores()											//OK
 //		sdf.listarPartidas()     										//OK
-//		sdf.mudarTime(nomePartida, jogador, novoTime)
-//		sdf.removerJogador(nomePartida, jogador)
+//		sdf.mudarTime(nomePartida, jogador, novoTime)					//OK
+//		sdf.removerJogador(nomePartida, jogador)						//OK
 		
 	}
 	

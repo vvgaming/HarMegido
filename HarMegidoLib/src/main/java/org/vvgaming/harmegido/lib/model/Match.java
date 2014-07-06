@@ -123,7 +123,7 @@ public class Match
 	 */
 	public boolean contemJogador(final Player jogador)
 	{
-		return jogadores.containsKey(jogador);
+		return jogadores.containsKey(jogador.getIdJogador());
 	}
 	
 	/**

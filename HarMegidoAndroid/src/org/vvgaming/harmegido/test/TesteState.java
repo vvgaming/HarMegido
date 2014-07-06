@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Either;
 
 public class TesteState extends Activity
@@ -78,6 +77,11 @@ public class TesteState extends Activity
 			@Override
 			public void onClick(View v)
 			{
+				if (partida == null)
+				{
+					((TextView) findViewById(R.id.txtViewRetorno)).setText("Crie uma partida antes de entrar.");
+					return;
+				}
 				Either<Exception, Boolean> retorno = sdf.adicionarJogador(partida.getNomePartida(), jogador);
 				if (retorno.isLeft())
 				{

@@ -179,14 +179,24 @@ public class ServerDriver implements UosDriver
 		}
 		else
 		{
+			Object aRetornar = null;
+			
 			//Efetua a alteração
 			synchronized(lock)
 			{
-				eMatch.getRight().executarMudanca(state);
+				try
+				{
+					eMatch.getRight().executarMudanca(state);
+					aRetornar = Either.createRight(true);
+				}
+				catch (Exception e)
+				{
+					aRetornar = Either.createLeft(e);
+				}
 			}
-			
-			response.addParameter("retorno", toJson(Either.createRight(true)));
-			
+
+			response.addParameter("retorno", toJson(aRetornar));
+
 			//Verifica o tipo de alteração
 			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
 			{

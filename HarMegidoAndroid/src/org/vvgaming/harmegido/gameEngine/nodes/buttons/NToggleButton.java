@@ -22,22 +22,23 @@ public class NToggleButton extends GameNode
 	private RectF boundingBox;
 	private float padding = 8.0f;
 	private boolean toggled = false;
-	private Paint paint;
+	private final Paint paint;
 
 	public NToggleButton(NButton button)
 	{
 		super();
 		this.button = button;
+		paint = new Paint();
+		paint.setStyle(Style.STROKE);
+		paint.setARGB(255, 255, 255, 255);
+		paint.setStrokeWidth(6);
 	}
 
 	@Override
 	public void init()
 	{
 		super.init();
-		paint = new Paint();
-		paint.setStyle(Style.STROKE);
-		paint.setARGB(255, 255, 255, 255);
-		paint.setStrokeWidth(6);
+
 		// TODO nem lembro pq coloquei isso aqui, mas estava dando pau e comentei...
 		// quando lembrar o pq, tenho que mover para outro lugar pois esse trecho está sobrescrevendo as funções adicionadas antes do init e
 		// isso não é bom
@@ -103,6 +104,11 @@ public class NToggleButton extends GameNode
 	public NButton getButton()
 	{
 		return button;
+	}
+
+	public Paint getBoundingRectPaint()
+	{
+		return paint;
 	}
 
 }

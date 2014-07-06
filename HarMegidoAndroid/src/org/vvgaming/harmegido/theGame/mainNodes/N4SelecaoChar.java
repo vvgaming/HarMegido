@@ -14,14 +14,20 @@ import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
+import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.util.RandomNames;
+import org.vvgaming.harmegido.uos.ServerDriverFacade;
 import org.vvgaming.harmegido.uos.UOSFacade;
+import org.vvgaming.harmegido.util.DeviceInfo;
+import org.vvgaming.harmegido.util.MatchManager;
 
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
@@ -73,7 +79,7 @@ public class N4SelecaoChar extends NHMMainNode
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/Radio Trust.ttf");
 		title.paint.setTextAlign(Align.CENTER);
 		title.vAlign = NText.VerticalAlign.TOP;
-		title.setSize(getBigFontSize());
+		title.setWidth(getGameWidth());
 
 		// botão de seleção dos demonios
 		final NButtonImage demoniosBtn = new NButtonImage(new NImage(new Ponto(getGameWidth(.25f), getGameHeight(.4f)),
@@ -165,11 +171,13 @@ public class N4SelecaoChar extends NHMMainNode
 					for (int i = 0; i < QTD_NOMES; i++)
 					{
 						final String nome;
+						boolean angelBtn = true;
 						switch (arg0.get())
 						{
 						case 0:
 							// demonios
 							nome = rnd.getRandomDemonName();
+							angelBtn = false;
 							break;
 						case 1:
 							// anjos
@@ -187,6 +195,7 @@ public class N4SelecaoChar extends NHMMainNode
 						addSubNode(btn);
 						mine.add(btn);
 
+						final boolean angelTeam = angelBtn;
 						btn.setOnClickFunction(new Function0<Void>()
 						{
 
@@ -195,15 +204,35 @@ public class N4SelecaoChar extends NHMMainNode
 							{
 								sendConsoleMsg("Entrando na partida...");
 
-								Player p = Player.from(nome, "qualquer um " + Math.random());
-								Either<Exception, Boolean> resposta = UOSFacade.getDriverFacade().adicionarJogador(NOME_PARTIDA, p);
-								if (resposta.isRight() && resposta.getRight())
+								final ServerDriverFacade fac = UOSFacade.getDriverFacade();
+
+								final Player p = Player.from(nome, DeviceInfo.getDeviceId(), angelTeam ? TeamType.LIGHT : TeamType.DARK);
+								Either<Exception, Boolean> addResp = fac.adicionarJogador(NOME_PARTIDA, p);
+
+								// TODO POR ENQUANTO que está com pau na chamada encontrarPartida
+								RootNode.getInstance().changeMainNode(new N5Partida(p));
+								if (true)
 								{
-									RootNode.getInstance().changeMainNode(new N5Partida());
+									return null;
+								}
+								if (addResp.isRight() && addResp.getRight())
+								{
+									Either<Exception, Match> matResp = fac.encontrarPartida(p);
+									if (matResp.isRight())
+									{
+										MatchManager.definirPartida(matResp.getRight());
+										RootNode.getInstance().changeMainNode(new N5Partida(p));
+									}
+									else
+									{
+										sendConsoleMsg("Falha ao entrar na partida...");
+										Log.e("erro harmegido", "falha ao entrar na partida", matResp.getLeft());
+									}
 								}
 								else
 								{
 									sendConsoleMsg("Falha ao entrar na partida...");
+									Log.e("erro harmegido", "falha ao entrar na partida", addResp.getLeft());
 								}
 
 								return null;

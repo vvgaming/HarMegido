@@ -3,53 +3,50 @@ package org.vvgaming.harmegido.theGame;
 import org.opencv.core.Mat;
 import org.vvgaming.harmegido.vision.JavaCameraFrame;
 
+import android.graphics.Bitmap;
+
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * … uma especificaÁ„o de c‚mera que tem a capacidade de capturar determinados
- * frames e compar·-los ao atuais que fica comparando os frames com frames
- * anteriores guardados, verificando sua similaridade. <br/>
+ * Uma especifica√ß√£o de c√¢mera que tem a capacidade de capturar determinados frames e compar√°-los ao atuais. <br/>
+ * Fica comparando os frames com frames anteriores guardados, verificando sua similaridade. <br/>
  * 
  * @author Vinicius Nogueira
  */
-public interface SimilarityCam<T> {
+public interface SimilarityCam<T>
+{
 
 	/**
-	 * Captura um snapshot retornando a imagem capturada e os dados necess·rios
-	 * ‡ comparaÁ„o deste frame no futuro
+	 * Captura um snapshot retornando a imagem capturada e os dados necess√°rios para compara√ß√£o deste frame no futuro
 	 * 
 	 * @return
 	 */
-	public abstract T snapshot();
+	public abstract Option<Tuple2<Bitmap, Mat>> snapshot();
 
 	/**
-	 * Inicia observaÁ„o dos dados informados por parametro, isto È, fica
-	 * comparando o frame atual com este informado
+	 * Inicia observa√ß√£o dos dados informados por parametro, isto √©, fica comparando o frame atual com este informado
 	 * 
 	 * @param obs
 	 */
 	public abstract void observar(T obs);
 
 	/**
-	 * Para a observaÁ„o iniciada por
-	 * {@link FeaturesSimilarityCam#observar(Tuple2)}
+	 * Para a observa√ß√£o iniciada por {@link SimilarityCam#observar(Object)}
 	 */
 	public abstract void stopObservar();
 
 	/**
 	 * Compara o frame atual com o frame capturado anteriormente
 	 * 
-	 * @return retorna o valor da comparaÁ„o de acordo com a mÈtrica definida ou
-	 *         option vazia, caso n„o tenha sido um frame capturado
-	 *         anteriormente. Capture com
-	 *         {@link FeaturesSimilarityCam#snapshot()} e inicie observaÁ„o com
-	 *         {@link FeaturesSimilarityCam#observar(Mat)}
+	 * @return retorna o valor da compara√ß√£o de acordo com a m√©trica definida ou option vazia, caso n√£o tenha sido um frame capturado
+	 *         anteriormente. <br/>
+	 *         Capture com {@link SimilarityCam#snapshot()} e inicie observa√ß√£o com {@link SimilarityCam#observar(Object)}
 	 */
 	public abstract Option<Float> compara();
 
 	/**
-	 * Conecta ‡ c‚mera com a resoluÁ„o desejada
+	 * Conecta √† c√¢mera com a resolu√ß√£o desejada
 	 * 
 	 * @param width
 	 * @param height
@@ -57,20 +54,19 @@ public interface SimilarityCam<T> {
 	public abstract void connectCamera(int width, int height);
 
 	/**
-	 * Libera a c‚mera
+	 * Libera a c√¢mera
 	 */
 	public abstract void disconnectCamera();
 
 	/**
-	 * Recupera o ˙ltimo frame
+	 * Recupera o √∫ltimo frame
 	 * 
 	 * @return
 	 */
 	public abstract JavaCameraFrame getLastFrame();
 
 	/**
-	 * Implementa a regra para ver se o resultado da comparaÁ„o È suficiente
-	 * para considerar a imagem "bastante" similar
+	 * Implementa a regra para ver se o resultado da compara√ß√£o √© suficiente para considerar a imagem "bastante" similar
 	 * 
 	 * @param comparacao
 	 * @return

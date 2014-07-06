@@ -11,20 +11,17 @@ import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Wrapper de {@link JavaCam} para conferir novas funcionalidades. uma câmera
- * que fica comparando os frames com frames anteriores guardados, verificando
- * sua similaridade. <br/>
- * Essencialmente é uma especialização de {@link JavaCam}, mas implementado como
- * agregação ao em vez de herança
+ * Uma implementação de {@link SimilarityCam} que usa uma abordagem simplificada da técnica de extração e comparação de Features
  * 
  * @author Vinicius Nogueira
  */
-public class FeaturesSimilarityCam implements
-		SimilarityCam<Tuple2<Bitmap, Mat>> {
+public class FeaturesSimilarityCam implements SimilarityCam<Tuple2<Bitmap, Mat>>
+{
 
 	private static final float MAGIC_PERCENTAGE = 0.4f;
+	private static final int LIMITE_DESCS = 100;
 
-	private JavaCam realCam = new JavaCam();
+	private final JavaCam realCam = new JavaCam();
 
 	private Mat descsEmObservacao;
 
@@ -34,37 +31,40 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#snapshot()
 	 */
 	@Override
-	public Tuple2<Bitmap, Mat> snapshot() {
+	public Option<Tuple2<Bitmap, Mat>> snapshot()
+	{
 
-		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o ódigo nativo apresenta uns erros estranhos ao ser acessado por
-		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
-		// ficar trancando o acesso
-		synchronized (this) {
+		synchronized (this)
+		{
 			final OCVUtil ocvUtil = OCVUtil.getInstance();
 
 			final Mat rgba = getLastFrame().rgba().clone();
 			final Mat gray = getLastFrame().gray().clone();
 
-			Bitmap bmp = ocvUtil.toBmp(rgba);
+			final Bitmap bmp = ocvUtil.toBmp(rgba);
 			final Mat descs = ocvUtil.extractFeatureDescriptors(gray);
 
 			ocvUtil.releaseMat(rgba, gray);
-			return Tuple2.from(bmp, descs);
+
+			if (descs.rows() < LIMITE_DESCS)
+			{
+				return Option.empty();
+			}
+
+			return Option.from(Tuple2.from(bmp, descs));
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.vvgaming.harmegido.theGame.SimilarityCam#observar(com.github.detentor
-	 * .codex.product.Tuple2)
+	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#observar(com.github.detentor .codex.product.Tuple2)
 	 */
 	@Override
-	public void observar(Tuple2<Bitmap, Mat> obs) {
-		synchronized (this) {
+	public void observar(final Tuple2<Bitmap, Mat> obs)
+	{
+		synchronized (this)
+		{
 			stopObservar();
 			descsEmObservacao = obs.getVal2();
 		}
@@ -76,40 +76,14 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#stopObservar()
 	 */
 	@Override
-	public void stopObservar() {
-		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
-		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
-		// ficar trancando o acesso
-		synchronized (this) {
+	public void stopObservar()
+	{
+		synchronized (this)
+		{
 			OCVUtil.getInstance().releaseMat(descsEmObservacao);
 			descsEmObservacao = null;
 		}
 	}
-
-	//
-	// public boolean emObservacao() {
-	// return descsEmObservacao != null;
-	// }
-
-	// public boolean isObservacaoOk() {
-	//
-	// if (descsEmObservacao != null) {
-	// final OCVUtil ocvUtil = OCVUtil.getInstance();
-	//
-	// final Mat atualGray = getLastFrame().gray().clone();
-	// final Mat descsAtual = ocvUtil.extractFeatureDescriptors(atualGray);
-	//
-	// // compara os descritores
-	// boolean result = ocvUtil.compareDescriptors(descsEmObservacao,
-	// descsAtual) > MAGIC_PERCENTAGE;
-	//
-	// ocvUtil.releaseMat(atualGray, descsAtual);
-	// return result;
-	// }
-	// return false;
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -117,20 +91,24 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#compara()
 	 */
 	@Override
-	public Option<Float> compara() {
+	public Option<Float> compara()
+	{
 
-		if (descsEmObservacao != null) {
-			final OCVUtil ocvUtil = OCVUtil.getInstance();
+		synchronized (this)
+		{
+			if (descsEmObservacao != null)
+			{
+				final OCVUtil ocvUtil = OCVUtil.getInstance();
 
-			final Mat atualGray = getLastFrame().gray().clone();
-			final Mat descsAtual = ocvUtil.extractFeatureDescriptors(atualGray);
+				final Mat atualGray = getLastFrame().gray().clone();
+				final Mat descsAtual = ocvUtil.extractFeatureDescriptors(atualGray);
 
-			// compara os descritores
-			float result = ocvUtil.compareDescriptors(descsEmObservacao,
-					descsAtual);
+				// compara os descritores
+				final float result = ocvUtil.compareDescriptors(descsEmObservacao, descsAtual);
 
-			ocvUtil.releaseMat(atualGray, descsAtual);
-			return Option.from(result);
+				ocvUtil.releaseMat(atualGray, descsAtual);
+				return Option.from(result);
+			}
 		}
 
 		return Option.empty();
@@ -142,7 +120,8 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#connectCamera(int, int)
 	 */
 	@Override
-	public void connectCamera(int width, int height) {
+	public void connectCamera(final int width, final int height)
+	{
 		realCam.connectCamera(width, height);
 	}
 
@@ -152,7 +131,8 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#disconnectCamera()
 	 */
 	@Override
-	public void disconnectCamera() {
+	public void disconnectCamera()
+	{
 		realCam.disconnectCamera();
 	}
 
@@ -162,14 +142,10 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#getLastFrame()
 	 */
 	@Override
-	public JavaCameraFrame getLastFrame() {
-
-		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
-		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
-		// ficar trancando o acesso
-		synchronized (this) {
+	public JavaCameraFrame getLastFrame()
+	{
+		synchronized (this)
+		{
 			return realCam.getLastFrame();
 		}
 	}
@@ -180,7 +156,8 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#getHeight()
 	 */
 	@Override
-	public int getHeight() {
+	public int getHeight()
+	{
 		return realCam.getHeight();
 	}
 
@@ -190,12 +167,14 @@ public class FeaturesSimilarityCam implements
 	 * @see org.vvgaming.harmegido.theGame.SimilarityCam#getWidth()
 	 */
 	@Override
-	public int getWidth() {
+	public int getWidth()
+	{
 		return realCam.getWidth();
 	}
 
 	@Override
-	public boolean isSimilarEnough(float comparacao) {
+	public boolean isSimilarEnough(final float comparacao)
+	{
 		return comparacao > MAGIC_PERCENTAGE;
 	}
 

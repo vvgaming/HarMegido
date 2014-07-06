@@ -12,11 +12,11 @@ import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple2;
 
 /**
- * Wrapper de {@link JavaCam} para conferir novas funcionalidades. É uma câmera
+ * Wrapper de {@link JavaCam} para conferir novas funcionalidades. ï¿½ uma cï¿½mera
  * que fica comparando os frames com frames anteriores guardados, verificando
  * sua similaridade. <br/>
- * Essencialmente é uma especialização de {@link JavaCam}, mas implementado como
- * agregação ao em vez de herança
+ * Essencialmente ï¿½ uma especializaï¿½ï¿½o de {@link JavaCam}, mas implementado como
+ * agregaï¿½ï¿½o ao em vez de heranï¿½a
  * 
  * @author Vinicius Nogueira
  */
@@ -30,11 +30,11 @@ public class HistogramaSimilarityCam implements
 	private Mat histogramaEmObservacao;
 
 	@Override
-	public Tuple2<Bitmap, Mat> snapshot() {
+	public Option<Tuple2<Bitmap, Mat>> snapshot() {
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// o cï¿½digo nativo apresenta uns erros estranhos ao ser acessado por
 		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// TODO verificar se essa ï¿½ a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
 			final OCVUtil ocvUtil = OCVUtil.getInstance();
@@ -45,7 +45,7 @@ public class HistogramaSimilarityCam implements
 			final Mat hist = ocvUtil.calcHistHS(rgba);
 
 			ocvUtil.releaseMat(rgba);
-			return Tuple2.from(bmp, hist);
+			return Option.from(Tuple2.from(bmp, hist));
 		}
 	}
 
@@ -60,9 +60,9 @@ public class HistogramaSimilarityCam implements
 	@Override
 	public void stopObservar() {
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// o cï¿½digo nativo apresenta uns erros estranhos ao ser acessado por
 		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// TODO verificar se essa ï¿½ a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
 			OCVUtil.getInstance().releaseMat(histogramaEmObservacao);
@@ -99,9 +99,9 @@ public class HistogramaSimilarityCam implements
 	public JavaCameraFrame getLastFrame() {
 
 		// sincronizando a classe para garantir o acesso apenas de uma Thread
-		// o código nativo apresenta uns erros estranhos ao ser acessado por
+		// o cï¿½digo nativo apresenta uns erros estranhos ao ser acessado por
 		// mais de uma Thread
-		// TODO verificar se essa é a melhor forma mesmo, pois parece perigoso
+		// TODO verificar se essa ï¿½ a melhor forma mesmo, pois parece perigoso
 		// ficar trancando o acesso
 		synchronized (this) {
 			return realCam.getLastFrame();

@@ -138,7 +138,7 @@ public class ServerDriver implements UosDriver
 		{
 			for (Entry<String, Match> curEntry : mapaPartidas.entrySet())
 			{
-				if (curEntry.getValue().isAtiva() && curEntry.getValue().contemJogador(Player.from("", idJogador)))
+				if (curEntry.getValue().isAtiva() && curEntry.getValue().contemJogador(Player.from(" ", idJogador)))
 				{
 					partida = curEntry.getValue();
 					break;

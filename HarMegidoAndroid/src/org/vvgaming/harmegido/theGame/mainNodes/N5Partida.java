@@ -8,6 +8,7 @@ import org.opencv.core.Mat;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
+import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
@@ -37,6 +38,16 @@ public class N5Partida extends NHMMainNode
 	private final float chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 
 	private List<Enchantment> encantamentos = new ArrayList<>();
+
+	private Modo modo = Modo.ENCANTANDO;
+
+	private NButton btnAvancar;
+	private NButton btnVoltar;
+
+	private enum Modo
+	{
+		ENCANTANDO, DESENCANTANDO;
+	}
 
 	public N5Partida(final Player player)
 	{
@@ -106,6 +117,7 @@ public class N5Partida extends NHMMainNode
 					{
 					case 0:
 						sendConsoleMsg("Toque na tela para encantar");
+						modo = Modo.ENCANTANDO;
 						break;
 					case 1:
 						if (encantamentos.isEmpty())
@@ -113,6 +125,11 @@ public class N5Partida extends NHMMainNode
 							tglGroup.toggle(0);
 							sendConsoleMsg("Não há o que desencantar...");
 							getGameAssetManager().playSound(R.raw.error);
+						}
+						else
+						{
+							sendConsoleMsg("Procure o objeto a desencantar");
+							modo = Modo.DESENCANTANDO;
 						}
 						break;
 					default:
@@ -123,6 +140,18 @@ public class N5Partida extends NHMMainNode
 			}
 		});
 
+		final NImage imgAvancar = new NImage(new Ponto(getGameWidth(.9f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
+				R.drawable.avancar));
+		imgAvancar.setWidth(getGameWidth(.15f), true);
+		btnAvancar = new NButtonImage(imgAvancar);
+		btnAvancar.setVisible(false);
+
+		final NImage imgVoltar = new NImage(new Ponto(getGameWidth(.1f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
+				R.drawable.voltar));
+		imgVoltar.setWidth(getGameWidth(.15f), true);
+		btnVoltar = new NButtonImage(imgVoltar);
+		btnVoltar.setVisible(false);
+
 		addSubNode(bg, 0);
 		addSubNode(cam, 1);
 
@@ -131,6 +160,8 @@ public class N5Partida extends NHMMainNode
 		addSubNode(new NHMBackgroundPartida(isAngels), 3);
 
 		addSubNode(tglGroup, 4);
+		addSubNode(btnAvancar, 4);
+		addSubNode(btnVoltar, 4);
 
 	}
 
@@ -141,6 +172,19 @@ public class N5Partida extends NHMMainNode
 		if (charging)
 		{
 			progressBar.setProgress(progressBar.getProgress() + 1 / chargingDelay * delta);
+		}
+
+		System.out.println();
+
+		if (modo.equals(Modo.DESENCANTANDO))
+		{
+			btnAvancar.setVisible(true);
+			btnVoltar.setVisible(true);
+		}
+		else
+		{
+			btnAvancar.setVisible(false);
+			btnVoltar.setVisible(false);
 		}
 
 	}

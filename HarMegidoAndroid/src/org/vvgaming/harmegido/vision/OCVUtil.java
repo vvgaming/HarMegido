@@ -87,6 +87,30 @@ public class OCVUtil {
 	}
 
 	/**
+	 * Converte Mat da OpenCV em um array de bytes
+	 * 
+	 * @param mat
+	 * @return
+	 */
+	public byte[] toByteArray(final Mat mat) {
+		final byte[] retorno = new byte[(int) (mat.total() * mat.channels())];
+		mat.get(0, 0, retorno);
+		return retorno;
+	}
+
+	/**
+	 * Converte um array de bytes em Mat da OpenCV
+	 * 
+	 * @param mat
+	 * @return
+	 */
+	public Mat toMat(final byte[] array) {
+		final Mat retorno = new Mat();
+		retorno.put(0, 0, array);
+		return retorno;
+	}
+
+	/**
 	 * Calcula o histograma de H e S de uma imagem RGBA. Isto é, converte a
 	 * imagem para HSV, ignora o V e calcula o histograma
 	 * 
@@ -153,7 +177,7 @@ public class OCVUtil {
 			}
 
 			if (retorno.rows() != 0) {
-				return sum / (float) retorno.rows();
+				return sum / retorno.rows();
 			} else {
 				return 0.0f;
 			}

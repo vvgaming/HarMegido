@@ -1,11 +1,17 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.opencv.core.Mat;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
+import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackgroundPartida;
 import org.vvgaming.harmegido.theGame.objNodes.NHMEnchantingCam;
@@ -30,6 +36,8 @@ public class N5Partida extends NHMMainNode
 	private boolean charging = false;
 	private final float chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 
+	private List<Enchantment> encantamentos = new ArrayList<>();
+
 	public N5Partida(final Player player)
 	{
 		super();
@@ -39,6 +47,7 @@ public class N5Partida extends NHMMainNode
 	@Override
 	public void init()
 	{
+
 		super.init();
 
 		final boolean isAngels;
@@ -99,7 +108,12 @@ public class N5Partida extends NHMMainNode
 						sendConsoleMsg("Toque na tela para encantar");
 						break;
 					case 1:
-						sendConsoleMsg("desencantarrrr...");
+						if (encantamentos.isEmpty())
+						{
+							tglGroup.toggle(0);
+							sendConsoleMsg("Não há o que desencantar...");
+							getGameAssetManager().playSound(R.raw.error);
+						}
 						break;
 					default:
 						throw new IllegalArgumentException("Modo desconhecido: " + arg0.get());
@@ -139,17 +153,24 @@ public class N5Partida extends NHMMainNode
 		case MotionEvent.ACTION_DOWN:
 			charging = true;
 			sendConsoleMsg("Encantamento sendo preparado...");
-			cam.iniciaEncantamento(new Function1<Boolean, Void>()
+			cam.iniciaEncantamento(new Function1<Option<Mat>, Void>()
 			{
 				@Override
-				public Void apply(final Boolean arg0)
+				public Void apply(final Option<Mat> arg0)
 				{
-					if (arg0)
+					if (arg0.notEmpty())
 					{
 						sendConsoleMsg("Encantamento finalizado com sucesso");
 						getGameAssetManager().playSound(R.raw.encantament_sucesso);
 						charging = false;
 						progressBar.reset();
+
+						final Mat mat = arg0.get();
+						byte[] array = new byte[(int) (mat.total() * mat.channels())];
+						mat.get(0, 0, array);
+
+						encantamentos.add(Enchantment.from(player, new Date(), array));
+
 					}
 					else
 					{

@@ -38,7 +38,7 @@ public class NHMEnchantingCam extends LazyInitGameNode
 
 	private Status status = Status.OCIOSO;
 
-	private Option<Function1<Boolean, Void>> callbackFimEncantamento = Option.empty();
+	private Option<Function1<Option<Mat>, Void>> callbackFimEncantamento = Option.empty();
 	private NTimer encantamentoTimer;
 
 	public NHMEnchantingCam(final Ponto center, final float height)
@@ -80,7 +80,7 @@ public class NHMEnchantingCam extends LazyInitGameNode
 			if (!cam.isSimilarEnough(cam.compara().get()))
 			{
 				// se sair do foco, para de encatar
-				callbackFimEncantamento.get().apply(false);
+				callbackFimEncantamento.get().apply(Option.<Mat>empty());
 				pararEncantamento();
 			}
 		}
@@ -121,7 +121,7 @@ public class NHMEnchantingCam extends LazyInitGameNode
 		OCIOSO, ENCANTANDO, DESENCANTANDO;
 	}
 
-	public void iniciaEncantamento(final Function1<Boolean, Void> callbackFimEncantamento)
+	public void iniciaEncantamento(final Function1<Option<Mat>, Void> callbackFimEncantamento)
 	{
 		if (callbackFimEncantamento == null)
 		{
@@ -135,7 +135,8 @@ public class NHMEnchantingCam extends LazyInitGameNode
 		if (registrado.notEmpty())
 		{
 			status = Status.ENCANTANDO;
-			cam.observar(registrado.get());
+			final Tuple2<Bitmap, Mat> reg = registrado.get();
+			cam.observar(reg);
 			encantamentoTimer = new NTimer(ENCANTAMENTO_CASTING_TIME, new Function0<Void>()
 			{
 				@Override
@@ -145,7 +146,7 @@ public class NHMEnchantingCam extends LazyInitGameNode
 					{
 						// se ainda está encantando após o delay é pq não perdeu o alvo no meio do caminho
 						// então vamos retornar OK, pq encantou tudo bem
-						NHMEnchantingCam.this.callbackFimEncantamento.get().apply(true);
+						NHMEnchantingCam.this.callbackFimEncantamento.get().apply(Option.from(reg.getVal2().clone()));
 						pararEncantamento();
 					}
 					return null;
@@ -157,7 +158,7 @@ public class NHMEnchantingCam extends LazyInitGameNode
 		{
 			if (this.callbackFimEncantamento.notEmpty())
 			{
-				this.callbackFimEncantamento.get().apply(false);
+				this.callbackFimEncantamento.get().apply(Option.<Mat>empty());
 			}
 		}
 	}

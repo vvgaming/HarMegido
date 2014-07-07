@@ -209,12 +209,6 @@ public class N4SelecaoChar extends NHMMainNode
 								final Player p = Player.from(nome, DeviceInfo.getDeviceId(), angelTeam ? TeamType.LIGHT : TeamType.DARK);
 								Either<Exception, Boolean> addResp = fac.adicionarJogador(NOME_PARTIDA, p);
 
-								// TODO POR ENQUANTO que está com pau na chamada encontrarPartida
-								RootNode.getInstance().changeMainNode(new N5Partida(p));
-								if (true)
-								{
-									return null;
-								}
 								if (addResp.isRight() && addResp.getRight())
 								{
 									Either<Exception, Match> matResp = fac.encontrarPartida(p);
@@ -225,12 +219,14 @@ public class N4SelecaoChar extends NHMMainNode
 									}
 									else
 									{
+										getGameAssetManager().playSound(R.raw.error);
 										sendConsoleMsg("Falha ao entrar na partida...");
 										Log.e("erro harmegido", "falha ao entrar na partida", matResp.getLeft());
 									}
 								}
 								else
 								{
+									getGameAssetManager().playSound(R.raw.error);
 									sendConsoleMsg("Falha ao entrar na partida...");
 									Log.e("erro harmegido", "falha ao entrar na partida", addResp.getLeft());
 								}

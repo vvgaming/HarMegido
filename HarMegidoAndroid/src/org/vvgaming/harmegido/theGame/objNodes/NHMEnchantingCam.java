@@ -24,10 +24,10 @@ import com.github.detentor.codex.product.Tuple2;
  * 
  * @author Vinicius Nogueira
  */
-public class NHMEnchantingCam extends LazyInitGameNode
-{
+public class NHMEnchantingCam extends LazyInitGameNode {
 
 	public static final long ENCANTAMENTO_CASTING_TIME = 5000;
+	public static final float DESENCANTAMENTO_CASTING_TIME = 5000;
 	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
 	private Bitmap lastFrame;
 
@@ -38,16 +38,14 @@ public class NHMEnchantingCam extends LazyInitGameNode
 
 	private Status status = Status.OCIOSO;
 
-	private Option<Function1<Option<Mat>, Void>> callbackFimEncantamento = Option.empty();
+	private Option<Function1<Option<Mat>, Void>> callbackFimEncantamento = Option
+			.empty();
 	private NTimer encantamentoTimer;
 
-	public NHMEnchantingCam(final Ponto center, final float height)
-	{
-		addToInit(new Function0<Void>()
-		{
+	public NHMEnchantingCam(final Ponto center, final float height) {
+		addToInit(new Function0<Void>() {
 			@Override
-			public Void apply()
-			{
+			public Void apply() {
 				NHMEnchantingCam.this.matriz.setCenter(center);
 				NHMEnchantingCam.this.matriz.setHeight(height, true);
 				return null;
@@ -56,10 +54,8 @@ public class NHMEnchantingCam extends LazyInitGameNode
 	}
 
 	@Override
-	public void preInit()
-	{
-		if (cam == null)
-		{
+	public void preInit() {
+		if (cam == null) {
 			cam = new FeaturesSimilarityCam();
 			// cam = new HistogramaSimilarityCam();
 		}
@@ -68,19 +64,16 @@ public class NHMEnchantingCam extends LazyInitGameNode
 	}
 
 	@Override
-	public void update(final long delta)
-	{
+	public void update(final long delta) {
 		// captura e guarda o frame
 		final Mat lastFrameMat = cam.getLastFrame().rgba().clone();
 		lastFrame = OCVUtil.getInstance().toBmp(lastFrameMat);
 		OCVUtil.getInstance().releaseMat(lastFrameMat);
 
-		if (status.equals(Status.ENCANTANDO))
-		{
-			if (!cam.isSimilarEnough(cam.compara().get()))
-			{
+		if (status.equals(Status.ENCANTANDO)) {
+			if (!cam.isSimilarEnough(cam.compara().get())) {
 				// se sair do foco, para de encatar
-				callbackFimEncantamento.get().apply(Option.<Mat>empty());
+				callbackFimEncantamento.get().apply(Option.<Mat> empty());
 				pararEncantamento();
 			}
 		}
@@ -88,8 +81,7 @@ public class NHMEnchantingCam extends LazyInitGameNode
 	}
 
 	@Override
-	public void render(final Canvas canvas)
-	{
+	public void render(final Canvas canvas) {
 		// final Paint alphed = new Paint();
 		// alphed.setAlpha(100);
 
@@ -105,26 +97,22 @@ public class NHMEnchantingCam extends LazyInitGameNode
 	}
 
 	@Override
-	public boolean isDead()
-	{
+	public boolean isDead() {
 		return false;
 	}
 
 	@Override
-	public void end()
-	{
+	public void end() {
 		cam.disconnectCamera();
 	}
 
-	private enum Status
-	{
+	private enum Status {
 		OCIOSO, ENCANTANDO, DESENCANTANDO;
 	}
 
-	public void iniciaEncantamento(final Function1<Option<Mat>, Void> callbackFimEncantamento)
-	{
-		if (callbackFimEncantamento == null)
-		{
+	public void iniciaEncantamento(
+			final Function1<Option<Mat>, Void> callbackFimEncantamento) {
+		if (callbackFimEncantamento == null) {
 			throw new IllegalArgumentException("callback não pode ser nulo");
 		}
 
@@ -132,41 +120,37 @@ public class NHMEnchantingCam extends LazyInitGameNode
 
 		this.callbackFimEncantamento = Option.from(callbackFimEncantamento);
 		final Option<Tuple2<Bitmap, Mat>> registrado = cam.snapshot();
-		if (registrado.notEmpty())
-		{
+		if (registrado.notEmpty()) {
 			status = Status.ENCANTANDO;
 			final Tuple2<Bitmap, Mat> reg = registrado.get();
 			cam.observar(reg);
-			encantamentoTimer = new NTimer(ENCANTAMENTO_CASTING_TIME, new Function0<Void>()
-			{
-				@Override
-				public Void apply()
-				{
-					if (status.equals(Status.ENCANTANDO))
-					{
-						// se ainda está encantando após o delay é pq não perdeu o alvo no meio do caminho
-						// então vamos retornar OK, pq encantou tudo bem
-						NHMEnchantingCam.this.callbackFimEncantamento.get().apply(Option.from(reg.getVal2().clone()));
-						pararEncantamento();
-					}
-					return null;
-				}
-			}, true);
+			encantamentoTimer = new NTimer(ENCANTAMENTO_CASTING_TIME,
+					new Function0<Void>() {
+						@Override
+						public Void apply() {
+							if (status.equals(Status.ENCANTANDO)) {
+								// se ainda está encantando após o delay é pq
+								// não perdeu o alvo no meio do caminho
+								// então vamos retornar OK, pq encantou tudo bem
+								NHMEnchantingCam.this.callbackFimEncantamento
+										.get().apply(
+												Option.from(reg.getVal2()
+														.clone()));
+								pararEncantamento();
+							}
+							return null;
+						}
+					}, true);
 			addSubNode(encantamentoTimer);
-		}
-		else
-		{
-			if (this.callbackFimEncantamento.notEmpty())
-			{
-				this.callbackFimEncantamento.get().apply(Option.<Mat>empty());
+		} else {
+			if (this.callbackFimEncantamento.notEmpty()) {
+				this.callbackFimEncantamento.get().apply(Option.<Mat> empty());
 			}
 		}
 	}
 
-	public boolean pararEncantamento()
-	{
-		if (!status.equals(Status.OCIOSO))
-		{
+	public boolean pararEncantamento() {
+		if (!status.equals(Status.OCIOSO)) {
 			cam.stopObservar();
 			status = Status.OCIOSO;
 			this.callbackFimEncantamento = Option.empty();

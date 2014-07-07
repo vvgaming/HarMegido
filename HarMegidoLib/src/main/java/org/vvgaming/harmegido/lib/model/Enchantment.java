@@ -65,7 +65,7 @@ public class Enchantment extends Spell implements Copyable
 		return 0;
 	}
 	
-	public byte[] getHistogram()
+	public byte[] getImagem()
 	{
 		return imagem;
 	}

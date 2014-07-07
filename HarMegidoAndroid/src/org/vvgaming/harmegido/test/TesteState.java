@@ -1,10 +1,12 @@
 package org.vvgaming.harmegido.test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import org.vvgaming.harmegido.R;
+import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
@@ -20,12 +22,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.detentor.codex.monads.Either;
+import com.github.detentor.codex.util.Reflections;
 
 public class TesteState extends Activity
 {
 	private final ServerDriverFacade sdf = ServerDriverFacade.from(UOSFacade.getUos(), 20000);
 	private Match partida;
 	private Player jogador;
+	private Player inimigo;
+	private List<Enchantment> encantamentos = new ArrayList<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -36,7 +41,7 @@ public class TesteState extends Activity
 		
 		final String playerName = "VINICIUS";
 		jogador = Player.from(playerName, DeviceInfo.getDeviceId(), TeamType.DARK);
-		
+		inimigo = Player.from("inimigo", "enemyDevice", TeamType.LIGHT);
 
 		((Button) findViewById(R.id.btnListarPartidas)).setOnClickListener(new View.OnClickListener()
 		{
@@ -74,6 +79,7 @@ public class TesteState extends Activity
 				}
 				Either<Exception, Boolean> retorno = sdf.adicionarJogador(partida.getNomePartida(), jogador);
 				setText(formatarRetorno(retorno));
+				sdf.adicionarJogador(partida.getNomePartida(), inimigo);
 			}
 		});
 		
@@ -135,6 +141,59 @@ public class TesteState extends Activity
 				}
 				Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, new byte[10]);
 				setText(formatarRetorno(retorno));
+			}
+		});
+		
+		((Button) findViewById(R.id.btnListarEncantamentos)).setOnClickListener(new View.OnClickListener()
+		{
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onClick(View v)
+			{
+				Either<Exception, Object> retorno = sdf.encontrarPartida(jogador).map(Reflections.lift(Match.class, "getEncantamentos"));
+				if (retorno.isRight())
+				{
+					encantamentos = (List<Enchantment>) retorno.getRight();
+				}
+				setText(formatarRetorno(retorno));
+			}
+		});
+		
+		((Button) findViewById(R.id.btnDesencantar)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if (partida == null)
+				{
+					setText("Crie uma partida antes de desencantar.");
+					return;
+				}
+				
+				if (encantamentos.isEmpty())
+				{
+					setText("Nenhum encantamento para desencantar.");
+					return;
+				}
+				
+				Either<Exception, Boolean> retorno = sdf.desencantarObjeto(partida.getNomePartida(), inimigo, encantamentos.get(0));
+				setText(formatarRetorno(retorno));
+			}
+		});
+		
+		((Button) findViewById(R.id.btnListarDesencamentos)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				final StringBuilder sBuilder = new StringBuilder();
+				
+				for (Enchantment enchant : encantamentos)
+				{
+					sBuilder.append("[" + enchant.toString() + " / " +  enchant.getDesencantamento().toString() + "]\n");
+				}
+				
+				setText(sBuilder.toString());
 			}
 		});
 		

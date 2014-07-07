@@ -191,6 +191,14 @@ public class Match
 		{
 			final PlayerChangeEnchant pce = (PlayerChangeEnchant) stateChange;
 			final Player mJogador = getJogador(pce.getJogador().getIdJogador());
+			
+			for (Enchantment enchant : encantamentos)
+			{
+				if (Arrays.equals(enchant.getHistogram(), pce.getEnchantmentImage()))
+				{
+					throw new IllegalArgumentException("Esse encantamento já existe");
+				}
+			}
 			encantamentos.add(mJogador.encantar(new Date(), pce.getEnchantmentImage()));
 		}
 		else if (stateChange instanceof PlayerChangeDisenchant)
@@ -198,6 +206,11 @@ public class Match
 			final PlayerChangeDisenchant pcd = (PlayerChangeDisenchant) stateChange;
 			final Player mJogador = getJogador(pcd.getJogador().getIdJogador());
 			final Enchantment enchant = getEnchantment(pcd.getEncantamento());
+			
+			if (enchant.getDesencantamento().notEmpty())
+			{
+				throw new IllegalArgumentException("Esse encantamento já foi desencantado");
+			}
 		
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
 			mJogador.desencantar(enchant, new Date());				

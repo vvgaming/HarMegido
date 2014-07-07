@@ -55,7 +55,25 @@
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:text="Encantar" />
-       
+        
+        <Button
+       android:id="@+id/btnListarEncantamentos"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Listar Encantamentos" />
+        
+         <Button
+       android:id="@+id/btnDesencantar"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Desencantar" />
+         
+         <Button
+       android:id="@+id/btnListarDesencamentos"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Listar Desencantamentos" />
+         
        <TextView
        android:id="@+id/txtViewRetorno"
        android:layout_width="wrap_content"

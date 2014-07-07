@@ -49,6 +49,15 @@ public class Enchantment extends Spell implements Copyable
 		}
 		this.desencantamento = Option.from(oDesencantamento);
 	}
+	
+	/**
+	 * Retorna uma Option que conterá o desencantamento deste encantamento, se ele existir
+	 * @return Uma Option que conterá o desencantamento, se ele existir
+	 */
+	public Option<Disenchantment> getDesencantamento()
+	{
+		return desencantamento;
+	}
 
 	public int calcularPontuacao()
 	{

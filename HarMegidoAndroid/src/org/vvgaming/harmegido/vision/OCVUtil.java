@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvException;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.core.MatOfFloat;
@@ -87,6 +88,18 @@ public class OCVUtil {
 	}
 
 	/**
+	 * Converte Bitmap do Android em Mat da OpenCV
+	 * 
+	 * @param toConvert
+	 * @return a Mat
+	 */
+	public Mat toMat(Bitmap toConvert) {
+		Mat retorno = new Mat();
+		Utils.bitmapToMat(toConvert, retorno);
+		return retorno;
+	}
+
+	/**
 	 * Converte Mat da OpenCV em um array de bytes
 	 * 
 	 * @param mat
@@ -105,7 +118,8 @@ public class OCVUtil {
 	 * @return
 	 */
 	public Mat toMat(final byte[] array) {
-		final Mat retorno = new Mat();
+		// FIXME retirar esses numeros hardcoded
+		final Mat retorno = new Mat(640, 480, CvType.CV_8UC4);
 		retorno.put(0, 0, array);
 		return retorno;
 	}

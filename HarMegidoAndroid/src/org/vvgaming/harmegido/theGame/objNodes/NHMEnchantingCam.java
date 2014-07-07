@@ -6,7 +6,6 @@ import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
 import org.vvgaming.harmegido.theGame.FeaturesSimilarityCam;
-import org.vvgaming.harmegido.theGame.SimilarityCam;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.graphics.Bitmap;
@@ -27,8 +26,8 @@ import com.github.detentor.codex.product.Tuple2;
 public class NHMEnchantingCam extends LazyInitGameNode {
 
 	public static final long ENCANTAMENTO_CASTING_TIME = 5000;
-	public static final float DESENCANTAMENTO_CASTING_TIME = 5000;
-	private SimilarityCam<Tuple2<Bitmap, Mat>> cam;
+	public static final long DESENCANTAMENTO_CASTING_TIME = 5000;
+	private FeaturesSimilarityCam cam;
 	private Bitmap lastFrame;
 
 	MatrizTransfAndroid matriz;
@@ -38,9 +37,18 @@ public class NHMEnchantingCam extends LazyInitGameNode {
 
 	private Status status = Status.OCIOSO;
 
+	// variáveis de controle para o desencantamento
+	private Option<Function0<Void>> callbackFound = Option.empty();
+	private Option<Function1<Boolean, Void>> callbackFimDesencantamento = Option
+			.empty();
+	private Option<Tuple2<Bitmap, Mat>> desencantando = Option.empty();
+	boolean desencantandoFound = false;
+
+	// variáveis de controle para o encantamento
 	private Option<Function1<Option<Mat>, Void>> callbackFimEncantamento = Option
 			.empty();
-	private NTimer encantamentoTimer;
+	//
+	private NTimer timer;
 
 	public NHMEnchantingCam(final Ponto center, final float height) {
 		addToInit(new Function0<Void>() {
@@ -71,29 +79,70 @@ public class NHMEnchantingCam extends LazyInitGameNode {
 		OCVUtil.getInstance().releaseMat(lastFrameMat);
 
 		if (status.equals(Status.ENCANTANDO)) {
-			if (!cam.isSimilarEnough(cam.compara().get())) {
+			Option<Float> comparacao = cam.compara();
+			if (comparacao.notEmpty() && !cam.isSimilarEnough(comparacao.get())) {
 				// se sair do foco, para de encatar
 				callbackFimEncantamento.get().apply(Option.<Mat> empty());
-				pararEncantamento();
+				parar();
 			}
 		}
 
+		if (status.equals(Status.DESENCANTANDO)) {
+			final Option<Float> comparacao = cam.compara();
+			if (comparacao.notEmpty()) {
+				if (desencantandoFound) {
+					// já estamos desencantando, vamos ver se não saiu da mira,
+					// se sair cancela
+					if (!cam.isSimilarEnough(comparacao.get())) {
+						NHMEnchantingCam.this.callbackFimDesencantamento.get()
+								.apply(false);
+						desencantandoFound = false;
+						timer.kill();
+					}
+				} else {
+					// não tinha encontrado, mas acabamos de achar um igual
+					if (cam.isSimilarEnough(comparacao.get())) {
+						// avisa que achou
+						callbackFound.get().apply();
+						desencantandoFound = true;
+						// lança o timer para que ele mantenha o dispositivo
+						// quieto enquanto desencanta
+						timer = new NTimer(DESENCANTAMENTO_CASTING_TIME,
+								new Function0<Void>() {
+									@Override
+									public Void apply() {
+										// ao terminar, veja se ainda estamos
+										// desencantando e ainda o objeto ainda
+										// está no foco
+										if (status.equals(Status.DESENCANTANDO)
+												&& desencantandoFound) {
+											NHMEnchantingCam.this.callbackFimDesencantamento
+													.get().apply(true);
+											desencantandoFound = false;
+										}
+										return null;
+									}
+								}, true);
+						addSubNode(timer);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public void render(final Canvas canvas) {
-		// final Paint alphed = new Paint();
-		// alphed.setAlpha(100);
+		final Paint alphed = new Paint();
+		alphed.setAlpha(100);
 
 		final Paint natural = new Paint();
 		final Matrix matrix = matriz.getMatrix();
 		canvas.drawBitmap(lastFrame, matrix, natural);
 
-		// if (registrado.notEmpty())
-		// {
-		// final Bitmap regFrame = registrado.get().getVal1();
-		// canvas.drawBitmap(regFrame, matrix, alphed);
-		// }
+		if (desencantando.notEmpty()) {
+			final Bitmap desFrame = desencantando.get().getVal1();
+			canvas.drawBitmap(desFrame, matrix, alphed);
+		}
 	}
 
 	@Override
@@ -116,7 +165,7 @@ public class NHMEnchantingCam extends LazyInitGameNode {
 			throw new IllegalArgumentException("callback não pode ser nulo");
 		}
 
-		pararEncantamento();
+		parar();
 
 		this.callbackFimEncantamento = Option.from(callbackFimEncantamento);
 		final Option<Tuple2<Bitmap, Mat>> registrado = cam.snapshot();
@@ -124,7 +173,7 @@ public class NHMEnchantingCam extends LazyInitGameNode {
 			status = Status.ENCANTANDO;
 			final Tuple2<Bitmap, Mat> reg = registrado.get();
 			cam.observar(reg);
-			encantamentoTimer = new NTimer(ENCANTAMENTO_CASTING_TIME,
+			timer = new NTimer(ENCANTAMENTO_CASTING_TIME,
 					new Function0<Void>() {
 						@Override
 						public Void apply() {
@@ -133,15 +182,16 @@ public class NHMEnchantingCam extends LazyInitGameNode {
 								// não perdeu o alvo no meio do caminho
 								// então vamos retornar OK, pq encantou tudo bem
 								NHMEnchantingCam.this.callbackFimEncantamento
-										.get().apply(
-												Option.from(reg.getVal2()
-														.clone()));
-								pararEncantamento();
+										.get()
+										.apply(Option.from(OCVUtil
+												.getInstance().toMat(
+														reg.getVal1())));
+								parar();
 							}
 							return null;
 						}
 					}, true);
-			addSubNode(encantamentoTimer);
+			addSubNode(timer);
 		} else {
 			if (this.callbackFimEncantamento.notEmpty()) {
 				this.callbackFimEncantamento.get().apply(Option.<Mat> empty());
@@ -149,13 +199,40 @@ public class NHMEnchantingCam extends LazyInitGameNode {
 		}
 	}
 
-	public boolean pararEncantamento() {
+	public void iniciaDesencantamento(final Mat imgToDesencantar,
+			final Function0<Void> callbackFound,
+			final Function1<Boolean, Void> callbackFimDesencantamento) {
+
+		if (callbackFound == null || callbackFimDesencantamento == null) {
+			throw new IllegalArgumentException("callbacks não podem ser nulo");
+		}
+
+		parar();
+
+		this.callbackFound = Option.from(callbackFound);
+		this.callbackFimDesencantamento = Option
+				.from(callbackFimDesencantamento);
+
+		final Tuple2<Bitmap, Mat> registrado = cam
+				.externalSnapshot(imgToDesencantar);
+		status = Status.DESENCANTANDO;
+		cam.observar(registrado);
+
+		desencantando = Option.from(registrado);
+
+	}
+
+	public boolean parar() {
 		if (!status.equals(Status.OCIOSO)) {
 			cam.stopObservar();
 			status = Status.OCIOSO;
 			this.callbackFimEncantamento = Option.empty();
-			if (encantamentoTimer != null)
-				encantamentoTimer.kill();
+			this.callbackFimDesencantamento = Option.empty();
+			this.callbackFound = Option.empty();
+			this.desencantando = Option.empty();
+			this.desencantandoFound = false;
+			if (timer != null)
+				timer.kill();
 			return true;
 		}
 		return false;

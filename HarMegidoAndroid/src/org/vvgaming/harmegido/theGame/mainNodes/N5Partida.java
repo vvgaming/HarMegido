@@ -23,6 +23,7 @@ import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.view.MotionEvent;
 
+import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
 import com.github.detentor.codex.product.Tuple3;
@@ -74,6 +75,10 @@ public class N5Partida extends NHMMainNode {
 					+ "' desconhecido");
 		}
 
+		//
+		cam = new NHMEnchantingCam(new Ponto(getGameWidth(.5f),
+				getGameHeight(.35f)), getGameHeight(.5f));
+
 		// fundo
 		final NSimpleBox bg = new NSimpleBox(0, 0, getGameWidth(),
 				getGameHeight(), 0, 0, 0);
@@ -120,8 +125,7 @@ public class N5Partida extends NHMMainNode {
 
 		// adicionando nas camadas
 		addSubNode(bg, 0);
-		addSubNode(cam = new NHMEnchantingCam(new Ponto(getGameWidth(.5f),
-				getGameHeight(.35f)), getGameHeight(.5f)), 1);
+		addSubNode(cam, 1);
 		addSubNode(progressBar = new NProgressBar(getGameWidth(.1f),
 				getGameHeight(.58f), getGameWidth(.8f), getGameHeight(.08f)), 2);
 
@@ -149,6 +153,7 @@ public class N5Partida extends NHMMainNode {
 		chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 		btnAvancar.setVisible(false);
 		btnVoltar.setVisible(false);
+		cam.parar();
 	}
 
 	private void setModoDesencantar() {
@@ -156,12 +161,39 @@ public class N5Partida extends NHMMainNode {
 			tglGroupModo.toggle(0);
 			sendConsoleMsg("Não há o que desencantar...");
 			getGameAssetManager().playSound(R.raw.error);
+			getGameAssetManager().vibrate(50);
 		} else {
+			cam.parar();
 			sendConsoleMsg("Procure o objeto a desencantar");
 			modo = Modo.DESENCANTANDO;
 			chargingDelay = NHMEnchantingCam.DESENCANTAMENTO_CASTING_TIME;
 			btnAvancar.setVisible(true);
 			btnVoltar.setVisible(true);
+
+			Enchantment primeiro = encantamentos.get(0);
+			Mat imgToDesencantar = OCVUtil.getInstance().toMat(
+					primeiro.getImagem());
+
+			cam.iniciaDesencantamento(imgToDesencantar, new Function0<Void>() {
+				@Override
+				public Void apply() {
+					sendConsoleMsg("ACHEIIIII");
+					return null;
+				}
+			}, new Function1<Boolean, Void>() {
+
+				@Override
+				public Void apply(Boolean arg0) {
+
+					if (arg0) {
+						sendConsoleMsg("desencantouuuu");
+					} else {
+						sendConsoleMsg("Falhou!!!");
+					}
+					return null;
+				}
+			});
+
 		}
 	}
 
@@ -172,6 +204,7 @@ public class N5Partida extends NHMMainNode {
 			case MotionEvent.ACTION_DOWN:
 				charging = true;
 				sendConsoleMsg("Encantamento sendo preparado...");
+				getGameAssetManager().vibrate(50);
 				cam.iniciaEncantamento(new Function1<Option<Mat>, Void>() {
 					@Override
 					public Void apply(final Option<Mat> arg0) {
@@ -179,6 +212,7 @@ public class N5Partida extends NHMMainNode {
 							sendConsoleMsg("Encantamento finalizado com sucesso");
 							getGameAssetManager().playSound(
 									R.raw.encantament_sucesso);
+							getGameAssetManager().vibrate(500);
 							charging = false;
 							progressBar.reset();
 							encantamentos.add(Enchantment.from(player,
@@ -188,6 +222,7 @@ public class N5Partida extends NHMMainNode {
 							sendConsoleMsg("Falhou");
 							getGameAssetManager().playSound(
 									R.raw.encantament_falha);
+							getGameAssetManager().vibrate(100);
 							charging = false;
 							progressBar.reset();
 						}
@@ -198,7 +233,7 @@ public class N5Partida extends NHMMainNode {
 				return true;
 			case MotionEvent.ACTION_UP:
 				charging = false;
-				if (cam.pararEncantamento()) {
+				if (cam.parar()) {
 					getGameAssetManager().playSound(R.raw.encantament_falha);
 					sendConsoleMsg("Cancelado");
 				}

@@ -1,4 +1,4 @@
-package org.vvgaming.harmegido.theGame.util;
+package org.vvgaming.harmegido.util;
 
 import java.util.Arrays;
 import java.util.List;

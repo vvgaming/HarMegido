@@ -23,6 +23,7 @@ import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeDisenchant;
@@ -69,6 +70,7 @@ public class ServerDriver implements UosDriver
 		//TODO: Adicionar os serviços aqui
 		definition.addService("criarPartida");
 		definition.addService("encontrarPartida");
+		definition.addService("getPontuacao");
 		definition.addService("runState");
 		definition.addService("listarPartidas");
 		definition.addService("listarJogadores");
@@ -163,6 +165,28 @@ public class ServerDriver implements UosDriver
 		response.addParameter("retorno", toJson(toReturn));
 	}
 	
+	/**
+	 * Retorna a pontuação de uma partida. <br/>
+	 * Parâmetros: nomePartida
+	 */
+	public void getPontuacao(Call call, Response response, CallContext callContext)
+	{
+		final String nomePartida = call.getParameter("nomePartida").toString();
+		final Either<RuntimeException, Match> eMatch = findMatch(nomePartida);
+		
+		Either<RuntimeException, Scoreboard> toReturn;
+		
+		if (eMatch.isLeft())
+		{
+			toReturn = Either.createLeft(eMatch.getLeft());
+		}
+		else
+		{
+			toReturn = Either.createRight(Scoreboard.from(eMatch.getRight()));
+		}
+		response.addParameter("retorno", toJson(toReturn));
+	}
+
 	/**
 	 * Faz a efetiva execução de um estado para uma partida
 	 */

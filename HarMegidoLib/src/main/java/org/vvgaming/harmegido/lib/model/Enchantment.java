@@ -59,10 +59,38 @@ public class Enchantment extends Spell implements Copyable
 		return desencantamento;
 	}
 
-	public int calcularPontuacao()
+	/**
+	 * Retorna a pontuação que esse encantamento vale.
+	 * @return Um inteiro não negativo com a pontuação que este encantamento rendeu 
+	 */
+	public int getPontuacao()
 	{
-		// TODO: efetivar o c�lculo
-		return 0;
+		final long toSubtract = desencantamento.isEmpty() ? new Date().getTime() : desencantamento.get().getTimestamp().getTime();
+		int nSeconds =  (int) (toSubtract - getTimestamp().getTime()) / 1000; //transforma em segundos;
+		nSeconds = Math.min(80, nSeconds); //o máximo de segundos que conta pontos
+		return calcPontuacao(nSeconds);
+	}
+	
+	/**
+	 * Retorna a pontuação de uma determinada quantidade de segundos
+	 */
+	private static int calcPontuacao(final int secs)
+	{
+		//(-x^2 +80x)/500 parábola  (rende +/- 170 pontos se ficar até o fim)
+		//(40*x*x - x*x*x/3)/500
+		return (secs*secs*(120 - secs))/1500;
+	}
+	
+	/**
+	 * Retorna a pontuação máxima que este encantamento pode conferir
+	 * @return Um inteiro positivo com a pontuação máxima que este encantamento pode conferir
+	 */
+	public static int getMaxPontuacao()
+	{
+		//Está como número aqui porque a fórmula para calcular a pontuação tem o
+		//sua raiz em 80. Como é mais performático deixar a função geral, não será
+		//gereralizado o cálculo para qualquer valor.
+		return calcPontuacao(80);
 	}
 	
 	public byte[] getHistogram()

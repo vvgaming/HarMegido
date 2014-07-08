@@ -72,8 +72,20 @@ public class Match
 	 */
 	public int getPontuacao(final TeamType time)
 	{
-		// TODO: calcular a pontuação
-		return 0;
+		int pontuacao = 0;
+
+		for (Enchantment enchant : encantamentos)
+		{
+			if (enchant.getJogador().getTime().equals(time))
+			{
+				pontuacao += enchant.getPontuacao();
+			}
+			else if (enchant.getDesencantamento().notEmpty())
+			{
+				pontuacao += enchant.getDesencantamento().get().getPontuacao();
+			}
+		}
+		return pontuacao;
 	}
 
 	/**
@@ -84,8 +96,34 @@ public class Match
 	 */
 	public boolean isAtiva()
 	{
-		//TODO: Colocar a restrição da pontuação
-		return getHoraFimMilis() > new Date().getTime();
+		if (getHoraFimMilis() > new Date().getTime())
+		{
+			return true;
+		}
+		
+		final int pontuacaoFim = getPontuacaoFim();
+		
+		for (TeamType time : TeamType.values())
+		{
+			if (getPontuacao(time) > pontuacaoFim)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Retorna a pontuação necessária para a partida terminar
+	 */
+	public int getPontuacaoFim()
+	{
+		//TODO: Não está sendo verificado a quantidade de cada lado. Assume-se que
+		//eles possuam o mesmo número de jogadores
+		final int nJogadores = jogadores.size() / 2;
+		//espera-se pelo menos 7 encantamentos de cada jogador
+		final int pointsPerPlayer = Enchantment.getMaxPontuacao() * 7; 
+		return (duracao.ordinal() + 1) * nJogadores * pointsPerPlayer;
 	}
 	
 	/**

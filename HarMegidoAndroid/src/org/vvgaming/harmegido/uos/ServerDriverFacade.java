@@ -3,6 +3,7 @@ package org.vvgaming.harmegido.uos;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
@@ -21,6 +22,7 @@ import org.vvgaming.harmegido.lib.model.match.MatchState;
 
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Classe de fachada para o ServerDriver, de modo a simplificar o seu uso. <br/>
@@ -246,7 +248,8 @@ public class ServerDriverFacade
 	@SuppressWarnings("unchecked")
 	public Either<Exception, List<Tuple2<String, List<Tuple2<TeamType, Integer>>>>> listarJogadores()
 	{
-		return callServiceUnwrap("listarJogadores");
+		final Type type = new TypeToken<List<Tuple2<TeamType, Integer>>>(){}.getType();
+		return callServiceUnwrap("listarJogadores", type);
 	}
 
 	/**
@@ -262,6 +265,24 @@ public class ServerDriverFacade
 	 */
 	@SuppressWarnings("unchecked")
 	private <A> Either<Exception, A> callServiceUnwrap(final String serviceName, final Tuple2<String, Object>... params)
+	{
+		return callServiceUnwrap(serviceName, null, params);
+	}
+	
+	/**
+	 * Chama um serviço do server driver, retornando a resposta. <br/>
+	 * ATENÇÃO: Esse método exige que o serviço chamado retorne um atributo de nome "retorno". Do contrário
+	 * será disparada uma exceção.
+	 * Para os casos que houver um atributo de resposta de nome "retorno", será retornado o seu valor. <br/>
+	 * Em caso contrário, será retornado uma exceção.
+	 * 
+	 * @param serviceName O nome do serviço a ser chamado
+	 * @param genType Se o tipo a ser retornado tiver algum argumento interno genérico Ex: List<Tuple2<String, Integer>>
+	 * @param params Os parâmetros a serem repassados para o serviço
+	 * @return Uma instância de {@link Either} que irá conter a resposta ou a exceção no caso de erro.
+	 */
+	@SuppressWarnings("unchecked")
+	private <A> Either<Exception, A> callServiceUnwrap(final String serviceName, final Type genType, final Tuple2<String, Object>... params)
 	{
 		final Call call = new Call(HAR_MEGIDO_DRIVER, serviceName);
 
@@ -289,8 +310,13 @@ public class ServerDriverFacade
 					final Exception exception = new IllegalStateException(mensagem);
 					return Either.createLeft(exception);
 				}
+				
 				//Repassa o Either extraído do retorno
-				return (Either<Exception, A>) fromJson(responseData.toString(), Either.class);
+				if (genType == null)
+				{
+					return (Either<Exception, A>) fromJson(responseData.toString(), Either.class);
+				}
+				return (Either<Exception, A>) fromJson(responseData.toString(), genType);
 			}
 			
 			final Exception exception = new IllegalStateException(response.getError());

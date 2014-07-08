@@ -1,15 +1,14 @@
 package org.vvgaming.harmegido.lib.util;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 
 import org.vvgaming.harmegido.lib.model.match.MatchState;
 import org.vvgaming.harmegido.lib.util.wrappers.EitherWrapper;
 import org.vvgaming.harmegido.lib.util.wrappers.ExceptionWrapper;
 import org.vvgaming.harmegido.lib.util.wrappers.MatchStateWrapper;
-import org.vvgaming.harmegido.lib.util.wrappers.Tuple2Wrapper;
 
 import com.github.detentor.codex.monads.Either;
-import com.github.detentor.codex.product.Tuple2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,6 +34,7 @@ public final class JSONTransformer
 		{
 			final GsonBuilder gBuilder = new GsonBuilder();
 			gBuilder.setDateFormat(DateFormat.FULL);
+//			gBuilder.registerTypeAdapter(Tuple2.class, new Tuple2Wrapper(null));
 			gson = gBuilder.create();
 		}
 		return gson;
@@ -49,10 +49,6 @@ public final class JSONTransformer
 		if (source instanceof Either<?, ?>)
 		{
 			return getGson().toJson(new EitherWrapper((Either<?, ?>) source));
-		}
-		else if (source instanceof Tuple2<?, ?>)
-		{
-			return getGson().toJson(new Tuple2Wrapper((Tuple2<?, ?>) source));
 		}
 		else if (source instanceof Exception)
 		{
@@ -80,10 +76,6 @@ public final class JSONTransformer
 		{
 			return (T) getGson().fromJson(source, EitherWrapper.class).getEither();
 		}
-		else if (isSubclass(classOf, Tuple2.class))
-		{
-			return (T) getGson().fromJson(source, Tuple2Wrapper.class).getTuple2();
-		}
 		else if (isSubclass(classOf, Exception.class))
 		{
 			return (T) getGson().fromJson(source, ExceptionWrapper.class).getException();
@@ -93,6 +85,18 @@ public final class JSONTransformer
 			return (T) getGson().fromJson(source, MatchStateWrapper.class).getMatchState();
 		}
 		return getGson().fromJson(source, classOf);
+	}
+
+	/**
+	 * Equivale chamar getGson().fromJson
+	 * @param source A string que contém os dados Json do objeto
+	 * @param typeOf O tipo do objeto a ser transformado
+	 * @return Uma instância do objeto do tipo informado
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T fromJson(final String source, final Type typeOf)
+	{
+		return (T) getGson().fromJson(source, typeOf);
 	}
 
 	/**

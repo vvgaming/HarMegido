@@ -5,6 +5,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.vvgaming.harmegido.R;
+import org.vvgaming.harmegido.util.DefaultCamSize;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,25 +15,32 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 
-public class ObjDetectTestActivity extends Activity implements OnClickListener {
+public class ObjDetectTestActivity extends Activity implements OnClickListener
+{
 
 	private CameraBridgeViewBase mOpenCvCameraView;
 	private ObjDetectTestCam cam = new ObjDetectTestCam();
 
 	@Override
-	public void onClick(View v) {
+	public void onClick(View v)
+	{
 		cam.catchImg();
 	}
 
-	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this)
+	{
 		@Override
-		public void onManagerConnected(int status) {
-			switch (status) {
-			case LoaderCallbackInterface.SUCCESS: {
+		public void onManagerConnected(int status)
+		{
+			switch (status)
+			{
+			case LoaderCallbackInterface.SUCCESS:
+			{
 				mOpenCvCameraView.enableView();
 			}
 				break;
-			default: {
+			default:
+			{
 				super.onManagerConnected(status);
 			}
 				break;
@@ -41,12 +49,14 @@ public class ObjDetectTestActivity extends Activity implements OnClickListener {
 
 	};
 
-	public ObjDetectTestActivity() {
+	public ObjDetectTestActivity()
+	{
 	}
 
 	/** Called when the activity is first created. */
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -55,41 +65,46 @@ public class ObjDetectTestActivity extends Activity implements OnClickListener {
 
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.java_camera);
 		mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-		mOpenCvCameraView.setMaxFrameSize(640, 480);
+		mOpenCvCameraView.setMaxFrameSize((int) DefaultCamSize.normalSize.width, (int) DefaultCamSize.normalSize.height);
 		mOpenCvCameraView.setOnClickListener(this);
 		mOpenCvCameraView.setCvCameraViewListener(cam);
 
 	}
 
 	@Override
-	public void onPause() {
+	public void onPause()
+	{
 		super.onPause();
 		if (mOpenCvCameraView != null)
 			mOpenCvCameraView.disableView();
 	}
 
 	@Override
-	public void onResume() {
+	public void onResume()
+	{
 		super.onResume();
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this,
-				mLoaderCallback);
+		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, this, mLoaderCallback);
 	}
 
-	public void onDestroy() {
+	public void onDestroy()
+	{
 		super.onDestroy();
 		if (mOpenCvCameraView != null)
 			mOpenCvCameraView.disableView();
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
 		return false;
 	}
 
-	public void onCameraViewStarted(int width, int height) {
+	public void onCameraViewStarted(int width, int height)
+	{
 	}
 
-	public void onCameraViewStopped() {
+	public void onCameraViewStopped()
+	{
 	}
 
 }

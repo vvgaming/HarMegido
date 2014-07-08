@@ -16,6 +16,7 @@ import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgproc.Imgproc;
+import org.vvgaming.harmegido.lib.model.OpenCVMatWrapper;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -132,6 +133,30 @@ public class OCVUtil
 	}
 
 	/**
+	 * Converte um {@link OpenCVMatWrapper} em Mat da OpenCV
+	 * 
+	 * @param matWrapper
+	 * @return
+	 */
+	public Mat toMat(final OpenCVMatWrapper matWrapper)
+	{
+		final Mat retorno = new Mat(matWrapper.getWidth(), matWrapper.getHeight(), matWrapper.getCvType());
+		retorno.put(0, 0, matWrapper.getBytes());
+		return retorno;
+	}
+
+	/**
+	 * Converte uma Mat da OpenCV em {@link OpenCVMatWrapper}
+	 * 
+	 * @param mat
+	 * @return
+	 */
+	public OpenCVMatWrapper toOpenCVMatWrapper(final Mat mat)
+	{
+		return OpenCVMatWrapper.from(toByteArray(mat), mat.rows(), mat.cols(), mat.type());
+	}
+
+	/**
 	 * Calcula o histograma de H e S de uma imagem RGBA. Isto é, converte a imagem para HSV, ignora o V e calcula o histograma
 	 * 
 	 * @param mat a imagem em RGBA
@@ -147,7 +172,7 @@ public class OCVUtil
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGBA2RGB);
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGB2HSV);
 
-		// c�lcula o histograma apenas de H e S
+		// cálcula o histograma apenas de H e S
 		Imgproc.calcHist(Arrays.asList(imagem), channels, empty, retorno, histSize, ranges);
 
 		// normalizando o histograma para comparar grandezas de mesmo range

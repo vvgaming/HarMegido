@@ -1,18 +1,16 @@
 package org.vvgaming.harmegido.lib.model;
 
-import java.util.Arrays;
-
 /**
  * Representa um Encantamento. <br/>
  * Possui a imagem a ser exibida e as features.
  */
 public class EnchantmentImage
 {
-	//ATENÇÃO: SE MUDAR REESCREVA O EQUALS E O HASHCODE
-	private final byte[] imagem;
-	private final byte[] features;
+	// ATENÇÃO: SE MUDAR REESCREVA O EQUALS E O HASHCODE
+	private final OpenCVMatWrapper imagem;
+	private final OpenCVMatWrapper features;
 
-	private EnchantmentImage(final byte[] imagem, final byte[] features)
+	public EnchantmentImage(final OpenCVMatWrapper imagem, final OpenCVMatWrapper features)
 	{
 		super();
 		this.imagem = imagem;
@@ -20,31 +18,33 @@ public class EnchantmentImage
 	}
 
 	/**
-	 * Cria uma nova imagem de encantamento a partir dos bytes da imagem e das features 
+	 * Cria uma nova imagem de encantamento a partir dos bytes da imagem e das features
+	 * 
 	 * @param imagem A imagem que representa o encantamento
 	 * @param features As features da imagem, usadas para o reconhecimento
 	 * @return Uma imagem de encantamento a partir da imagem e das features
 	 */
-	public static EnchantmentImage from(final byte[] imagem, final byte[] features)
+	public static EnchantmentImage from(final OpenCVMatWrapper imagem, final OpenCVMatWrapper features)
 	{
 		return new EnchantmentImage(imagem, features);
 	}
-	
-	
+
 	/**
-	 * Retorna os bytes da imagem representa por este encantamento
+	 * Retorna o wrapper da mat da imagem representa por este encantamento
+	 * 
 	 * @return
 	 */
-	public byte[] getImagem()
+	public OpenCVMatWrapper getImagem()
 	{
 		return imagem;
 	}
 
 	/**
-	 * Retorna o vetor de bytes que contém as features deste encantamento
+	 * Retorna o wrapper da mat que contém as features deste encantamento
+	 * 
 	 * @return
 	 */
-	public byte[] getFeatures()
+	public OpenCVMatWrapper getFeatures()
 	{
 		return features;
 	}
@@ -54,8 +54,8 @@ public class EnchantmentImage
 	{
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.hashCode(features);
-		result = prime * result + Arrays.hashCode(imagem);
+		result = prime * result + (features == null ? 0 : features.hashCode());
+		result = prime * result + (imagem == null ? 0 : imagem.hashCode());
 		return result;
 	}
 
@@ -75,15 +75,28 @@ public class EnchantmentImage
 			return false;
 		}
 		final EnchantmentImage other = (EnchantmentImage) obj;
-		if (!Arrays.equals(features, other.features))
+		if (features == null)
+		{
+			if (other.features != null)
+			{
+				return false;
+			}
+		}
+		else if (!features.equals(other.features))
 		{
 			return false;
 		}
-		if (!Arrays.equals(imagem, other.imagem))
+		if (imagem == null)
+		{
+			if (other.imagem != null)
+			{
+				return false;
+			}
+		}
+		else if (!imagem.equals(other.imagem))
 		{
 			return false;
 		}
 		return true;
 	}
-
 }

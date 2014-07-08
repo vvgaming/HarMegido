@@ -19,7 +19,7 @@ import com.github.detentor.codex.product.Tuple2;
 public class FeaturesSimilarityCam implements SimilarityCam<Tuple2<Mat, Mat>>
 {
 
-	private static final float MAGIC_PERCENTAGE = 0.4f;
+	private static final float MAGIC_PERCENTAGE = 0.25f;
 	private static final int LIMITE_DESCS = 100;
 
 	private final JavaCam realCam = new JavaCam();

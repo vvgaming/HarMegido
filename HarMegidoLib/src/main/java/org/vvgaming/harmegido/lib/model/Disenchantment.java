@@ -43,9 +43,14 @@ public class Disenchantment extends Spell
 		return encantamento;
 	}
 
-	public int calcularPontuacao()
+	/**
+	 * Retorna a pontuação conferida por esse desencantamento. <br/>
+	 * No momento o valor retornado é constante, baseado no máximo que
+	 * um encantamento pode conferir de ponto.
+	 * @return Um inteiro não negativo com o valor da pontuação conferida pelo desencantamento
+	 */
+	public int getPontuacao()
 	{
-		// TODO: efetivar o cálculo
-		return 0;
+		return Enchantment.getMaxPontuacao() / 2;
 	}
 }

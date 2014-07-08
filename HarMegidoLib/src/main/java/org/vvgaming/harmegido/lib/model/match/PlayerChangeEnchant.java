@@ -1,5 +1,6 @@
 package org.vvgaming.harmegido.lib.model.match;
 
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Player;
 
 /**
@@ -7,15 +8,15 @@ import org.vvgaming.harmegido.lib.model.Player;
  */
 public class PlayerChangeEnchant extends PlayerChange
 {
-	private final  byte[] enchantImage; 
+	private final EnchantmentImage enchantImage;
 
-	protected PlayerChangeEnchant(final Player jogador, final  byte[] enchantImage)
+	protected PlayerChangeEnchant(final Player jogador, final EnchantmentImage enchantImage)
 	{
 		super(jogador);
 		this.enchantImage = enchantImage;
 	}
 
-	public  byte[] getEnchantmentImage()
+	public EnchantmentImage getEnchantmentImage()
 	{
 		return enchantImage;
 	}

@@ -38,7 +38,6 @@ public class CharSelection extends Activity
 
 		            @Override
 		            public void onCompletion(MediaPlayer mp) {
-		                // TODO Auto-generated method stub
 		                mp.release();
 		            }
 
@@ -56,7 +55,6 @@ public class CharSelection extends Activity
 
 		            @Override
 		            public void onCompletion(MediaPlayer mp) {
-		                // TODO Auto-generated method stub
 		                mp.release();
 		            }
 

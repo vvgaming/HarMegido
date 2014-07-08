@@ -74,6 +74,12 @@
        android:layout_height="wrap_content"
        android:text="Listar Desencantamentos" />
          
+       <Button
+       android:id="@+id/btnVerPontuacao"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Ver Pontuacao" />
+         
        <TextView
        android:id="@+id/txtViewRetorno"
        android:layout_width="wrap_content"

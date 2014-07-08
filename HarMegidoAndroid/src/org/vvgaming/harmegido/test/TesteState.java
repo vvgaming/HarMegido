@@ -7,7 +7,9 @@ import java.util.Random;
 
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
+import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
@@ -139,7 +141,8 @@ public class TesteState extends Activity
 					setText("Crie uma partida antes de encantar.");
 					return;
 				}
-				Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, new byte[10]);
+				EnchantmentImage enchant = EnchantmentImage.from(new byte[100], new byte[200]);
+				Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, enchant);
 				setText(formatarRetorno(retorno));
 			}
 		});
@@ -197,16 +200,46 @@ public class TesteState extends Activity
 			}
 		});
 		
+		((Button) findViewById(R.id.btnVerPontuacao)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if (partida == null)
+				{
+					setText("Crie uma partida antes de calcular a pontuacao.");
+					return;
+				}
+				
+				Either<Exception, Scoreboard> retorno = sdf.getPontuacao(partida.getNomePartida());
+				
+				if (retorno.isLeft())
+				{
+					setText(formatarRetorno(retorno));
+				}
+				else
+				{
+					String theStr = "";
+					for (TeamType time : TeamType.values())
+					{
+						theStr += time.toString() + ":" + retorno.getRight().getPontuacao(time) + "\n";
+					}
+					setText(theStr);
+				}
+			}
+		});
+		
 		//métodos
 //		sdf.adicionarJogador(nomePartida, jogador) 						//OK
 //		sdf.criarPartida(nomePartida, duracao)   						//OK
-//		sdf.desencantarObjeto(nomePartida, jogador, encantamento)
-//		sdf.encantarObjeto(nomePartida, jogador, imagem)
+//		sdf.desencantarObjeto(nomePartida, jogador, encantamento)		//OK
+//		sdf.encantarObjeto(nomePartida, jogador, imagem)				//OK
 //		sdf.encontrarPartida(jogador)									//OK
 //		sdf.listarJogadores()											//OK
 //		sdf.listarPartidas()     										//OK
 //		sdf.mudarTime(nomePartida, jogador, novoTime)					//OK
 //		sdf.removerJogador(nomePartida, jogador)						//OK
+//		sdf.getPontuacao(nomePartida)									//OK
 		
 	}
 	

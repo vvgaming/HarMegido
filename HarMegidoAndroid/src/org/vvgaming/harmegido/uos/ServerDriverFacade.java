@@ -12,7 +12,9 @@ import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
+import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
@@ -132,6 +134,18 @@ public class ServerDriverFacade
 		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("idJogador", jogador.getIdJogador());
 		return callServiceUnwrap("encontrarPartida", arg1);
 	}
+	
+	/**
+	 * Retorna a pontuação da partida de nome informado como parâmetro
+	 * @param nomePartida O nome da partida a ser retornada a pontuação
+	 * @return Uma instância de {@link Scoreboard} que contém as pontuações de cada equipe
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Scoreboard> getPontuacao(final String nomePartida)
+	{
+		final Tuple2<String, Object> arg1 = Tuple2.<String, Object> from("nomePartida", nomePartida);
+		return callServiceUnwrap("getPontuacao", arg1);
+	}
 
 	/**
 	 * Adiciona o jogador na partida informada
@@ -180,7 +194,7 @@ public class ServerDriverFacade
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador encantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final byte[] imagem)
+	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final EnchantmentImage imagem)
 	{
 		return executarEstado(nomePartida, MatchState.encantar(jogador, imagem));
 	}

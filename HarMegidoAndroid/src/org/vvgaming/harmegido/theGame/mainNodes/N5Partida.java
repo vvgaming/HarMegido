@@ -1,8 +1,8 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.opencv.core.Mat;
 import org.vvgaming.harmegido.R;
@@ -41,14 +41,15 @@ public class N5Partida extends NHMMainNode
 	private NGroupToggleButton tglGroupModo;
 	private NProgressBar progressBar;
 	private NButton btnAvancar;
-	private NButton btnVoltar;
+	// private NButton btnVoltar;
 
 	private boolean charging = false;
 	private float chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 	private Modo modo = Modo.ENCANTANDO;
 
 	//
-	private final List<Enchantment> encantamentos = new ArrayList<>();
+
+	private final Queue<Enchantment> encantamentos = new LinkedList<>();
 
 	public N5Partida(final Player player)
 	{
@@ -109,11 +110,25 @@ public class N5Partida extends NHMMainNode
 		imgAvancar.setWidth(getGameWidth(.15f), true);
 		btnAvancar = new NButtonImage(imgAvancar);
 		btnAvancar.setVisible(false);
-		final NImage imgVoltar = new NImage(new Ponto(getGameWidth(.1f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
-				R.drawable.voltar));
-		imgVoltar.setWidth(getGameWidth(.15f), true);
-		btnVoltar = new NButtonImage(imgVoltar);
-		btnVoltar.setVisible(false);
+		btnAvancar.setOnClickFunction(new Function0<Void>()
+		{
+			@Override
+			public Void apply()
+			{
+				if (encantamentos.size() > 1)
+				{
+					getGameAssetManager().vibrate(100);
+					encantamentos.add(encantamentos.poll());
+					setModoDesencantar();
+				}
+				return null;
+			}
+		});
+		// final NImage imgVoltar = new NImage(new Ponto(getGameWidth(.1f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
+		// R.drawable.voltar));
+		// imgVoltar.setWidth(getGameWidth(.15f), true);
+		// btnVoltar = new NButtonImage(imgVoltar);
+		// btnVoltar.setVisible(false);
 
 		// modo padrão
 		tglGroupModo.toggle(0);
@@ -128,7 +143,7 @@ public class N5Partida extends NHMMainNode
 
 		addSubNode(tglGroupModo, 4);
 		addSubNode(btnAvancar, 4);
-		addSubNode(btnVoltar, 4);
+		// addSubNode(btnVoltar, 4);
 
 	}
 
@@ -149,7 +164,7 @@ public class N5Partida extends NHMMainNode
 		modo = Modo.ENCANTANDO;
 		chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 		btnAvancar.setVisible(false);
-		btnVoltar.setVisible(false);
+		// btnVoltar.setVisible(false);
 		cam.parar();
 	}
 
@@ -169,9 +184,9 @@ public class N5Partida extends NHMMainNode
 			modo = Modo.DESENCANTANDO;
 			chargingDelay = NHMEnchantingCam.DESENCANTAMENTO_CASTING_TIME;
 			btnAvancar.setVisible(true);
-			btnVoltar.setVisible(true);
+			// btnVoltar.setVisible(true);
 
-			final Enchantment primeiro = encantamentos.get(0);
+			final Enchantment primeiro = encantamentos.peek();
 
 			final OCVUtil ocvUtil = OCVUtil.getInstance();
 			final Mat imagem = ocvUtil.toMat(primeiro.getImagem().getImagem());
@@ -182,6 +197,7 @@ public class N5Partida extends NHMMainNode
 				@Override
 				public Void apply()
 				{
+					charging = true;
 					sendConsoleMsg("Desencantando...");
 					getGameAssetManager().vibrate(50);
 					return null;
@@ -198,12 +214,19 @@ public class N5Partida extends NHMMainNode
 						sendConsoleMsg("Desencantado com sucesso");
 						getGameAssetManager().playSound(R.raw.encantament_sucesso);
 						getGameAssetManager().vibrate(500);
+						charging = false;
+						progressBar.reset();
+						encantamentos.poll();
+						setModoDesencantar();
+
 					}
 					else
 					{
 						sendConsoleMsg("Falhou");
 						getGameAssetManager().playSound(R.raw.encantament_falha);
 						getGameAssetManager().vibrate(100);
+						charging = false;
+						progressBar.reset();
 					}
 					return null;
 				}

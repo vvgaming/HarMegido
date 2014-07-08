@@ -6,8 +6,10 @@ import org.vvgaming.harmegido.lib.model.match.MatchState;
 import org.vvgaming.harmegido.lib.util.wrappers.EitherWrapper;
 import org.vvgaming.harmegido.lib.util.wrappers.ExceptionWrapper;
 import org.vvgaming.harmegido.lib.util.wrappers.MatchStateWrapper;
+import org.vvgaming.harmegido.lib.util.wrappers.Tuple2Wrapper;
 
 import com.github.detentor.codex.monads.Either;
+import com.github.detentor.codex.product.Tuple2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -48,6 +50,10 @@ public final class JSONTransformer
 		{
 			return getGson().toJson(new EitherWrapper((Either<?, ?>) source));
 		}
+		else if (source instanceof Tuple2<?, ?>)
+		{
+			return getGson().toJson(new Tuple2Wrapper((Tuple2<?, ?>) source));
+		}
 		else if (source instanceof Exception)
 		{
 			return getGson().toJson(new ExceptionWrapper((Exception) source));
@@ -73,6 +79,10 @@ public final class JSONTransformer
 		if (isSubclass(classOf, Either.class))
 		{
 			return (T) getGson().fromJson(source, EitherWrapper.class).getEither();
+		}
+		else if (isSubclass(classOf, Tuple2.class))
+		{
+			return (T) getGson().fromJson(source, Tuple2Wrapper.class).getTuple2();
 		}
 		else if (isSubclass(classOf, Exception.class))
 		{

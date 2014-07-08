@@ -13,9 +13,9 @@ import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
-import org.vvgaming.harmegido.theGame.util.RandomNames;
 import org.vvgaming.harmegido.uos.ServerDriverFacade;
 import org.vvgaming.harmegido.uos.UOSFacade;
+import org.vvgaming.harmegido.util.RandomNames;
 
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;

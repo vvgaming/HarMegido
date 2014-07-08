@@ -11,14 +11,14 @@ import com.github.detentor.codex.monads.Option;
  */
 public class Enchantment extends Spell implements Copyable
 {
-	private final byte[] histogram; // Informação necessária para desencantar
+	private final byte[] imagem; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento = Option.empty();
 
-	protected Enchantment(final Player enchanter, final Date enchantTime, final  byte[] histogram)
+	protected Enchantment(final Player enchanter, final Date enchantTime, final  byte[] imagem)
 	{
 		//copia para guardar o estado do jogador no momento do encantamento
 		super(enchanter.copy(), new Date(enchantTime.getTime()));
-		this.histogram = histogram;
+		this.imagem = imagem;
 	}
 
 	/**
@@ -27,12 +27,12 @@ public class Enchantment extends Spell implements Copyable
 	 * 
 	 * @param jogador O jogador que fez o encantamento
 	 * @param timestamp A data/hora que o encantamento foi feito
-	 * @param histogram O histograma que representa a imagem
+	 * @param imagem O histograma que representa a imagem
 	 * @return O encantamento feito pelo jogador na data/hora passados como parâmetro
 	 */
-	public static Enchantment from(final Player jogador, final Date timestamp, final  byte[] histogram)
+	public static Enchantment from(final Player jogador, final Date timestamp, final  byte[] imagem)
 	{
-		return new Enchantment(jogador, timestamp, histogram);
+		return new Enchantment(jogador, timestamp, imagem);
 	}
 
 	/**
@@ -93,14 +93,14 @@ public class Enchantment extends Spell implements Copyable
 		return calcPontuacao(80);
 	}
 	
-	public byte[] getHistogram()
+	public byte[] getImagem()
 	{
-		return histogram;
+		return imagem;
 	}
 
 	public Enchantment copy()
 	{
-		final Enchantment enchantment = new Enchantment(getJogador(), getTimestamp(), this.histogram);
+		final Enchantment enchantment = new Enchantment(getJogador(), getTimestamp(), this.imagem);
 		enchantment.desencantamento = this.desencantamento; //seguro porque no desencantamento uma nova Option é criada
 		return enchantment;
 	}

@@ -232,7 +232,7 @@ public class Match
 			
 			for (Enchantment enchant : encantamentos)
 			{
-				if (Arrays.equals(enchant.getHistogram(), pce.getEnchantmentImage()))
+				if (Arrays.equals(enchant.getImagem(), pce.getEnchantmentImage()))
 				{
 					throw new IllegalArgumentException("Esse encantamento já existe");
 				}
@@ -289,7 +289,7 @@ public class Match
 	{
 		for (Enchantment enchant : encantamentos)
 		{
-			if (Arrays.equals(enchant.getHistogram(), encantamento.getHistogram()))
+			if (Arrays.equals(enchant.getImagem(), encantamento.getImagem()))
 			{
 				return enchant;
 			}

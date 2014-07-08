@@ -17,6 +17,7 @@ public abstract class NButton extends GameNode
 {
 
 	private Option<Function0<Void>> onClickFunction = Option.empty();
+	private boolean visible = true;
 
 	public NButton()
 	{
@@ -24,12 +25,12 @@ public abstract class NButton extends GameNode
 	}
 
 	@Override
-	protected void update(long delta)
+	protected void update(final long delta)
 	{
 	}
 
 	@Override
-	public boolean onTouch(MotionEvent event)
+	public boolean onTouch(final MotionEvent event)
 	{
 		if (onClickFunction.notEmpty() && event.getAction() == MotionEvent.ACTION_DOWN
 				&& getBoundingRect().contains(event.getX(), event.getY()))
@@ -40,9 +41,21 @@ public abstract class NButton extends GameNode
 		return false;
 	}
 
+	@Override
+	public boolean isVisible()
+	{
+		return visible;
+	}
+
+	@Override
+	public void setVisible(final boolean visible)
+	{
+		this.visible = visible;
+	}
+
 	public abstract RectF getBoundingRect();
 
-	public void setOnClickFunction(Function0<Void> onClickFunction)
+	public void setOnClickFunction(final Function0<Void> onClickFunction)
 	{
 		this.onClickFunction = Option.from(onClickFunction);
 	}

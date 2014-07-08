@@ -38,24 +38,24 @@ public class NHMBackgroundPartida extends GameNode
 
 		if (anjo)
 		{
-			asa = new NImage(new Ponto(getGameWidth(), getGameHeight(.43f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
+			asa = new NImage(new Ponto(getGameWidth(1.02f), getGameHeight(.43f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
 			asa.setHeight(getGameHeight(.65f), true);
-			asa.setRotation(-50.f);
+			asa.setRotation(-53.f);
 
-			asaOposta = new NImage(new Ponto(0, getGameHeight(.43f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
+			asaOposta = new NImage(new Ponto(-getGameWidth(.02f), getGameHeight(.43f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
 			asaOposta.sethFlip(true);
 			asaOposta.setHeight(getGameHeight(.65f), true);
-			asaOposta.setRotation(50.f);
+			asaOposta.setRotation(53.f);
 
 		}
 		else
 		{
 
-			asa = new NImage(new Ponto(getGameWidth(.05f), getGameHeight(.4f)), getGameAssetManager().getBitmap(R.drawable.asa_demonio));
+			asa = new NImage(new Ponto(0, getGameHeight(.4f)), getGameAssetManager().getBitmap(R.drawable.asa_demonio));
 			asa.setHeight(getGameHeight(.7f), true);
 			asa.setRotation(55.f);
 
-			asaOposta = new NImage(new Ponto(getGameWidth(.95f), getGameHeight(.4f)), getGameAssetManager().getBitmap(
+			asaOposta = new NImage(new Ponto(getGameWidth(), getGameHeight(.4f)), getGameAssetManager().getBitmap(
 					R.drawable.asa_demonio));
 			asaOposta.sethFlip(true);
 			asaOposta.setHeight(getGameHeight(.7f), true);

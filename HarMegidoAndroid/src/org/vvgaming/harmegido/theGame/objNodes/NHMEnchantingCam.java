@@ -6,7 +6,7 @@ import org.vvgaming.harmegido.gameEngine.geometry.MatrizTransfAndroid;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
 import org.vvgaming.harmegido.theGame.FeaturesSimilarityCam;
-import org.vvgaming.harmegido.util.DefaultCamSize;
+import org.vvgaming.harmegido.util.Constantes;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.graphics.Bitmap;
@@ -72,9 +72,9 @@ public class NHMEnchantingCam extends LazyInitGameNode
 			// cam = new HistogramaSimilarityCam();
 		}
 
-		cam.connectCamera((int) DefaultCamSize.normalSize.width, (int) DefaultCamSize.normalSize.height);
-		matrizPrincipal = new MatrizTransfAndroid((float) DefaultCamSize.normalSize.height, (float) DefaultCamSize.normalSize.width);
-		matrizPreview = new MatrizTransfAndroid((float) DefaultCamSize.previewSize.height, (float) DefaultCamSize.previewSize.width);
+		cam.connectCamera((int) Constantes.camNormalSize.width, (int) Constantes.camNormalSize.height);
+		matrizPrincipal = new MatrizTransfAndroid((float) Constantes.camNormalSize.height, (float) Constantes.camNormalSize.width);
+		matrizPreview = new MatrizTransfAndroid((float) Constantes.camPreviewSize.height, (float) Constantes.camPreviewSize.width);
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package org.vvgaming.harmegido.theGame;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.vvgaming.harmegido.util.DefaultCamSize;
+import org.vvgaming.harmegido.util.Constantes;
 import org.vvgaming.harmegido.vision.JavaCam;
 import org.vvgaming.harmegido.vision.JavaCameraFrame;
 import org.vvgaming.harmegido.vision.OCVUtil;
@@ -57,7 +57,7 @@ public class FeaturesSimilarityCam implements SimilarityCam<Tuple2<Mat, Mat>>
 	{
 		final Mat descs = OCVUtil.getInstance().extractFeatureDescriptors(imgGray);
 		// reduz a imagem de preview para economizar espaço em memória e banda de transferência
-		Imgproc.resize(imgGray, imgGray, new Size(DefaultCamSize.previewSize.height, DefaultCamSize.previewSize.width));
+		Imgproc.resize(imgGray, imgGray, new Size(Constantes.camPreviewSize.height, Constantes.camPreviewSize.width));
 		Imgproc.blur(imgGray, imgGray, new Size(3, 3));
 		return Tuple2.from(imgGray, descs);
 	}

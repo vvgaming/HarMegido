@@ -21,6 +21,7 @@ import org.vvgaming.harmegido.theGame.objNodes.NHMEnchantingCam;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.objNodes.NProgressBar;
 import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
+import org.vvgaming.harmegido.util.Constantes;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.view.MotionEvent;
@@ -33,9 +34,6 @@ import com.github.detentor.codex.product.Tuple3;
 
 public class N5Partida extends NHMMainNode
 {
-
-	private static Tuple3<Integer, Integer, Integer> ANGEL_COLOR = Tuple3.from(43, 167, 203);
-	private static Tuple3<Integer, Integer, Integer> DEMON_COLOR = Tuple3.from(255, 0, 0);
 
 	private final Player player;
 
@@ -69,11 +67,11 @@ public class N5Partida extends NHMMainNode
 		{
 		case DARK:
 			angelTeam = false;
-			color = DEMON_COLOR;
+			color = Constantes.DEMON_COLOR;
 			break;
 		case LIGHT:
 			angelTeam = true;
-			color = ANGEL_COLOR;
+			color = Constantes.ANGEL_COLOR;
 			break;
 		default:
 			throw new IllegalArgumentException("Time '" + player.getTime() + "' desconhecido");
@@ -184,7 +182,8 @@ public class N5Partida extends NHMMainNode
 				@Override
 				public Void apply()
 				{
-					sendConsoleMsg("ACHEIIIII");
+					sendConsoleMsg("Desencantando...");
+					getGameAssetManager().vibrate(50);
 					return null;
 				}
 			}, new Function1<Boolean, Void>()
@@ -196,11 +195,15 @@ public class N5Partida extends NHMMainNode
 
 					if (arg0)
 					{
-						sendConsoleMsg("desencantouuuu");
+						sendConsoleMsg("Desencantado com sucesso");
+						getGameAssetManager().playSound(R.raw.encantament_sucesso);
+						getGameAssetManager().vibrate(500);
 					}
 					else
 					{
-						sendConsoleMsg("Falhou!!!");
+						sendConsoleMsg("Falhou");
+						getGameAssetManager().playSound(R.raw.encantament_falha);
+						getGameAssetManager().vibrate(100);
 					}
 					return null;
 				}
@@ -235,7 +238,6 @@ public class N5Partida extends NHMMainNode
 
 							final Tuple2<Mat, Mat> encantTuple = encantado.get();
 
-							
 							final OCVUtil ocvUtil = OCVUtil.getInstance();
 
 							final OpenCVMatWrapper preview = ocvUtil.toOpenCVMatWrapper(encantTuple.getVal1());

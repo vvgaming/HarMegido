@@ -6,17 +6,18 @@ import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
 import org.vvgaming.harmegido.gameEngine.nodes.fx.NPaintFade;
 import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
+import org.vvgaming.harmegido.util.Constantes;
 
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.product.Tuple3;
 
 /**
- * Implementação de um background padrão para o jogo Harmegido, com nuvens se
- * movendo, mudança de cores e etc
+ * Implementação de um background padrão para o jogo Harmegido, com nuvens se movendo, mudança de cores e etc
  * 
  * @author Vinicius Nogueira
  */
-public class NHMBackground extends GameNode {
+public class NHMBackground extends GameNode
+{
 
 	private NSimpleBox box;
 	private NImage fundo;
@@ -28,37 +29,29 @@ public class NHMBackground extends GameNode {
 
 	private float COLOR_CHANGE_SPEED = 255.0f / 2000;
 
-	private Tuple3<Integer, Integer, Integer> destinyColor = Tuple3.from(100,
-			100, 100);
+	private Tuple3<Integer, Integer, Integer> destinyColor = Tuple3.from(100, 100, 100);
 
 	@Override
-	protected void init() {
+	protected void init()
+	{
 		super.init();
 
 		box = new NSimpleBox(0, 0, getGameWidth(), getGameHeight(), 0, 0, 0);
-		fundo = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)),
-				getGameAssetManager().getBitmap(R.drawable.fundo));
+		fundo = new NImage(new Ponto(getGameWidth(.5f), getGameHeight(.5f)), getGameAssetManager().getBitmap(R.drawable.fundo));
 		fundo.setHeight(getGameHeight(), true);
 
-		asaAnjo = new NImage(
-				new Ponto(getGameWidth(.86f), getGameHeight(.25f)),
-				getGameAssetManager().getBitmap(R.drawable.asa_anjo));
+		asaAnjo = new NImage(new Ponto(getGameWidth(.86f), getGameHeight(.25f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
 		asaAnjo.setHeight(getGameHeight(.55f), true);
 
-		asaAnjoOposta = new NImage(new Ponto(getGameWidth(.13f),
-				getGameHeight(.25f)), getGameAssetManager().getBitmap(
-				R.drawable.asa_anjo));
+		asaAnjoOposta = new NImage(new Ponto(getGameWidth(.13f), getGameHeight(.25f)), getGameAssetManager().getBitmap(R.drawable.asa_anjo));
 		asaAnjoOposta.sethFlip(true);
 		asaAnjoOposta.setHeight(getGameHeight(.55f), true);
 		asaAnjoOposta.getPaint().setAlpha(0);
 
-		asaDemonio = new NImage(new Ponto(getGameWidth(.17f),
-				getGameHeight(.25f)), getGameAssetManager().getBitmap(
-				R.drawable.asa_demonio));
+		asaDemonio = new NImage(new Ponto(getGameWidth(.17f), getGameHeight(.25f)), getGameAssetManager().getBitmap(R.drawable.asa_demonio));
 		asaDemonio.setHeight(getGameHeight(.55f), true);
 
-		asaDemonioOposta = new NImage(new Ponto(getGameWidth(.83f),
-				getGameHeight(.25f)), getGameAssetManager().getBitmap(
+		asaDemonioOposta = new NImage(new Ponto(getGameWidth(.83f), getGameHeight(.25f)), getGameAssetManager().getBitmap(
 				R.drawable.asa_demonio));
 		asaDemonioOposta.sethFlip(true);
 		asaDemonioOposta.setHeight(getGameHeight(.55f), true);
@@ -70,10 +63,12 @@ public class NHMBackground extends GameNode {
 		addSubNode(asaDemonioOposta, 2);
 		addSubNode(asaAnjo, 2);
 		addSubNode(asaAnjoOposta, 2);
-		addSubNode(new NTimer(15000, new Function0<Void>() {
+		addSubNode(new NTimer(15000, new Function0<Void>()
+		{
 
 			@Override
-			public Void apply() {
+			public Void apply()
+			{
 				movingSignal = (movingSignal == 1 ? -1 : 1);
 				return null;
 			}
@@ -81,64 +76,68 @@ public class NHMBackground extends GameNode {
 
 	}
 
-	public void goToAngelStyle() {
-		destinyColor = Tuple3.from(43, 167, 203);
+	public void goToAngelStyle()
+	{
+		destinyColor = Constantes.ANGEL_COLOR;
 
-		if (asaAnjo.getPaint().getAlpha() != 255) {
+		if (asaAnjo.getPaint().getAlpha() != 255)
+		{
 			addSubNode(new NPaintFade(asaAnjo.getPaint(), true, 1000));
 		}
 		addSubNode(new NPaintFade(asaAnjoOposta.getPaint(), true, 1000));
 
 		addSubNode(new NPaintFade(asaDemonio.getPaint(), false, 1000));
-		if (asaDemonioOposta.getPaint().getAlpha() != 0) {
+		if (asaDemonioOposta.getPaint().getAlpha() != 0)
+		{
 			addSubNode(new NPaintFade(asaDemonioOposta.getPaint(), false, 1000));
 		}
 	}
 
-	public void goToDemonsStyle() {
-		destinyColor = Tuple3.from(255, 0, 0);
+	public void goToDemonsStyle()
+	{
+		destinyColor = Constantes.DEMON_COLOR;
 
-		if (asaDemonio.getPaint().getAlpha() != 255) {
+		if (asaDemonio.getPaint().getAlpha() != 255)
+		{
 			addSubNode(new NPaintFade(asaDemonio.getPaint(), true, 1000));
 		}
 		addSubNode(new NPaintFade(asaDemonioOposta.getPaint(), true, 1000));
 
 		addSubNode(new NPaintFade(asaAnjo.getPaint(), false, 1000));
 
-		if (asaAnjoOposta.getPaint().getAlpha() != 0) {
+		if (asaAnjoOposta.getPaint().getAlpha() != 0)
+		{
 			addSubNode(new NPaintFade(asaAnjoOposta.getPaint(), false, 1000));
 		}
 	}
 
 	@Override
-	protected void update(long delta) {
-		fundo.setCenter(fundo.getCenter().translate(
-				movingSignal * ((20.0f / 1000) * delta), 0));
+	protected void update(long delta)
+	{
+		fundo.setCenter(fundo.getCenter().translate(movingSignal * ((20.0f / 1000) * delta), 0));
 
 		Tuple3<Integer, Integer, Integer> atual = box.getColor();
 
 		float step = delta * COLOR_CHANGE_SPEED;
 		// R
-		atual.setVal1(calculaNovoValor(atual.getVal1(), destinyColor.getVal1(),
-				step));
+		atual.setVal1(calculaNovoValor(atual.getVal1(), destinyColor.getVal1(), step));
 		// G
-		atual.setVal2(calculaNovoValor(atual.getVal2(), destinyColor.getVal2(),
-				step));
+		atual.setVal2(calculaNovoValor(atual.getVal2(), destinyColor.getVal2(), step));
 		// B
-		atual.setVal3(calculaNovoValor(atual.getVal3(), destinyColor.getVal3(),
-				step));
+		atual.setVal3(calculaNovoValor(atual.getVal3(), destinyColor.getVal3(), step));
 
 		box.setColor(atual.getVal1(), atual.getVal2(), atual.getVal3());
 	}
 
-	private int calculaNovoValor(int atual, int destino, float step) {
+	private int calculaNovoValor(int atual, int destino, float step)
+	{
 		int retorno;
 
 		int signal = destino - atual > 0 ? 1 : -1;
 		retorno = (int) (atual + (signal * step));
 
-		if ((signal > 0 && retorno > destino)
-				|| (signal < 0 && retorno < destino)) {
+		if ((signal > 0 && retorno > destino) || (signal < 0 && retorno < destino))
+		{
 			return destino;
 		}
 

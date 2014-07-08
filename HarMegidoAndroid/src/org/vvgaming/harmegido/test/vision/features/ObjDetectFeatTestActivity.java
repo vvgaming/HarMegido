@@ -5,7 +5,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.vvgaming.harmegido.R;
-import org.vvgaming.harmegido.util.DefaultCamSize;
+import org.vvgaming.harmegido.util.Constantes;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -65,7 +65,7 @@ public class ObjDetectFeatTestActivity extends Activity implements OnClickListen
 
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.java_camera);
 		mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-		mOpenCvCameraView.setMaxFrameSize((int) DefaultCamSize.normalSize.width, (int) DefaultCamSize.normalSize.height);
+		mOpenCvCameraView.setMaxFrameSize((int) Constantes.camNormalSize.width, (int) Constantes.camNormalSize.height);
 		mOpenCvCameraView.setOnClickListener(this);
 		mOpenCvCameraView.setCvCameraViewListener(cam);
 

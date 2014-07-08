@@ -200,8 +200,8 @@ public class TesteState extends Activity
 		//métodos
 //		sdf.adicionarJogador(nomePartida, jogador) 						//OK
 //		sdf.criarPartida(nomePartida, duracao)   						//OK
-//		sdf.desencantarObjeto(nomePartida, jogador, encantamento)
-//		sdf.encantarObjeto(nomePartida, jogador, imagem)
+//		sdf.desencantarObjeto(nomePartida, jogador, encantamento)		//OK
+//		sdf.encantarObjeto(nomePartida, jogador, imagem)				//OK
 //		sdf.encontrarPartida(jogador)									//OK
 //		sdf.listarJogadores()											//OK
 //		sdf.listarPartidas()     										//OK

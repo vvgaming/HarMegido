@@ -38,6 +38,7 @@ public class N5Partida extends NHMMainNode
 	private final Player player;
 
 	private NHMEnchantingCam cam;
+	private NSimpleBox greenCam;
 	private NGroupToggleButton tglGroupModo;
 	private NProgressBar progressBar;
 	private NButton btnAvancar;
@@ -79,7 +80,13 @@ public class N5Partida extends NHMMainNode
 		}
 
 		//
-		cam = new NHMEnchantingCam(new Ponto(getGameWidth(.5f), getGameHeight(.35f)), getGameHeight(.5f));
+		final Ponto camPoint = new Ponto(getGameWidth(.5f), getGameHeight(.35f));
+		final float camHeight = getGameHeight(.5f);
+		cam = new NHMEnchantingCam(camPoint, camHeight);
+
+		greenCam = new NSimpleBox(0, (int) (camPoint.y - camHeight/2), getGameWidth(), (int) camHeight, 0, 255, 0);
+		greenCam.setColor(80, 0, 255, 0);
+		greenCam.setVisible(false);
 
 		// fundo
 		final NSimpleBox bg = new NSimpleBox(0, 0, getGameWidth(), getGameHeight(), 0, 0, 0);
@@ -137,13 +144,14 @@ public class N5Partida extends NHMMainNode
 		// adicionando nas camadas
 		addSubNode(bg, 0);
 		addSubNode(cam, 1);
-		addSubNode(progressBar = new NProgressBar(getGameWidth(.1f), getGameHeight(.58f), getGameWidth(.8f), getGameHeight(.08f)), 2);
+		addSubNode(greenCam, 2);
+		addSubNode(progressBar = new NProgressBar(getGameWidth(.1f), getGameHeight(.58f), getGameWidth(.8f), getGameHeight(.08f)), 3);
 
-		addSubNode(new NHMBackgroundPartida(angelTeam), 3);
+		addSubNode(new NHMBackgroundPartida(angelTeam), 4);
 
-		addSubNode(tglGroupModo, 4);
-		addSubNode(btnAvancar, 4);
-		// addSubNode(btnVoltar, 4);
+		addSubNode(tglGroupModo, 5);
+		addSubNode(btnAvancar, 5);
+		// addSubNode(btnVoltar, 5);
 
 	}
 
@@ -161,6 +169,7 @@ public class N5Partida extends NHMMainNode
 	private void setModoEncantar()
 	{
 		sendConsoleMsg("Toque na tela para encantar");
+		greenCam.setVisible(false);
 		modo = Modo.ENCANTANDO;
 		chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 		btnAvancar.setVisible(false);
@@ -170,6 +179,7 @@ public class N5Partida extends NHMMainNode
 
 	private void setModoDesencantar()
 	{
+		greenCam.setVisible(false);
 		if (encantamentos.isEmpty())
 		{
 			tglGroupModo.toggle(0);
@@ -200,6 +210,7 @@ public class N5Partida extends NHMMainNode
 					charging = true;
 					sendConsoleMsg("Desencantando...");
 					getGameAssetManager().vibrate(50);
+					greenCam.setVisible(true);
 					return null;
 				}
 			}, new Function1<Boolean, Void>()
@@ -227,6 +238,7 @@ public class N5Partida extends NHMMainNode
 						getGameAssetManager().vibrate(100);
 						charging = false;
 						progressBar.reset();
+						greenCam.setVisible(false);
 					}
 					return null;
 				}

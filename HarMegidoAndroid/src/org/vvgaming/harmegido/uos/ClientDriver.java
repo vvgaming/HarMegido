@@ -42,7 +42,7 @@ public class ClientDriver implements UosDriver
 	public void init(final Gateway gateway, final InitialProperties properties, final String instanceId)
 	{
 		//Se registra no dispositivo
-		DeviceInfo.setDriver(this);
+		DeviceInfo.setDriver(gateway.getCurrentDevice());
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package org.vvgaming.harmegido.util;
 
-import org.unbiquitous.uos.core.driverManager.UosDriver;
+import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 
 /**
  * Fornece um id único para este dispositivo a partir do driver de UOS
@@ -16,11 +16,11 @@ public final class DeviceInfo
 	
 	/**
 	 * Define o driver que está sendo usado por este dispositivo
-	 * @param driver
+	 * @param device
 	 */
-	public static void setDriver(final UosDriver driver)
+	public static void setDriver(final UpDevice device)
 	{
-		deviceId = driver.getDriver().getName();
+		deviceId = device.getName();
 	}
 	
 	/**

@@ -6,22 +6,22 @@ public class OpenCVMatWrapper
 {
 
 	private final byte[] bytes;
-	private final int weight;
+	private final int width;
 	private final int height;
 	private final int cvType;
 
-	public OpenCVMatWrapper(final byte[] bytes, final int weight, final int height, final int cvType)
+	public OpenCVMatWrapper(final byte[] bytes, final int width, final int height, final int cvType)
 	{
 		super();
 		this.bytes = bytes;
-		this.weight = weight;
+		this.width = width;
 		this.height = height;
 		this.cvType = cvType;
 	}
 
-	public static OpenCVMatWrapper from(final byte[] bytes, final int weight, final int height, final int cvType)
+	public static OpenCVMatWrapper from(final byte[] bytes, final int width, final int height, final int cvType)
 	{
-		return new OpenCVMatWrapper(bytes, weight, height, cvType);
+		return new OpenCVMatWrapper(bytes, width, height, cvType);
 	}
 
 	public byte[] getBytes()
@@ -29,9 +29,9 @@ public class OpenCVMatWrapper
 		return bytes;
 	}
 
-	public int getWeight()
+	public int getWidth()
 	{
-		return weight;
+		return width;
 	}
 
 	public int getHeight()
@@ -52,7 +52,7 @@ public class OpenCVMatWrapper
 		result = prime * result + Arrays.hashCode(bytes);
 		result = prime * result + cvType;
 		result = prime * result + height;
-		result = prime * result + weight;
+		result = prime * result + width;
 		return result;
 	}
 
@@ -84,7 +84,7 @@ public class OpenCVMatWrapper
 		{
 			return false;
 		}
-		if (weight != other.weight)
+		if (width != other.width)
 		{
 			return false;
 		}

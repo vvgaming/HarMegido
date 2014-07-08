@@ -12,6 +12,7 @@ import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
@@ -193,7 +194,7 @@ public class ServerDriverFacade
 	 * @return Uma instância de {@link Either} que conterá <tt>true</tt> se o jogador encantou o objeto, ou a exceção
 	 * em caso contrário
 	 */
-	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final byte[] imagem)
+	public Either<Exception, Boolean> encantarObjeto(final String nomePartida, final Player jogador, final EnchantmentImage imagem)
 	{
 		return executarEstado(nomePartida, MatchState.encantar(jogador, imagem));
 	}

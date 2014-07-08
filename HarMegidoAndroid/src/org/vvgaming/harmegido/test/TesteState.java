@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
@@ -140,7 +141,8 @@ public class TesteState extends Activity
 					setText("Crie uma partida antes de encantar.");
 					return;
 				}
-				Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, new byte[10]);
+				EnchantmentImage enchant = EnchantmentImage.from(new byte[100], new byte[200]);
+				Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, enchant);
 				setText(formatarRetorno(retorno));
 			}
 		});

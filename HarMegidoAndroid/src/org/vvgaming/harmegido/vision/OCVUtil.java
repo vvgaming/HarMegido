@@ -5,12 +5,12 @@ import java.util.Arrays;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvException;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.core.MatOfFloat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.Size;
 import org.opencv.features2d.DMatch;
 import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
@@ -25,21 +25,23 @@ import android.graphics.Bitmap.Config;
  * 
  * @author Vinicius Nogueira
  */
-public class OCVUtil {
+public class OCVUtil
+{
 
-	private Mat empty = new Mat();
+	private final Mat empty = new Mat();
 
 	// parâmetros para o cálculo de histograma em HSV (ignorando o V)
-	private MatOfInt channels;
-	private MatOfInt histSize;
-	private MatOfFloat ranges;
+	private final MatOfInt channels;
+	private final MatOfInt histSize;
+	private final MatOfFloat ranges;
 
 	// parâmetros para cálculo de features e descriptors
-	private FeatureDetector fd;
-	private DescriptorExtractor de;
-	private DescriptorMatcher dm;
+	private final FeatureDetector fd;
+	private final DescriptorExtractor de;
+	private final DescriptorMatcher dm;
 
-	private OCVUtil() {
+	private OCVUtil()
+	{
 		// parâmetros para o cálculo de histograma em HSV (ignorando o V)
 		channels = new MatOfInt(0, 1);
 		histSize = new MatOfInt(50, 60);
@@ -60,9 +62,12 @@ public class OCVUtil {
 	 * 
 	 * @param mats
 	 */
-	public void releaseMat(Mat... mats) {
-		for (Mat m : mats) {
-			if (m != null) {
+	public void releaseMat(final Mat... mats)
+	{
+		for (final Mat m : mats)
+		{
+			if (m != null)
+			{
 				m.release();
 			}
 		}
@@ -74,12 +79,12 @@ public class OCVUtil {
 	 * @param toConvert
 	 * @return o Bitmap
 	 */
-	public Bitmap toBmp(Mat mat) {
+	public Bitmap toBmp(final Mat mat)
+	{
 
-		Mat toConvert = mat.clone();
+		final Mat toConvert = mat.clone();
 
-		Bitmap retorno = Bitmap.createBitmap(toConvert.cols(),
-				toConvert.rows(), Config.RGB_565);
+		final Bitmap retorno = Bitmap.createBitmap(toConvert.cols(), toConvert.rows(), Config.RGB_565);
 		Utils.matToBitmap(toConvert, retorno);
 
 		releaseMat(toConvert);
@@ -93,8 +98,9 @@ public class OCVUtil {
 	 * @param toConvert
 	 * @return a Mat
 	 */
-	public Mat toMat(Bitmap toConvert) {
-		Mat retorno = new Mat();
+	public Mat toMat(final Bitmap toConvert)
+	{
+		final Mat retorno = new Mat();
 		Utils.bitmapToMat(toConvert, retorno);
 		return retorno;
 	}
@@ -105,7 +111,8 @@ public class OCVUtil {
 	 * @param mat
 	 * @return
 	 */
-	public byte[] toByteArray(final Mat mat) {
+	public byte[] toByteArray(final Mat mat)
+	{
 		final byte[] retorno = new byte[(int) (mat.total() * mat.channels())];
 		mat.get(0, 0, retorno);
 		return retorno;
@@ -117,33 +124,31 @@ public class OCVUtil {
 	 * @param mat
 	 * @return
 	 */
-	public Mat toMat(final byte[] array) {
-		// FIXME retirar esses numeros hardcoded
-		final Mat retorno = new Mat(640, 480, CvType.CV_8UC4);
+	public Mat toMat(final byte[] array, final Size size, final int cvType)
+	{
+		final Mat retorno = new Mat(size, cvType);
 		retorno.put(0, 0, array);
 		return retorno;
 	}
 
 	/**
-	 * Calcula o histograma de H e S de uma imagem RGBA. Isto é, converte a
-	 * imagem para HSV, ignora o V e calcula o histograma
+	 * Calcula o histograma de H e S de uma imagem RGBA. Isto é, converte a imagem para HSV, ignora o V e calcula o histograma
 	 * 
-	 * @param mat
-	 *            a imagem em RGBA
+	 * @param mat a imagem em RGBA
 	 * @return o histograma
 	 */
-	public Mat calcHistHS(final Mat mat) {
+	public Mat calcHistHS(final Mat mat)
+	{
 
-		Mat retorno = new Mat();
-		Mat imagem = mat.clone();
+		final Mat retorno = new Mat();
+		final Mat imagem = mat.clone();
 
 		// converte para hsv
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGBA2RGB);
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGB2HSV);
 
 		// c�lcula o histograma apenas de H e S
-		Imgproc.calcHist(Arrays.asList(imagem), channels, empty, retorno,
-				histSize, ranges);
+		Imgproc.calcHist(Arrays.asList(imagem), channels, empty, retorno, histSize, ranges);
 
 		// normalizando o histograma para comparar grandezas de mesmo range
 		Core.normalize(retorno, retorno, 0, 1, Core.NORM_MINMAX, -1, empty);
@@ -155,47 +160,55 @@ public class OCVUtil {
 	/**
 	 * Detecta features e computa seus descritores
 	 * 
-	 * @param mat
-	 *            a imagem em escala de CINZA
+	 * @param mat a imagem em escala de CINZA
 	 * @return os descritores
 	 */
-	public Mat extractFeatureDescriptors(final Mat mat) {
-		Mat retorno = new Mat();
-		MatOfKeyPoint kps = new MatOfKeyPoint();
+	public Mat extractFeatureDescriptors(final Mat mat)
+	{
+		final Mat retorno = new Mat();
+		final MatOfKeyPoint kps = new MatOfKeyPoint();
 		fd.detect(mat, kps);
 		de.compute(mat, kps, retorno);
 		return retorno;
 	}
 
 	/**
-	 * Compara dois descritores extraidos em
-	 * {@link OCVUtil#extractFeatureDescriptors(Mat)}
+	 * Compara dois descritores extraidos em {@link OCVUtil#extractFeatureDescriptors(Mat)}
 	 * 
 	 * @param descs1
 	 * @param descs2
 	 * @return de 0 a 1, onde 1 é o mais "próximo"
 	 */
-	public float compareDescriptors(Mat descs1, Mat descs2) {
-		try {
+	public float compareDescriptors(final Mat descs1, final Mat descs2)
+	{
+		try
+		{
 
 			final float DISTANCE_THRESHOLD = 50;
 
-			MatOfDMatch retorno = new MatOfDMatch();
+			final MatOfDMatch retorno = new MatOfDMatch();
 			dm.match(descs1, descs2, retorno);
 
 			float sum = 0;
-			for (DMatch m : retorno.toArray()) {
-				if (m.distance < DISTANCE_THRESHOLD) {
+			for (final DMatch m : retorno.toArray())
+			{
+				if (m.distance < DISTANCE_THRESHOLD)
+				{
 					sum++;
 				}
 			}
 
-			if (retorno.rows() != 0) {
+			if (retorno.rows() != 0)
+			{
 				return sum / retorno.rows();
-			} else {
+			}
+			else
+			{
 				return 0.0f;
 			}
-		} catch (final CvException ignored) {
+		}
+		catch (final CvException ignored)
+		{
 			// esse ignore na exceção eu coloquei pq alguns frames da
 			// camera vem diferente e dá pau na comparação dos descritores
 			// TODO verificar como resolver esse problema "de verdade"
@@ -205,8 +218,10 @@ public class OCVUtil {
 
 	private static OCVUtil instance;
 
-	public static OCVUtil getInstance() {
-		if (instance == null) {
+	public static OCVUtil getInstance()
+	{
+		if (instance == null)
+		{
 			instance = new OCVUtil();
 		}
 		return instance;

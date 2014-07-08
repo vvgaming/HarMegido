@@ -27,7 +27,7 @@ public class Match
 	// Usando mapa porque o Set não tem método get
 	private final Map<String, Player> jogadores = new HashMap<String, Player>();
 	private final Set<Enchantment> encantamentos = new HashSet<Enchantment>();
-
+	
 	private Match(final String nomePartida, final Date inicio, final MatchDuration duracao)
 	{
 		this.matchName = nomePartida;
@@ -41,6 +41,7 @@ public class Match
 	 * @param nomePartida O nome da partida
 	 * @param inicio O instante no tempo que a partida teve/terá início
 	 * @param duracao A duração da partida
+	 * @param offsetMilis A diferença (em milisegundos) do tempo entre o servidor e o cliente
 	 * @return Uma partida com a duração e início passados como parâmetro
 	 */
 	public static Match from(final String nomePartida, final Date inicio, final MatchDuration duracao)
@@ -95,9 +96,9 @@ public class Match
 	 */
 	public boolean isAtiva()
 	{
-		if (getHoraFimMilis() > new Date().getTime())
+		if (getHoraFimMilis() <= new Date().getTime())
 		{
-			return true;
+			return false;
 		}
 		
 		final int pontuacaoFim = getPontuacaoFim();

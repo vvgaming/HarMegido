@@ -32,6 +32,7 @@ import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 import com.github.detentor.codex.collections.mutable.SetSharp;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Either;
+import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.util.Reflections;
 
 /**
@@ -258,7 +259,8 @@ public class ServerDriver implements UosDriver
 	 */
 	public void listarJogadores(Call call, Response response, CallContext callContext)
 	{
-		final Map<String, Map<TeamType, Integer>> mapaRetorno = new HashMap<String, Map<TeamType, Integer>>();
+		final List<Tuple2<String, List<Tuple2<TeamType, Integer>>>> listaRetorno = 
+				new ArrayList<Tuple2<String,List<Tuple2<TeamType,Integer>>>>();
 		
 		//Trava até terminar de ler
 		synchronized(lock)
@@ -267,27 +269,27 @@ public class ServerDriver implements UosDriver
 			{
 				if (match.isAtiva())
 				{
-					final Map<TeamType, Integer> mapaValores = new HashMap<TeamType, Integer>();
+					final List<Tuple2<TeamType, Integer>> listaValores = new ArrayList<Tuple2<TeamType,Integer>>();
 					
 					//Inicializa o mapa
 					for (TeamType tipoTime : TeamType.values())
 					{
-						mapaValores.put(tipoTime, 0);
+						listaValores.add(Tuple2.from(tipoTime, 0));
 					}
 
 					//Conta quantos jogadores em cada time
 					for (Player curJogador : match.getJogadores())
 					{
-						final Integer valorAnterior = mapaValores.get(curJogador.getTime());
-						mapaValores.put(curJogador.getTime(), valorAnterior + 1);
+						final Tuple2<TeamType, Integer> valorAnterior = listaValores.get(curJogador.getTime().ordinal());
+						valorAnterior.setVal2(valorAnterior.getVal2() + 1);
 					}
 					
-					mapaRetorno.put(match.getNomePartida(), mapaValores);
+					listaRetorno.add(Tuple2.from(match.getNomePartida(), listaValores));
 				}
 			}
 		}
 
-		final Either<RuntimeException, Map<String, Map<TeamType, Integer>>> toReturn = Either.createRight(mapaRetorno);
+		final Either<RuntimeException, List<Tuple2<String, List<Tuple2<TeamType, Integer>>>>> toReturn = Either.createRight(listaRetorno);
 		response.addParameter("retorno", toJson(toReturn));
 	}
 	

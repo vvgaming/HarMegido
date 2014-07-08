@@ -4,7 +4,6 @@ import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
 import java.util.List;
-import java.util.Map;
 
 import org.unbiquitous.uos.core.UOS;
 import org.unbiquitous.uos.core.driverManager.DriverData;
@@ -14,9 +13,9 @@ import org.unbiquitous.uos.core.messageEngine.messages.Response;
 import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
-import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
 
@@ -245,7 +244,7 @@ public class ServerDriverFacade
 	 * de cada tipo existem nela, ou a exceção em caso de erro
 	 */
 	@SuppressWarnings("unchecked")
-	public Either<Exception, Map<String, Map<TeamType, Integer>>> listarJogadores()
+	public Either<Exception, List<Tuple2<String, List<Tuple2<TeamType, Integer>>>>> listarJogadores()
 	{
 		return callServiceUnwrap("listarJogadores");
 	}

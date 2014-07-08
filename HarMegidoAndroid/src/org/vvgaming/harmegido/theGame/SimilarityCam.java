@@ -22,7 +22,7 @@ public interface SimilarityCam<T>
 	 * 
 	 * @return
 	 */
-	public abstract Option<Tuple2<Bitmap, Mat>> snapshot();
+	public abstract Option<T> snapshot();
 
 	/**
 	 * Inicia observação dos dados informados por parametro, isto é, fica comparando o frame atual com este informado

@@ -13,6 +13,8 @@ import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
 import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
+import org.vvgaming.harmegido.lib.model.OpenCVMatWrapper;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackgroundPartida;
 import org.vvgaming.harmegido.theGame.objNodes.NHMEnchantingCam;
@@ -26,14 +28,14 @@ import android.view.MotionEvent;
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
+import com.github.detentor.codex.product.Tuple2;
 import com.github.detentor.codex.product.Tuple3;
 
-public class N5Partida extends NHMMainNode {
+public class N5Partida extends NHMMainNode
+{
 
-	private static Tuple3<Integer, Integer, Integer> ANGEL_COLOR = Tuple3.from(
-			43, 167, 203);
-	private static Tuple3<Integer, Integer, Integer> DEMON_COLOR = Tuple3.from(
-			255, 0, 0);
+	private static Tuple3<Integer, Integer, Integer> ANGEL_COLOR = Tuple3.from(43, 167, 203);
+	private static Tuple3<Integer, Integer, Integer> DEMON_COLOR = Tuple3.from(255, 0, 0);
 
 	private final Player player;
 
@@ -50,18 +52,21 @@ public class N5Partida extends NHMMainNode {
 	//
 	private final List<Enchantment> encantamentos = new ArrayList<>();
 
-	public N5Partida(final Player player) {
+	public N5Partida(final Player player)
+	{
 		super();
 		this.player = player;
 	}
 
 	@Override
-	public void init() {
+	public void init()
+	{
 
 		super.init();
 		final Tuple3<Integer, Integer, Integer> color;
 		final boolean angelTeam;
-		switch (player.getTime()) {
+		switch (player.getTime())
+		{
 		case DARK:
 			angelTeam = false;
 			color = DEMON_COLOR;
@@ -71,28 +76,23 @@ public class N5Partida extends NHMMainNode {
 			color = ANGEL_COLOR;
 			break;
 		default:
-			throw new IllegalArgumentException("Time '" + player.getTime()
-					+ "' desconhecido");
+			throw new IllegalArgumentException("Time '" + player.getTime() + "' desconhecido");
 		}
 
 		//
-		cam = new NHMEnchantingCam(new Ponto(getGameWidth(.5f),
-				getGameHeight(.35f)), getGameHeight(.5f));
+		cam = new NHMEnchantingCam(new Ponto(getGameWidth(.5f), getGameHeight(.35f)), getGameHeight(.5f));
 
 		// fundo
-		final NSimpleBox bg = new NSimpleBox(0, 0, getGameWidth(),
-				getGameHeight(), 0, 0, 0);
+		final NSimpleBox bg = new NSimpleBox(0, 0, getGameWidth(), getGameHeight(), 0, 0, 0);
 		// cor de acordo com o time
 		bg.setColor(color.getVal1(), color.getVal2(), color.getVal3());
 
 		// toggles de encantar / desencantar
-		final NImage imgEncantar = new NImage(new Ponto(getGameWidth(.3f),
-				getGameHeight(.8f)), getGameAssetManager().getBitmap(
+		final NImage imgEncantar = new NImage(new Ponto(getGameWidth(.3f), getGameHeight(.8f)), getGameAssetManager().getBitmap(
 				R.drawable.encantar));
 		imgEncantar.setWidth(getGameWidth(.2f), true);
 		final NButtonImage btnEncantar = new NButtonImage(imgEncantar);
-		final NImage imgDesencantar = new NImage(new Ponto(getGameWidth(.7f),
-				getGameHeight(.8f)), getGameAssetManager().getBitmap(
+		final NImage imgDesencantar = new NImage(new Ponto(getGameWidth(.7f), getGameHeight(.8f)), getGameAssetManager().getBitmap(
 				R.drawable.desencantar));
 		imgDesencantar.setWidth(getGameWidth(.2f), true);
 		final NButtonImage btnDesencantar = new NButtonImage(imgDesencantar);
@@ -106,14 +106,12 @@ public class N5Partida extends NHMMainNode {
 		tglGroupModo.setOnToggleChange(tglGroupModoFunction);
 
 		// botões de avançar e voltar os encantamentos para desencantar
-		final NImage imgAvancar = new NImage(new Ponto(getGameWidth(.9f),
-				getGameHeight(.35f)), getGameAssetManager().getBitmap(
+		final NImage imgAvancar = new NImage(new Ponto(getGameWidth(.9f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
 				R.drawable.avancar));
 		imgAvancar.setWidth(getGameWidth(.15f), true);
 		btnAvancar = new NButtonImage(imgAvancar);
 		btnAvancar.setVisible(false);
-		final NImage imgVoltar = new NImage(new Ponto(getGameWidth(.1f),
-				getGameHeight(.35f)), getGameAssetManager().getBitmap(
+		final NImage imgVoltar = new NImage(new Ponto(getGameWidth(.1f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
 				R.drawable.voltar));
 		imgVoltar.setWidth(getGameWidth(.15f), true);
 		btnVoltar = new NButtonImage(imgVoltar);
@@ -126,8 +124,7 @@ public class N5Partida extends NHMMainNode {
 		// adicionando nas camadas
 		addSubNode(bg, 0);
 		addSubNode(cam, 1);
-		addSubNode(progressBar = new NProgressBar(getGameWidth(.1f),
-				getGameHeight(.58f), getGameWidth(.8f), getGameHeight(.08f)), 2);
+		addSubNode(progressBar = new NProgressBar(getGameWidth(.1f), getGameHeight(.58f), getGameWidth(.8f), getGameHeight(.08f)), 2);
 
 		addSubNode(new NHMBackgroundPartida(angelTeam), 3);
 
@@ -138,16 +135,18 @@ public class N5Partida extends NHMMainNode {
 	}
 
 	@Override
-	public void update(final long delta) {
+	public void update(final long delta)
+	{
 
-		if (charging) {
-			progressBar.setProgress(progressBar.getProgress() + 1
-					/ chargingDelay * delta);
+		if (charging)
+		{
+			progressBar.setProgress(progressBar.getProgress() + 1 / chargingDelay * delta);
 		}
 
 	}
 
-	private void setModoEncantar() {
+	private void setModoEncantar()
+	{
 		sendConsoleMsg("Toque na tela para encantar");
 		modo = Modo.ENCANTANDO;
 		chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
@@ -156,13 +155,17 @@ public class N5Partida extends NHMMainNode {
 		cam.parar();
 	}
 
-	private void setModoDesencantar() {
-		if (encantamentos.isEmpty()) {
+	private void setModoDesencantar()
+	{
+		if (encantamentos.isEmpty())
+		{
 			tglGroupModo.toggle(0);
 			sendConsoleMsg("Não há o que desencantar...");
 			getGameAssetManager().playSound(R.raw.error);
 			getGameAssetManager().vibrate(50);
-		} else {
+		}
+		else
+		{
 			cam.parar();
 			sendConsoleMsg("Procure o objeto a desencantar");
 			modo = Modo.DESENCANTANDO;
@@ -170,24 +173,33 @@ public class N5Partida extends NHMMainNode {
 			btnAvancar.setVisible(true);
 			btnVoltar.setVisible(true);
 
-			Enchantment primeiro = encantamentos.get(0);
-			Mat imgToDesencantar = OCVUtil.getInstance().toMat(
-					primeiro.getImagem());
+			final Enchantment primeiro = encantamentos.get(0);
 
-			cam.iniciaDesencantamento(imgToDesencantar, new Function0<Void>() {
+			final OCVUtil ocvUtil = OCVUtil.getInstance();
+			final Mat imagem = ocvUtil.toMat(primeiro.getImagem().getImagem());
+			final Mat features = ocvUtil.toMat(primeiro.getImagem().getFeatures());
+
+			cam.iniciaDesencantamento(Tuple2.from(imagem, features), new Function0<Void>()
+			{
 				@Override
-				public Void apply() {
+				public Void apply()
+				{
 					sendConsoleMsg("ACHEIIIII");
 					return null;
 				}
-			}, new Function1<Boolean, Void>() {
+			}, new Function1<Boolean, Void>()
+			{
 
 				@Override
-				public Void apply(Boolean arg0) {
+				public Void apply(final Boolean arg0)
+				{
 
-					if (arg0) {
+					if (arg0)
+					{
 						sendConsoleMsg("desencantouuuu");
-					} else {
+					}
+					else
+					{
 						sendConsoleMsg("Falhou!!!");
 					}
 					return null;
@@ -198,30 +210,44 @@ public class N5Partida extends NHMMainNode {
 	}
 
 	@Override
-	public boolean onTouch(final MotionEvent event) {
-		if (modo.equals(Modo.ENCANTANDO)) {
-			switch (event.getAction()) {
+	public boolean onTouch(final MotionEvent event)
+	{
+		if (modo.equals(Modo.ENCANTANDO))
+		{
+			switch (event.getAction())
+			{
 			case MotionEvent.ACTION_DOWN:
 				charging = true;
 				sendConsoleMsg("Encantamento sendo preparado...");
 				getGameAssetManager().vibrate(50);
-				cam.iniciaEncantamento(new Function1<Option<Mat>, Void>() {
+				cam.iniciaEncantamento(new Function1<Option<Tuple2<Mat, Mat>>, Void>()
+				{
 					@Override
-					public Void apply(final Option<Mat> arg0) {
-						if (arg0.notEmpty()) {
+					public Void apply(final Option<Tuple2<Mat, Mat>> encantado)
+					{
+						if (encantado.notEmpty())
+						{
 							sendConsoleMsg("Encantamento finalizado com sucesso");
-							getGameAssetManager().playSound(
-									R.raw.encantament_sucesso);
+							getGameAssetManager().playSound(R.raw.encantament_sucesso);
 							getGameAssetManager().vibrate(500);
 							charging = false;
 							progressBar.reset();
-							encantamentos.add(Enchantment.from(player,
-									new Date(), OCVUtil.getInstance()
-											.toByteArray(arg0.get())));
-						} else {
+
+							final Tuple2<Mat, Mat> encantTuple = encantado.get();
+
+							
+							final OCVUtil ocvUtil = OCVUtil.getInstance();
+
+							final OpenCVMatWrapper preview = ocvUtil.toOpenCVMatWrapper(encantTuple.getVal1());
+							final OpenCVMatWrapper features = ocvUtil.toOpenCVMatWrapper(encantTuple.getVal2());
+							final EnchantmentImage ei = EnchantmentImage.from(preview, features);
+
+							encantamentos.add(Enchantment.from(player, new Date(), ei));
+						}
+						else
+						{
 							sendConsoleMsg("Falhou");
-							getGameAssetManager().playSound(
-									R.raw.encantament_falha);
+							getGameAssetManager().playSound(R.raw.encantament_falha);
 							getGameAssetManager().vibrate(100);
 							charging = false;
 							progressBar.reset();
@@ -233,7 +259,8 @@ public class N5Partida extends NHMMainNode {
 				return true;
 			case MotionEvent.ACTION_UP:
 				charging = false;
-				if (cam.parar()) {
+				if (cam.parar())
+				{
 					getGameAssetManager().playSound(R.raw.encantament_falha);
 					sendConsoleMsg("Cancelado");
 				}
@@ -249,11 +276,15 @@ public class N5Partida extends NHMMainNode {
 
 	}
 
-	private Function1<Option<Integer>, Void> tglGroupModoFunction = new Function1<Option<Integer>, Void>() {
+	private final Function1<Option<Integer>, Void> tglGroupModoFunction = new Function1<Option<Integer>, Void>()
+	{
 		@Override
-		public Void apply(final Option<Integer> arg0) {
-			if (arg0.notEmpty()) {
-				switch (arg0.get()) {
+		public Void apply(final Option<Integer> arg0)
+		{
+			if (arg0.notEmpty())
+			{
+				switch (arg0.get())
+				{
 				case 0:
 					setModoEncantar();
 					break;
@@ -261,8 +292,7 @@ public class N5Partida extends NHMMainNode {
 					setModoDesencantar();
 					break;
 				default:
-					throw new IllegalArgumentException("Modo desconhecido: "
-							+ arg0.get());
+					throw new IllegalArgumentException("Modo desconhecido: " + arg0.get());
 				}
 			}
 			return null;
@@ -270,7 +300,8 @@ public class N5Partida extends NHMMainNode {
 
 	};
 
-	private enum Modo {
+	private enum Modo
+	{
 		ENCANTANDO, DESENCANTANDO;
 	}
 

@@ -1,7 +1,6 @@
 package org.vvgaming.harmegido.lib.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -232,7 +231,7 @@ public class Match
 			
 			for (Enchantment enchant : encantamentos)
 			{
-				if (Arrays.equals(enchant.getImagem(), pce.getEnchantmentImage()))
+				if (enchant.getImagem().equals(pce.getEnchantmentImage()))
 				{
 					throw new IllegalArgumentException("Esse encantamento já existe");
 				}
@@ -289,7 +288,7 @@ public class Match
 	{
 		for (Enchantment enchant : encantamentos)
 		{
-			if (Arrays.equals(enchant.getImagem(), encantamento.getImagem()))
+			if (enchant.getImagem().equals(encantamento.getImagem()))
 			{
 				return enchant;
 			}

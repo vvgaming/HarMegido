@@ -8,6 +8,7 @@ import java.util.Random;
 import org.vvgaming.harmegido.R;
 import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.Match;
+import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
@@ -197,6 +198,35 @@ public class TesteState extends Activity
 			}
 		});
 		
+		((Button) findViewById(R.id.btnVerPontuacao)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if (partida == null)
+				{
+					setText("Crie uma partida antes de calcular a pontuacao.");
+					return;
+				}
+				
+				Either<Exception, Scoreboard> retorno = sdf.getPontuacao(partida.getNomePartida());
+				
+				if (retorno.isLeft())
+				{
+					setText(formatarRetorno(retorno));
+				}
+				else
+				{
+					String theStr = "";
+					for (TeamType time : TeamType.values())
+					{
+						theStr += time.toString() + ":" + retorno.getRight().getPontuacao(time) + "\n";
+					}
+					setText(theStr);
+				}
+			}
+		});
+		
 		//métodos
 //		sdf.adicionarJogador(nomePartida, jogador) 						//OK
 //		sdf.criarPartida(nomePartida, duracao)   						//OK
@@ -207,6 +237,7 @@ public class TesteState extends Activity
 //		sdf.listarPartidas()     										//OK
 //		sdf.mudarTime(nomePartida, jogador, novoTime)					//OK
 //		sdf.removerJogador(nomePartida, jogador)						//OK
+//		sdf.getPontuacao(nomePartida)									//OK
 		
 	}
 	

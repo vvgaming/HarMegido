@@ -11,10 +11,10 @@ import com.github.detentor.codex.monads.Option;
  */
 public class Enchantment extends Spell implements Copyable
 {
-	private final byte[] imagem; // Informação necessária para desencantar
+	private final EnchantmentImage imagem; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento = Option.empty();
 
-	protected Enchantment(final Player enchanter, final Date enchantTime, final  byte[] imagem)
+	protected Enchantment(final Player enchanter, final Date enchantTime, final EnchantmentImage imagem)
 	{
 		//copia para guardar o estado do jogador no momento do encantamento
 		super(enchanter.copy(), new Date(enchantTime.getTime()));
@@ -27,10 +27,10 @@ public class Enchantment extends Spell implements Copyable
 	 * 
 	 * @param jogador O jogador que fez o encantamento
 	 * @param timestamp A data/hora que o encantamento foi feito
-	 * @param imagem O histograma que representa a imagem
+	 * @param imagem A imagem que representa o encantamento
 	 * @return O encantamento feito pelo jogador na data/hora passados como parâmetro
 	 */
-	public static Enchantment from(final Player jogador, final Date timestamp, final  byte[] imagem)
+	public static Enchantment from(final Player jogador, final Date timestamp, final EnchantmentImage imagem)
 	{
 		return new Enchantment(jogador, timestamp, imagem);
 	}
@@ -93,7 +93,7 @@ public class Enchantment extends Spell implements Copyable
 		return calcPontuacao(80);
 	}
 	
-	public byte[] getImagem()
+	public EnchantmentImage getImagem()
 	{
 		return imagem;
 	}

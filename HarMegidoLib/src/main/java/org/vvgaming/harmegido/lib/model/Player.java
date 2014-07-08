@@ -93,7 +93,7 @@ public class Player implements Copyable
 	 * @param imagem A imagem do objeto a ser encantado
 	 * @return Um encantamento criado por este jogador
 	 */
-	public Enchantment encantar(final Date timestamp, final  byte[] imagem)
+	public Enchantment encantar(final Date timestamp, final EnchantmentImage imagem)
 	{
 		return Enchantment.from(this, timestamp, imagem);
 	}

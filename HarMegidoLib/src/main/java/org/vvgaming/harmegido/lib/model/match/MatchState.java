@@ -1,6 +1,7 @@
 package org.vvgaming.harmegido.lib.model.match;
 
 import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
 
@@ -53,7 +54,7 @@ public abstract class MatchState
 	 * @param enchantImage A imagem que representa o objeto encantado
 	 * @return Um mudança de estado que representa a criação do encantamento pelo jogador
 	 */
-	public static MatchState encantar(final Player jogador, final byte[] enchantImage)
+	public static MatchState encantar(final Player jogador, final EnchantmentImage enchantImage)
 	{
 		if (enchantImage == null)
 		{

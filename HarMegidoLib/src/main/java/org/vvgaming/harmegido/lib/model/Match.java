@@ -153,8 +153,8 @@ public class Match
 	 */
 	public Date getInicioPartida()
 	{
-		System.out.println("TIMESYNC == null ? " + (timeSync == null));
-		System.out.println("TIMESYNC SENDO CHAMADO P/ " + inicioPartida);
+//		System.out.println("TIMESYNC == null ? " + (timeSync == null));
+//		System.out.println("TIMESYNC SENDO CHAMADO P/ " + inicioPartida);
 		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida);
 	}
 

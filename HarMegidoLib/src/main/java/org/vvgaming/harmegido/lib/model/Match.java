@@ -14,6 +14,7 @@ import org.vvgaming.harmegido.lib.model.match.PlayerChangeDisenchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeRemove;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeTeam;
+import org.vvgaming.harmegido.lib.util.TimeSync;
 
 /**
  * Representa uma partida no HarMegido
@@ -23,6 +24,9 @@ public class Match
 	private final String matchName;
 	private final Date inicioPartida;
 	private final MatchDuration duracao;
+	
+	//Reponsável pela sincronia do cliente
+	private transient TimeSync timeSync;
 
 	// Usando mapa porque o Set não tem método get
 	private final Map<String, Player> jogadores = new HashMap<String, Player>();
@@ -65,7 +69,9 @@ public class Match
 	}
 
 	/**
-	 * Retorna a pontuação dos time passado como parâmetro
+	 * Retorna a pontuação dos time passado como parâmetro. <br/>
+	 * ATENÇÃO: Se a partida tiver sido sincronizada (chamando o método {@link #setSync(Date)}) 
+	 * esse método retornará informações incorretas.
 	 * 
 	 * @param time O time cuja pontuação deve ser retornada
 	 * @return Um inteiro positivo que contém a pontuação do time passado como parâmetro
@@ -127,16 +133,20 @@ public class Match
 	}
 	
 	/**
-	 * Retorna o instante no tempo que a partida foi iniciada.
+	 * Retorna o instante no tempo que a partida foi iniciada. <br/>
+	 * ATENÇÃO: Se a partida não tiver sido sincronizada (chamando o método {@link #setSync(TimeSync)}) 
+	 * o tempo retornado será o tempo da partida criada no servidor.
 	 * @return Uma instância de date que contém o instante no tempo que a partida foi iniciada
 	 */
 	public Date getInicioPartida()
 	{
-		return new Date(inicioPartida.getTime());
+		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida); 
 	}
 	
 	/**
-	 * Retorna o instante no tempo que a partida terminará.
+	 * Retorna o instante no tempo que a partida terminará. <br/>
+	 * ATENÇÃO: Se a partida não tiver sido sincronizada (chamando o método {@link #setSync(TimeSync)}) 
+	 * o tempo retornado será o tempo tomando como base a partida criada no servidor.
 	 * @return Uma instância de date que contém o instante no tempo que a partida terminará
 	 */
 	public Date getFimPartida()
@@ -151,7 +161,7 @@ public class Match
 	 */
 	private long getHoraFimMilis()
 	{
-		return duracao.getInMilliseconds() + inicioPartida.getTime();
+		return duracao.getInMilliseconds() + getInicioPartida().getTime();
 	}
 
 	/**
@@ -183,9 +193,30 @@ public class Match
 	}
 	
 	/**
-	 * Retorna uma lista de encantamentos associados com esta partida. <br/>
-	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, portanto mudanças estruturais nos jogadores
+	 * Retorna uma lista de jogadores do time informado. <br/>
+	 * ATENÇÃO: Será retornado uma cópia dos jogadores, 
+	 * portanto mudanças estruturais nos jogadores
 	 * retornados não afetarão esta partida.
+	 * @return Uma lista com os jogadores desta partida para o time informado.
+	 */
+	public List<Player> getJogadores(final TeamType time)
+	{
+		final List<Player> toReturn = new ArrayList<Player>();
+		
+		for (Player jogador : jogadores.values())
+		{
+			if (jogador.getTime().equals(time))
+			{
+				toReturn.add(jogador.copy());
+			}
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Retorna uma lista de encantamentos associados com esta partida. <br/>
+	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, 
+	 * portanto mudanças estruturais não afetarão as classes originais.
 	 * @return Uma lista com os encantamentos desta partida.
 	 */
 	public List<Enchantment> getEncantamentos()
@@ -197,6 +228,36 @@ public class Match
 			toReturn.add(enchant.copy());
 		}
 		return toReturn;
+	}
+	
+	/**
+	 * Retorna uma lista com os encantamentos do time passado como parâmetro. <br/>
+	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, 
+	 * portanto mudanças estruturais não afetarão as classes originais.
+	 * @return Uma lista com os encantamentos desta partida.
+	 */
+	public List<Enchantment> getEncantamentos(final TeamType time)
+	{
+		final List<Enchantment> toReturn = new ArrayList<Enchantment>();
+		
+		for (Enchantment enchant : encantamentos)
+		{
+			if (enchant.getJogador().getTime().equals(time))
+			{
+				toReturn.add(enchant.copy());
+			}
+		}
+		return toReturn;
+	}
+	
+	/**
+	 * Define para esta partida a classe básica a ser utilizada na sincronização de tempo
+	 * dela com o servidor.
+	 * @param timeSync A classe a ser utilizada para prover a sincronização
+	 */
+	public void setSync(final TimeSync timeSync)
+	{
+		this.timeSync = timeSync;
 	}
 
 	/**

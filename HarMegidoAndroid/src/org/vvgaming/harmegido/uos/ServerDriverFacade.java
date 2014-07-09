@@ -3,6 +3,7 @@ package org.vvgaming.harmegido.uos;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
+import java.util.Date;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
@@ -105,6 +106,18 @@ public class ServerDriverFacade
 		return drivers;
 	}
 	
+	/**
+	 * Retorna a hora atual do servidor, para fins de sincronização
+	 * 
+	 * @return Uma instância de {@link Either} que irá conter em Right a hora atual do servidor, ou em Left
+	 * a exceção que aconteceu
+	 */
+	@SuppressWarnings("unchecked")
+	public Either<Exception, Date> getHoraServidor()
+	{
+		return callServiceUnwrap("getHoraServidor");
+	}
+
 	/**
 	 * Cria uma partida no servidor para o nome e duração informados
 	 * @param nomePartida O nome a ser vinculado com a partida. Não pode coincidir com o nome de nenhuma

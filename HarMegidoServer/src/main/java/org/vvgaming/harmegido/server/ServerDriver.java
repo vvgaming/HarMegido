@@ -75,6 +75,7 @@ public class ServerDriver implements UosDriver
 		definition.addService("runState");
 		definition.addService("listarPartidas");
 		definition.addService("listarJogadores");
+		definition.addService("getHoraServidor");
 	}
 
 	public void init(Gateway gateway, InitialProperties properties, String instanceId)
@@ -99,6 +100,17 @@ public class ServerDriver implements UosDriver
 
 	// Serviços deste Server Driver
 	
+	
+	/**
+	 * Retorna o tempo do servidor, para propósitos de sincronização.
+	 * Parâmetros: []
+	 * Retorno: Date em Json
+	 */
+	public void getHoraServidor(Call call, Response response, CallContext callContext)
+	{
+		response.addParameter("retorno", toJson(Either.createRight(new Date())));
+	}
+
 	/**
 	 * Cria uma partida. <br/>
 	 * Parâmetros: nomePartida, duracao
@@ -165,7 +177,7 @@ public class ServerDriver implements UosDriver
 
 		response.addParameter("retorno", toJson(toReturn));
 	}
-	
+
 	/**
 	 * Retorna a pontuação de uma partida. <br/>
 	 * Parâmetros: nomePartida

@@ -3,6 +3,7 @@ package org.vvgaming.harmegido.lib.model;
 import java.util.Date;
 
 import org.vvgaming.harmegido.lib.util.Copyable;
+import org.vvgaming.harmegido.lib.util.TimeSync;
 
 import com.github.detentor.codex.monads.Option;
 
@@ -13,6 +14,7 @@ public class Enchantment extends Spell implements Copyable
 {
 	private final EnchantmentImage imagem; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento = Option.empty();
+	private transient TimeSync timeSync;
 
 	protected Enchantment(final Player enchanter, final Date enchantTime, final EnchantmentImage imagem)
 	{
@@ -60,17 +62,53 @@ public class Enchantment extends Spell implements Copyable
 	}
 
 	/**
-	 * Retorna a pontuação que esse encantamento vale.
+	 * Retorna a pontuação que esse encantamento vale. <br/>
+	 * ATENÇÃO: Se não houver sido definida uma classe de sincronização de tempo 
+	 * (com o método {@link #setTimeSync(TimeSync)}
+	 * os resultados retornados estarão potencialmente incorretos.
 	 * @return Um inteiro não negativo com a pontuação que este encantamento rendeu 
 	 */
 	public int getPontuacao()
 	{
-		final long toSubtract = desencantamento.isEmpty() ? new Date().getTime() : desencantamento.get().getTimestamp().getTime();
-		int nSeconds =  (int) (toSubtract - getTimestamp().getTime()) / 1000; //transforma em segundos;
-		nSeconds = Math.min(80, nSeconds); //o máximo de segundos que conta pontos
-		return calcPontuacao(nSeconds);
+//		final long toSubtract = desencantamento.isEmpty() ? new Date().getTime() : desencantamento.get().getTimestamp().getTime();
+//		int nSeconds =  (int) (toSubtract - getTimestamp().getTime()) / 1000; //transforma em segundos;
+//		nSeconds =  
+		//o máximo de segundos que conta pontos é 80
+		return calcPontuacao(Math.min(80, getElapsedSeconds()));
 	}
 	
+	private int getElapsedSeconds()
+	{
+		final Date localStartDate = getLocalTime(getTimestamp());
+		Date endDate;
+		
+		if (desencantamento.isEmpty())
+		{
+			endDate = new Date();
+		}
+		else
+		{
+			endDate = getLocalTime(desencantamento.get().getTimestamp());
+		}
+		
+		return (int) ((endDate.getTime() - localStartDate.getTime()) / 1000);
+	}
+	
+	private Date getLocalTime(final Date forDate)
+	{
+		return timeSync == null ? forDate : timeSync.getLocalTime(forDate);
+	}
+
+	/**
+	 * Define para esta partida a classe básica a ser utilizada na sincronização de tempo
+	 * dela com o servidor.
+	 * @param timeSync A classe a ser utilizada para prover a sincronização
+	 */
+	public void setTimeSync(final TimeSync timeSync)
+	{
+		this.timeSync = timeSync;
+	}
+
 	/**
 	 * Retorna a pontuação de uma determinada quantidade de segundos
 	 */

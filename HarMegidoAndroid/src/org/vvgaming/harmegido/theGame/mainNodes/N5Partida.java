@@ -315,10 +315,20 @@ public class N5Partida extends NHMMainNode {
 
 	private Option<Match> getPartidaEmAndamento() {
 		final Option<Match> part = MatchManager.getPartida();
-		if (part.isEmpty() || !part.get().contemJogador(player.getIdJogador())
-				|| !part.get().isAtiva()) {
-			sendConsoleMsg("Saindo da partida...");
+				
+		String txtSaindo = "Saindo da partida...";
+		
+		if (part.isEmpty()) {
+			sendConsoleMsg(txtSaindo);
 			RootNode.getInstance().changeMainNode(new N3SelecaoPartida());
+			return Option.empty();
+		}else if (!part.get().contemJogador(player.getIdJogador())
+				|| !part.get().isAtiva()) {
+			
+			sendConsoleMsg(txtSaindo);
+			
+			RootNode.getInstance().changeMainNode(new N6Resultados(part.get().getNomePartida()));
+			
 			MatchManager.limparPartida();
 			return Option.empty();
 		}

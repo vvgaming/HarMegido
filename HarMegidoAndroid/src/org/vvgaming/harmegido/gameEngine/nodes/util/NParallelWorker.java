@@ -4,50 +4,40 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.vvgaming.harmegido.gameEngine.GameNode;
+import org.vvgaming.harmegido.gameEngine.LazyInitGameNode;
 
 import com.github.detentor.codex.function.Function0;
 
 /**
- * {@link GameNode} que implementa uma Thread separada para realizar trabalhos paralelos
+ * {@link GameNode} que implementa uma Thread separada para realizar trabalhos
+ * paralelos
  * 
  * @author Vinicius Nogueira
  */
-public class NParallelWorker extends GameNode
-{
+public class NParallelWorker extends LazyInitGameNode {
 
 	private final Queue<Function0<Void>> tasks = new LinkedList<>();
 	private Thread worker;
 	private boolean shouldStop = false;
 
 	@Override
-	protected void init()
-	{
-		super.init();
-		worker = new Thread()
-		{
+	public void preInit() {
+		worker = new Thread() {
 			@Override
-			public void run()
-			{
-				while (!shouldStop)
-				{
+			public void run() {
+				while (!shouldStop) {
 					// executa as tasks da fila
-					synchronized (tasks)
-					{
-						while (!tasks.isEmpty())
-						{
+					synchronized (tasks) {
+						while (!tasks.isEmpty()) {
 							final Function0<Void> task = tasks.poll();
 							task.apply();
 						}
 					}
-					
-					synchronized (worker)
-					{
-						try
-						{
+
+					synchronized (worker) {
+						try {
 							worker.wait();
-						}
-						catch (final InterruptedException ignored)
-						{//
+						} catch (final InterruptedException ignored) {//
 
 						}
 					}
@@ -58,32 +48,25 @@ public class NParallelWorker extends GameNode
 	}
 
 	@Override
-	public void update(final long delta)
-	{
+	public void update(final long delta) {
 	}
 
 	@Override
-	protected void end()
-	{
+	protected void end() {
 		// acorda a Thread e espera encerrar
 		shouldStop = true;
-		synchronized (worker)
-		{
-			worker.notify();	
+		synchronized (worker) {
+			worker.notify();
 		}
-		try
-		{
+		try {
 			worker.join();
-		}
-		catch (final InterruptedException ignored)
-		{
+		} catch (final InterruptedException ignored) {
 		}
 		super.end();
 	}
 
 	@Override
-	public boolean isVisible()
-	{
+	public boolean isVisible() {
 		// sempre invisível, não pinta nada na tela
 		return false;
 	}
@@ -93,21 +76,17 @@ public class NParallelWorker extends GameNode
 	 * 
 	 * @param task
 	 */
-	public void putTask(final Function0<Void> task)
-	{
-		synchronized (tasks)
-		{
+	public void putTask(final Function0<Void> task) {
+		synchronized (tasks) {
 			// adiciona a task e acorda a Thread
 			tasks.add(task);
 		}
-		synchronized (worker)
-		{
+		synchronized (worker) {
 			worker.notify();
 		}
 	}
 
-	public int qtdPendingTasks()
-	{
+	public int qtdPendingTasks() {
 		return tasks.size();
 	}
 

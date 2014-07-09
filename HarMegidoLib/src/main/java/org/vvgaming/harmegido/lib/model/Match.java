@@ -24,14 +24,14 @@ public class Match
 	private final String matchName;
 	private final Date inicioPartida;
 	private final MatchDuration duracao;
-	
-	//Reponsável pela sincronia do cliente
+
+	// Reponsável pela sincronia do cliente
 	private transient TimeSync timeSync;
 
 	// Usando mapa porque o Set não tem método get
 	private final Map<String, Player> jogadores = new HashMap<String, Player>();
 	private final Set<Enchantment> encantamentos = new HashSet<Enchantment>();
-	
+
 	private Match(final String nomePartida, final Date inicio, final MatchDuration duracao)
 	{
 		this.matchName = nomePartida;
@@ -70,8 +70,8 @@ public class Match
 
 	/**
 	 * Retorna a pontuação dos time passado como parâmetro. <br/>
-	 * ATENÇÃO: Se a partida tiver sido sincronizada (chamando o método {@link #setSync(Date)}) 
-	 * esse método retornará informações incorretas.
+	 * ATENÇÃO: Se a partida tiver sido sincronizada (chamando o método {@link #setSync(Date)}) esse método retornará informações
+	 * incorretas.
 	 * 
 	 * @param time O time cuja pontuação deve ser retornada
 	 * @return Um inteiro positivo que contém a pontuação do time passado como parâmetro
@@ -80,7 +80,7 @@ public class Match
 	{
 		int pontuacao = 0;
 
-		for (Enchantment enchant : encantamentos)
+		for (final Enchantment enchant : encantamentos)
 		{
 			if (enchant.getJogador().getTime().equals(time))
 			{
@@ -102,14 +102,14 @@ public class Match
 	 */
 	public boolean isAtiva()
 	{
-		if (getHoraFimMilis() <= new Date().getTime())
+		if (getTimeRemaining() <= 0)
 		{
 			return false;
 		}
-		
+
 		final int pontuacaoFim = getPontuacaoFim();
-		
-		for (TeamType time : TeamType.values())
+
+		for (final TeamType time : TeamType.values())
 		{
 			if (getPontuacao(time) > pontuacaoFim)
 			{
@@ -118,35 +118,48 @@ public class Match
 		}
 		return true;
 	}
-	
+
+	/**
+	 * Retorna o tempo restante de partida, em milis
+	 * 
+	 * @return
+	 */
+	public long getTimeRemaining()
+	{
+		final long retorno = getHoraFimMilis() - new Date().getTime();
+		return retorno >= 0 ? retorno : 0;
+	}
+
 	/**
 	 * Retorna a pontuação necessária para a partida terminar
 	 */
 	public int getPontuacaoFim()
 	{
-		//TODO: Não está sendo verificado a quantidade de cada lado. Assume-se que
-		//eles possuam o mesmo número de jogadores
+		// TODO: Não está sendo verificado a quantidade de cada lado. Assume-se que
+		// eles possuam o mesmo número de jogadores
 		final int nJogadores = jogadores.size() / 2;
-		//espera-se pelo menos 7 encantamentos de cada jogador
-		final int pointsPerPlayer = Enchantment.getMaxPontuacao() * 7; 
+		// espera-se pelo menos 7 encantamentos de cada jogador
+		final int pointsPerPlayer = Enchantment.getMaxPontuacao() * 7;
 		return (duracao.ordinal() + 1) * nJogadores * pointsPerPlayer;
 	}
-	
+
 	/**
 	 * Retorna o instante no tempo que a partida foi iniciada. <br/>
-	 * ATENÇÃO: Se a partida não tiver sido sincronizada (chamando o método {@link #setSync(TimeSync)}) 
-	 * o tempo retornado será o tempo da partida criada no servidor.
+	 * ATENÇÃO: Se a partida não tiver sido sincronizada (chamando o método {@link #setSync(TimeSync)}) o tempo retornado será o tempo da
+	 * partida criada no servidor.
+	 * 
 	 * @return Uma instância de date que contém o instante no tempo que a partida foi iniciada
 	 */
 	public Date getInicioPartida()
 	{
-		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida); 
+		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida);
 	}
-	
+
 	/**
 	 * Retorna o instante no tempo que a partida terminará. <br/>
-	 * ATENÇÃO: Se a partida não tiver sido sincronizada (chamando o método {@link #setSync(TimeSync)}) 
-	 * o tempo retornado será o tempo tomando como base a partida criada no servidor.
+	 * ATENÇÃO: Se a partida não tiver sido sincronizada (chamando o método {@link #setSync(TimeSync)}) o tempo retornado será o tempo
+	 * tomando como base a partida criada no servidor.
+	 * 
 	 * @return Uma instância de date que contém o instante no tempo que a partida terminará
 	 */
 	public Date getFimPartida()
@@ -174,36 +187,35 @@ public class Match
 	{
 		return jogadores.containsKey(idJogador);
 	}
-	
+
 	/**
 	 * Retorna uma lista de jogadores contidos nesta partida. <br/>
-	 * ATENÇÃO: Será retornado uma cópia dos jogadores, portanto mudanças estruturais nos jogadores
-	 * retornados não afetarão esta partida.
+	 * ATENÇÃO: Será retornado uma cópia dos jogadores, portanto mudanças estruturais nos jogadores retornados não afetarão esta partida.
+	 * 
 	 * @return Uma lista com os jogadores desta partida.
 	 */
 	public List<Player> getJogadores()
 	{
 		final List<Player> toReturn = new ArrayList<Player>();
-		
-		for (Player jogador : jogadores.values())
+
+		for (final Player jogador : jogadores.values())
 		{
 			toReturn.add(jogador.copy());
 		}
 		return toReturn;
 	}
-	
+
 	/**
 	 * Retorna uma lista de jogadores do time informado. <br/>
-	 * ATENÇÃO: Será retornado uma cópia dos jogadores, 
-	 * portanto mudanças estruturais nos jogadores
-	 * retornados não afetarão esta partida.
+	 * ATENÇÃO: Será retornado uma cópia dos jogadores, portanto mudanças estruturais nos jogadores retornados não afetarão esta partida.
+	 * 
 	 * @return Uma lista com os jogadores desta partida para o time informado.
 	 */
 	public List<Player> getJogadores(final TeamType time)
 	{
 		final List<Player> toReturn = new ArrayList<Player>();
-		
-		for (Player jogador : jogadores.values())
+
+		for (final Player jogador : jogadores.values())
 		{
 			if (jogador.getTime().equals(time))
 			{
@@ -212,47 +224,68 @@ public class Match
 		}
 		return toReturn;
 	}
-	
+
 	/**
 	 * Retorna uma lista de encantamentos associados com esta partida. <br/>
-	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, 
-	 * portanto mudanças estruturais não afetarão as classes originais.
+	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, portanto mudanças estruturais não afetarão as classes originais.
+	 * 
 	 * @return Uma lista com os encantamentos desta partida.
 	 */
 	public List<Enchantment> getEncantamentos()
 	{
 		final List<Enchantment> toReturn = new ArrayList<Enchantment>();
-		
-		for (Enchantment enchant : encantamentos)
+
+		for (final Enchantment enchant : encantamentos)
 		{
 			toReturn.add(enchant.copy());
 		}
 		return toReturn;
 	}
-	
+
 	/**
 	 * Retorna uma lista com os encantamentos do time passado como parâmetro. <br/>
-	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, 
-	 * portanto mudanças estruturais não afetarão as classes originais.
+	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, portanto mudanças estruturais não afetarão as classes originais.
+	 * 
 	 * @return Uma lista com os encantamentos desta partida.
 	 */
-	public List<Enchantment> getEncantamentos(final TeamType time)
+	public List<Enchantment> getEncantamentos(final TeamType theTeam)
 	{
 		final List<Enchantment> toReturn = new ArrayList<Enchantment>();
-		
-		for (Enchantment enchant : encantamentos)
+
+		for (final Enchantment enchant : encantamentos)
 		{
-			if (enchant.getJogador().getTime().equals(time))
+			if (enchant.getJogador().getTime().equals(theTeam))
 			{
 				toReturn.add(enchant.copy());
 			}
 		}
 		return toReturn;
 	}
-	
+
 	/**
-	 * Define para esta partida a classe básica a ser utilizada na sincronização de tempo
-	 * dela com o servidor.
+	 * Retorna uma lista com os encantamentos que NÃO SÃO do time passado como parâmetro. <br/>
+	 * ATENÇÃO: Será retornado uma cópia dos encantamentos, portanto mudanças estruturais não afetarão as classes originais.
+	 * 
+	 * @return Uma lista com os encantamentos desta partida.
+	 */
+	public List<Enchantment> getEncantamentosNot(final TeamType theTeam)
+	{
+		final List<Enchantment> toReturn = new ArrayList<Enchantment>();
+
+		for (final Enchantment enchant : encantamentos)
+		{
+
+			if (!enchant.getJogador().getTime().equals(theTeam))
+			{
+				toReturn.add(enchant.copy());
+			}
+		}
+		return toReturn;
+	}
+
+	/**
+	 * Define para esta partida a classe básica a ser utilizada na sincronização de tempo dela com o servidor.
+	 * 
 	 * @param timeSync A classe a ser utilizada para prover a sincronização
 	 */
 	public void setSync(final TimeSync timeSync)
@@ -290,8 +323,8 @@ public class Match
 		{
 			final PlayerChangeEnchant pce = (PlayerChangeEnchant) stateChange;
 			final Player mJogador = getJogador(pce.getJogador().getIdJogador());
-			
-			for (Enchantment enchant : encantamentos)
+
+			for (final Enchantment enchant : encantamentos)
 			{
 				if (enchant.getImagem().equals(pce.getEnchantmentImage()))
 				{
@@ -305,23 +338,24 @@ public class Match
 			final PlayerChangeDisenchant pcd = (PlayerChangeDisenchant) stateChange;
 			final Player mJogador = getJogador(pcd.getJogador().getIdJogador());
 			final Enchantment enchant = getEnchantment(pcd.getEncantamento());
-			
+
 			if (enchant.getDesencantamento().notEmpty())
 			{
 				throw new IllegalArgumentException("Esse encantamento já foi desencantado");
 			}
-		
+
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
-			mJogador.desencantar(enchant, new Date());				
+			mJogador.desencantar(enchant, new Date());
 		}
 		else
 		{
 			throw new IllegalArgumentException("O tipo de stateChange não é reconhecido: " + stateChange.getClass());
 		}
 	}
-	
+
 	/**
-	 * Retorna o jogador desta partida com o id informado. 
+	 * Retorna o jogador desta partida com o id informado.
+	 * 
 	 * @param idJogador O identificador do jogador a ser encontrado
 	 * @return A referência ao jogador com o id informado.
 	 * @throws IllegalArgumentException Se o jogador não pertencer a esta partida
@@ -334,31 +368,30 @@ public class Match
 		{
 			throw new IllegalArgumentException("Erro: Jogador não pertence à partida");
 		}
-		
+
 		return mJogador;
 	}
 
 	/**
-	 * Retorna o encantamento desta partida que contém a mesma identificação que
-	 * o encantamento passado como parâmetro.
+	 * Retorna o encantamento desta partida que contém a mesma identificação que o encantamento passado como parâmetro.
+	 * 
 	 * @param encantamento O encantamento a ser procurado nesta partida
-	 * @return A referência ao encantamento que possui o mesmo identficador
-	 * que o encantamento passado como parâmetro
+	 * @return A referência ao encantamento que possui o mesmo identficador que o encantamento passado como parâmetro
 	 * @throws IllegalArgumentException No caso do encantamento não ser encontrado
 	 */
 	private Enchantment getEnchantment(final Enchantment encantamento)
 	{
-		for (Enchantment enchant : encantamentos)
+		for (final Enchantment enchant : encantamentos)
 		{
 			if (enchant.getImagem().equals(encantamento.getImagem()))
 			{
 				return enchant;
 			}
 		}
-		
+
 		throw new IllegalArgumentException("Erro: Encantamento não pertence à partida");
 	}
-	
+
 	/**
 	 * Esse enum representa a duração de uma partida
 	 */
@@ -372,16 +405,17 @@ public class Match
 		{
 			this.inMilliseconds = minutes * 60 * 1000;
 		}
-		
+
 		/**
 		 * Tenta criar uma duração de partida a partir de uma String
+		 * 
 		 * @param theString A string que será transformada em duração de partida
 		 * @return A representação desta string em uma duração de partida
 		 * @throws IllegalArgumentException Se a string não corresponder a uma partida
 		 */
 		public static MatchDuration from(final String theString)
 		{
-			for (MatchDuration curMatch : MatchDuration.values())
+			for (final MatchDuration curMatch : MatchDuration.values())
 			{
 				if (curMatch.toString().equals(theString))
 				{
@@ -395,38 +429,39 @@ public class Match
 		{
 			return inMilliseconds;
 		}
-		
+
 		@Override
 		public String toString()
 		{
 			switch (this)
 			{
-				case FIVE_MINUTES:
-				{
-					return "Cinco minutos";
-				}
-				case TEN_MINUTES:
-				{
-					return "Dez minutos"; 
-				}
-				case FIFTEEN_MINUTES:
-				{
-					return "Quinze minutos";
-				}
-				case UNLIMITED:
-				{
-					return "Sem limite de tempo";
-				}
-				default:
-				{
-					throw new IllegalArgumentException("Tipo de duração não reconhecida: " + this.getClass());
-				}
+			case FIVE_MINUTES:
+			{
+				return "Cinco minutos";
+			}
+			case TEN_MINUTES:
+			{
+				return "Dez minutos";
+			}
+			case FIFTEEN_MINUTES:
+			{
+				return "Quinze minutos";
+			}
+			case UNLIMITED:
+			{
+				return "Sem limite de tempo";
+			}
+			default:
+			{
+				throw new IllegalArgumentException("Tipo de duração não reconhecida: " + this.getClass());
+			}
 			}
 		};
 	}
 
 	/**
 	 * Retorna o nome associado com esta partida
+	 * 
 	 * @return O nome associado à partida
 	 */
 	public String getNomePartida()

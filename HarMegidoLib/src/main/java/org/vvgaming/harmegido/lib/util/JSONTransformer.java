@@ -2,13 +2,17 @@ package org.vvgaming.harmegido.lib.util;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.util.List;
 
 import org.vvgaming.harmegido.lib.model.match.MatchState;
 import org.vvgaming.harmegido.lib.util.wrappers.EitherWrapper;
 import org.vvgaming.harmegido.lib.util.wrappers.ExceptionWrapper;
+import org.vvgaming.harmegido.lib.util.wrappers.ListWrapper;
 import org.vvgaming.harmegido.lib.util.wrappers.MatchStateWrapper;
+import org.vvgaming.harmegido.lib.util.wrappers.Tuple2Wrapper;
 
 import com.github.detentor.codex.monads.Either;
+import com.github.detentor.codex.product.Tuple2;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -34,7 +38,6 @@ public final class JSONTransformer
 		{
 			final GsonBuilder gBuilder = new GsonBuilder();
 			gBuilder.setDateFormat(DateFormat.FULL);
-//			gBuilder.registerTypeAdapter(Tuple2.class, new Tuple2Wrapper(null));
 			gson = gBuilder.create();
 		}
 		return gson;
@@ -53,6 +56,14 @@ public final class JSONTransformer
 		else if (source instanceof Exception)
 		{
 			return getGson().toJson(new ExceptionWrapper((Exception) source));
+		}
+		else if (source instanceof List<?>)
+		{
+			return getGson().toJson(new ListWrapper((List<?>) source));
+		}
+		else if (source instanceof Tuple2<?, ?>)
+		{
+			return getGson().toJson(new Tuple2Wrapper((Tuple2<?, ?>) source));
 		}
 		else if (source instanceof MatchState)
 		{
@@ -79,6 +90,14 @@ public final class JSONTransformer
 		else if (isSubclass(classOf, Exception.class))
 		{
 			return (T) getGson().fromJson(source, ExceptionWrapper.class).getException();
+		}
+		else if (isSubclass(classOf, List.class))
+		{
+			return (T) getGson().fromJson(source, ListWrapper.class).getList();
+		}
+		else if (isSubclass(classOf, Tuple2.class))
+		{
+			return (T) getGson().fromJson(source, Tuple2Wrapper.class).getTuple2();
 		}
 		else if (classOf.getName().equals(MatchState.class.getName()))
 		{
@@ -108,6 +127,10 @@ public final class JSONTransformer
 	 */
 	private static <T, U> boolean isSubclass(final Class<T> theClass, final Class<U> ofClass)
 	{
-		return theClass != null && (theClass.equals(ofClass) || isSubclass(theClass.getSuperclass(), ofClass));
+		return ofClass.isAssignableFrom(theClass);
+//		return theClass != null && 
+//				(theClass.equals(ofClass) ||
+//						theClass.isAssignableFrom(ofClass) ||
+//						isSubclass(theClass.getSuperclass(), ofClass));
 	}
 }

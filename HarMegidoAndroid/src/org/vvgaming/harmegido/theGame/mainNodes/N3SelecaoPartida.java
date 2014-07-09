@@ -7,6 +7,7 @@ import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NText;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonText;
+import org.vvgaming.harmegido.gameEngine.nodes.util.NParallelWorker;
 import org.vvgaming.harmegido.gameEngine.nodes.util.NTimer;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackground;
@@ -39,6 +40,8 @@ public class N3SelecaoPartida extends NHMMainNode
 
 	private final List<NButtonText> btnsPartidas = new ArrayList<>();
 
+	private NParallelWorker worker;
+
 	@Override
 	public void init()
 	{
@@ -67,12 +70,24 @@ public class N3SelecaoPartida extends NHMMainNode
 			@Override
 			public Void apply()
 			{
-				UOSFacade.getDriverFacade().criarPartida(rnd.getRandomMatchName(), MatchDuration.FIVE_MINUTES);
+				worker.putTask(new Function0<Void>()
+				{
+					@Override
+					public Void apply()
+					{
+						UOSFacade.getDriverFacade().criarPartida(rnd.getRandomMatchName(), MatchDuration.FIVE_MINUTES);
+						return null;
+					}
+				});
 				sendConsoleMsg("A partida será criada em breve, aguarde...");
 				return null;
 			}
 		});
 
+		// coloca um trabalhador paralelo para ficar fazendo acesso a rede e não travar a thread principal
+		addSubNode(worker = new NParallelWorker());
+
+		// adiciona os nós normais
 		addSubNode(new NHMBackground(), 0);
 		addSubNode(orientacao, 1);
 		addSubNode(hr, 1);
@@ -140,21 +155,37 @@ public class N3SelecaoPartida extends NHMMainNode
 
 	}
 
+	private List<String> partidas = new ArrayList<>();
+
 	private List<String> getPartidas()
 	{
-		final ServerDriverFacade sdf = UOSFacade.getDriverFacade();
+		// se não tem nada pro worker fazer, vamos atualizar a lista
+		if (worker.qtdPendingTasks() == 0)
+		{
+			worker.putTask(new Function0<Void>()
+			{
+				@Override
+				public Void apply()
+				{
+					final ServerDriverFacade sdf = UOSFacade.getDriverFacade();
 
-		final Either<Exception, List<String>> partidas = sdf.listarPartidas();
-		if (partidas.isRight())
-		{
-			return partidas.getRight();
+					final Either<Exception, List<String>> partidas = sdf.listarPartidas();
+					if (partidas.isRight())
+					{
+						N3SelecaoPartida.this.partidas = partidas.getRight();
+					}
+					else
+					{
+						N3SelecaoPartida.this.partidas = new ArrayList<>();
+					}
+					return null;
+				}
+			});
 		}
-		else
-		{
-			return new ArrayList<>();
-		}
+
+		return partidas;
+
 	}
-
 	// private String montaString(final List<Tuple2<TeamType, Integer>> timesQtds)
 	// {
 	// final StringBuffer retorno = new StringBuffer();

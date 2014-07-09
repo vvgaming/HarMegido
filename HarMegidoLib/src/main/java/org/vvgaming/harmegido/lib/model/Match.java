@@ -153,7 +153,9 @@ public class Match
 	 */
 	public Date getInicioPartida()
 	{
-		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida);
+//		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida);
+		//removendo para testes
+		return timeSync.getLocalTime(inicioPartida);
 	}
 
 	/**

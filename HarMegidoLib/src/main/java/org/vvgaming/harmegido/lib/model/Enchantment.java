@@ -96,7 +96,9 @@ public class Enchantment extends Spell implements Copyable
 	
 	private Date getLocalTime(final Date forDate)
 	{
-		return timeSync == null ? forDate : timeSync.getLocalTime(forDate);
+		//alteração feita para verificar se o timesync está sendo usado
+		return timeSync.getLocalTime(forDate);
+//		return timeSync == null ? forDate : timeSync.getLocalTime(forDate);
 	}
 
 	/**

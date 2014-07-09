@@ -91,7 +91,7 @@ public class Enchantment extends Spell implements Copyable
 			endDate = getLocalTime(desencantamento.get().getTimestamp());
 		}
 		
-		return (int) ((endDate.getTime() - localStartDate.getTime()) / 1000);
+		return (int) ((Math.abs(endDate.getTime() - localStartDate.getTime())) / 1000);
 	}
 	
 	private Date getLocalTime(final Date forDate)

@@ -54,8 +54,8 @@ public class N4SelecaoChar extends NHMMainNode
 	private NToggleButton demoniosTglBtn;
 	private NGroupToggleButton timeTglGroup;
 
-	private List<NButtonText> anjosNomesBtns = new ArrayList<>();
-	private List<NButtonText> demoniosNomesBtns = new ArrayList<>();
+	private final List<NButtonText> anjosNomesBtns = new ArrayList<>();
+	private final List<NButtonText> demoniosNomesBtns = new ArrayList<>();
 
 	private NText orientacao;
 
@@ -75,7 +75,7 @@ public class N4SelecaoChar extends NHMMainNode
 		rnd = new RandomNames(getGameAssetManager());
 
 		// título com o nome da partida
-		NText title = new NText((int) getGameWidth(.5f), 0, NOME_PARTIDA);
+		final NText title = new NText((int) getGameWidth(.5f), 0, NOME_PARTIDA);
 		title.face = Typeface.createFromAsset(getGameAssetManager().getAndroidAssets(), "fonts/Radio Trust.ttf");
 		title.paint.setTextAlign(Align.CENTER);
 		title.vAlign = NText.VerticalAlign.TOP;
@@ -188,7 +188,7 @@ public class N4SelecaoChar extends NHMMainNode
 							throw new IllegalArgumentException("time desconhecido: " + arg0);
 						}
 
-						final NText texto = new NText(width, height = height + (getSmallFontSize() * 1.3f), nome);
+						final NText texto = new NText(width, height = height + getSmallFontSize() * 1.3f, nome);
 						texto.face = getDefaultFace();
 						texto.paint.setTextAlign(Align.CENTER);
 						final NButtonText btn = new NButtonText(texto);
@@ -207,14 +207,16 @@ public class N4SelecaoChar extends NHMMainNode
 								final ServerDriverFacade fac = UOSFacade.getDriverFacade();
 
 								final Player p = Player.from(nome, DeviceInfo.getDeviceId(), angelTeam ? TeamType.LIGHT : TeamType.DARK);
-								Either<Exception, Boolean> addResp = fac.adicionarJogador(NOME_PARTIDA, p);
+								final Either<Exception, Boolean> addResp = fac.adicionarJogador(NOME_PARTIDA, p);
 
 								if (addResp.isRight() && addResp.getRight())
 								{
-									Either<Exception, Match> matResp = fac.encontrarPartida(p);
+									final Either<Exception, Match> matResp = fac.encontrarPartida(p);
 									if (matResp.isRight())
 									{
-										MatchManager.definirPartida(matResp.getRight());
+										final Match partida = matResp.getRight();
+										partida.setSync(fac.getTimeSync());
+										MatchManager.definirPartida(partida);
 										RootNode.getInstance().changeMainNode(new N5Partida(p));
 									}
 									else
@@ -243,9 +245,9 @@ public class N4SelecaoChar extends NHMMainNode
 		};
 	}
 
-	private void killsNodes(GameNode... nodesParaLimpar)
+	private void killsNodes(final GameNode... nodesParaLimpar)
 	{
-		for (GameNode node : nodesParaLimpar)
+		for (final GameNode node : nodesParaLimpar)
 		{
 			node.kill();
 		}

@@ -137,7 +137,8 @@ public class Match
 	{
 		// TODO: Não está sendo verificado a quantidade de cada lado. Assume-se que
 		// eles possuam o mesmo número de jogadores
-		final int nJogadores = jogadores.size() / 2;
+
+		final int nJogadores = (int) Math.ceil(jogadores.size() / 2.0f);
 		// espera-se pelo menos 7 encantamentos de cada jogador
 		final int pointsPerPlayer = Enchantment.getMaxPontuacao() * 7;
 		return (duracao.ordinal() + 1) * nJogadores * pointsPerPlayer;
@@ -347,7 +348,7 @@ public class Match
 			}
 
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
-			//TODO: Alteração no cálculo do desencantamento vai necessitar setar o timeSync
+			// TODO: Alteração no cálculo do desencantamento vai necessitar setar o timeSync
 			mJogador.desencantar(enchant, new Date());
 		}
 		else

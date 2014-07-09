@@ -15,6 +15,7 @@ import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
+import org.vvgaming.harmegido.gameEngine.nodes.util.NParallelWorker;
 import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
@@ -57,6 +58,8 @@ public class N5Partida extends NHMMainNode
 	private boolean charging = false;
 	private float chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 	private Modo modo = Modo.ENCANTANDO;
+
+	private NParallelWorker worker;
 
 	private final Queue<Enchantment> encantamentos = new LinkedList<>();
 
@@ -153,6 +156,9 @@ public class N5Partida extends NHMMainNode
 		tglGroupModo.toggle(0);
 		setModoEncantar();
 
+		// coloca um trabalhador paralelo para ficar fazendo acesso a rede e não travar a thread principal
+		addSubNode(worker = new NParallelWorker());
+
 		// adicionando nas camadas
 		addSubNode(bg, 0);
 		addSubNode(cam, 1);
@@ -236,7 +242,6 @@ public class N5Partida extends NHMMainNode
 			modo = Modo.DESENCANTANDO;
 			chargingDelay = NHMEnchantingCam.DESENCANTAMENTO_CASTING_TIME;
 			btnAvancar.setVisible(true);
-			// btnVoltar.setVisible(true);
 
 			final Enchantment primeiro = encantamentos.peek();
 
@@ -272,7 +277,15 @@ public class N5Partida extends NHMMainNode
 						progressBar.reset();
 						setModoDesencantar();
 
-						UOSFacade.getDriverFacade().desencantarObjeto(opPart.get().getNomePartida(), player, encantamentos.poll());
+						worker.putTask(new Function0<Void>()
+						{
+							@Override
+							public Void apply()
+							{
+								UOSFacade.getDriverFacade().desencantarObjeto(opPart.get().getNomePartida(), player, encantamentos.poll());
+								return null;
+							}
+						});
 
 					}
 					else
@@ -324,7 +337,15 @@ public class N5Partida extends NHMMainNode
 							final OpenCVMatWrapper features = ocvUtil.toOpenCVMatWrapper(encantTuple.getVal2());
 							final EnchantmentImage ei = EnchantmentImage.from(preview, features);
 
-							UOSFacade.getDriverFacade().encantarObjeto(part.get().getNomePartida(), player, ei);
+							worker.putTask(new Function0<Void>()
+							{
+								@Override
+								public Void apply()
+								{
+									UOSFacade.getDriverFacade().encantarObjeto(part.get().getNomePartida(), player, ei);
+									return null;
+								}
+							});
 
 						}
 						else
@@ -395,6 +416,7 @@ public class N5Partida extends NHMMainNode
 		{
 			sendConsoleMsg("Saindo da partida...");
 			RootNode.getInstance().changeMainNode(new N3SelecaoPartida());
+			MatchManager.limparPartida();
 			return Option.empty();
 		}
 		return part;

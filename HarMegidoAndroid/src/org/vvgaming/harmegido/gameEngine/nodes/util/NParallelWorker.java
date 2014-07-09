@@ -39,6 +39,7 @@ public class NParallelWorker extends GameNode
 							task.apply();
 						}
 					}
+					
 					synchronized (worker)
 					{
 						try
@@ -98,10 +99,10 @@ public class NParallelWorker extends GameNode
 		{
 			// adiciona a task e acorda a Thread
 			tasks.add(task);
-			synchronized (worker)
-			{
-				worker.notify();
-			}
+		}
+		synchronized (worker)
+		{
+			worker.notify();
 		}
 	}
 

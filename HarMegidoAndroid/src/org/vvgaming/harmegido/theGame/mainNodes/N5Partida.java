@@ -1,31 +1,40 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
-import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.opencv.core.Mat;
 import org.vvgaming.harmegido.R;
+import org.vvgaming.harmegido.gameEngine.RootNode;
 import org.vvgaming.harmegido.gameEngine.geometry.Ponto;
 import org.vvgaming.harmegido.gameEngine.nodes.NImage;
+import org.vvgaming.harmegido.gameEngine.nodes.NText;
+import org.vvgaming.harmegido.gameEngine.nodes.NText.VerticalAlign;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NButtonImage;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NGroupToggleButton;
 import org.vvgaming.harmegido.gameEngine.nodes.buttons.NToggleButton;
 import org.vvgaming.harmegido.lib.model.Enchantment;
 import org.vvgaming.harmegido.lib.model.EnchantmentImage;
+import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.OpenCVMatWrapper;
 import org.vvgaming.harmegido.lib.model.Player;
+import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackgroundPartida;
 import org.vvgaming.harmegido.theGame.objNodes.NHMEnchantingCam;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.objNodes.NProgressBar;
 import org.vvgaming.harmegido.theGame.objNodes.NSimpleBox;
+import org.vvgaming.harmegido.uos.UOSFacade;
 import org.vvgaming.harmegido.util.Constantes;
+import org.vvgaming.harmegido.util.MatchManager;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
+import android.graphics.Paint.Align;
 import android.view.MotionEvent;
 
+import com.github.detentor.codex.collections.immutable.ListSharp;
 import com.github.detentor.codex.function.Function0;
 import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Option;
@@ -42,13 +51,12 @@ public class N5Partida extends NHMMainNode
 	private NGroupToggleButton tglGroupModo;
 	private NProgressBar progressBar;
 	private NButton btnAvancar;
-	// private NButton btnVoltar;
+	private NText stats;
+	private NText qtdEnchants;
 
 	private boolean charging = false;
 	private float chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 	private Modo modo = Modo.ENCANTANDO;
-
-	//
 
 	private final Queue<Enchantment> encantamentos = new LinkedList<>();
 
@@ -84,7 +92,7 @@ public class N5Partida extends NHMMainNode
 		final float camHeight = getGameHeight(.5f);
 		cam = new NHMEnchantingCam(camPoint, camHeight);
 
-		greenCam = new NSimpleBox(0, (int) (camPoint.y - camHeight/2), getGameWidth(), (int) camHeight, 0, 255, 0);
+		greenCam = new NSimpleBox(0, (int) (camPoint.y - camHeight / 2), getGameWidth(), (int) camHeight, 0, 255, 0);
 		greenCam.setColor(80, 0, 255, 0);
 		greenCam.setVisible(false);
 
@@ -131,11 +139,15 @@ public class N5Partida extends NHMMainNode
 				return null;
 			}
 		});
-		// final NImage imgVoltar = new NImage(new Ponto(getGameWidth(.1f), getGameHeight(.35f)), getGameAssetManager().getBitmap(
-		// R.drawable.voltar));
-		// imgVoltar.setWidth(getGameWidth(.15f), true);
-		// btnVoltar = new NButtonImage(imgVoltar);
-		// btnVoltar.setVisible(false);
+
+		stats = new NText(getGameWidth(.5f), getGameHeight(.065f), "");
+		stats.paint.setTextAlign(Align.CENTER);
+		stats.face = getDefaultFace();
+
+		qtdEnchants = new NText(btnDesencantar.getBoundingRect().right, btnDesencantar.getBoundingRect().bottom, "");
+		qtdEnchants.paint.setTextAlign(Align.RIGHT);
+		qtdEnchants.paint.setARGB(200, 255, 255, 255);
+		qtdEnchants.vAlign = VerticalAlign.BOTTOM;
 
 		// modo padrão
 		tglGroupModo.toggle(0);
@@ -151,13 +163,44 @@ public class N5Partida extends NHMMainNode
 
 		addSubNode(tglGroupModo, 5);
 		addSubNode(btnAvancar, 5);
-		// addSubNode(btnVoltar, 5);
+		addSubNode(stats, 5);
+
+		addSubNode(qtdEnchants, 6);
 
 	}
 
 	@Override
 	public void update(final long delta)
 	{
+		encantamentos.clear();
+		final Option<Match> opPartida = getPartidaEmAndamento();
+		if (opPartida.notEmpty())
+		{
+			final Match partida = opPartida.get();
+
+			// filtra os encantamentos do(s) outro(s) time(s) que precisam ser desencantados
+			final List<Enchantment> paraDesencantar = ListSharp.from(partida.getEncantamentosNot(player.getTime()))
+					.filter(new Function1<Enchantment, Boolean>()
+					{
+						@Override
+						public Boolean apply(final Enchantment arg0)
+						{
+							return arg0.getDesencantamento().isEmpty();
+						}
+					}).toList();
+			encantamentos.addAll(paraDesencantar);
+
+			qtdEnchants.text = encantamentos.size() + "";
+
+			String stats = "| ";
+			for (final TeamType t : TeamType.values())
+			{
+				stats += t.toString() + ": " + partida.getPontuacao(t) + " |";
+			}
+			stats += "  " + partida.getTimeRemaining() / 1000;
+			this.stats.text = stats;
+
+		}
 
 		if (charging)
 		{
@@ -173,7 +216,6 @@ public class N5Partida extends NHMMainNode
 		modo = Modo.ENCANTANDO;
 		chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
 		btnAvancar.setVisible(false);
-		// btnVoltar.setVisible(false);
 		cam.parar();
 	}
 
@@ -220,15 +262,17 @@ public class N5Partida extends NHMMainNode
 				public Void apply(final Boolean arg0)
 				{
 
-					if (arg0)
+					final Option<Match> opPart = getPartidaEmAndamento();
+					if (arg0 && opPart.notEmpty())
 					{
 						sendConsoleMsg("Desencantado com sucesso");
 						getGameAssetManager().playSound(R.raw.encantament_sucesso);
 						getGameAssetManager().vibrate(500);
 						charging = false;
 						progressBar.reset();
-						encantamentos.poll();
 						setModoDesencantar();
+
+						UOSFacade.getDriverFacade().desencantarObjeto(opPart.get().getNomePartida(), player, encantamentos.poll());
 
 					}
 					else
@@ -263,7 +307,8 @@ public class N5Partida extends NHMMainNode
 					@Override
 					public Void apply(final Option<Tuple2<Mat, Mat>> encantado)
 					{
-						if (encantado.notEmpty())
+						final Option<Match> part = getPartidaEmAndamento();
+						if (encantado.notEmpty() && part.notEmpty())
 						{
 							sendConsoleMsg("Encantamento finalizado com sucesso");
 							getGameAssetManager().playSound(R.raw.encantament_sucesso);
@@ -279,7 +324,8 @@ public class N5Partida extends NHMMainNode
 							final OpenCVMatWrapper features = ocvUtil.toOpenCVMatWrapper(encantTuple.getVal2());
 							final EnchantmentImage ei = EnchantmentImage.from(preview, features);
 
-							encantamentos.add(Enchantment.from(player, new Date(), ei));
+							UOSFacade.getDriverFacade().encantarObjeto(part.get().getNomePartida(), player, ei);
+
 						}
 						else
 						{
@@ -340,6 +386,18 @@ public class N5Partida extends NHMMainNode
 	private enum Modo
 	{
 		ENCANTANDO, DESENCANTANDO;
+	}
+
+	private Option<Match> getPartidaEmAndamento()
+	{
+		final Option<Match> part = MatchManager.getPartida();
+		if (part.isEmpty() || !part.get().contemJogador(player.getIdJogador()) || !part.get().isAtiva())
+		{
+			sendConsoleMsg("Saindo da partida...");
+			RootNode.getInstance().changeMainNode(new N3SelecaoPartida());
+			return Option.empty();
+		}
+		return part;
 	}
 
 }

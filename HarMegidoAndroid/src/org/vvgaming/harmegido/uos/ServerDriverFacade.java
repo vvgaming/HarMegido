@@ -19,6 +19,7 @@ import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.lib.util.TimeSync;
 
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
@@ -32,15 +33,16 @@ public class ServerDriverFacade
 	private static final String HAR_MEGIDO_DRIVER = "uos.harmegido.server";
 	private final UOS uos;
 	private final UpDevice device;
+	private final TimeSync timeSync;
 	
-
 	protected ServerDriverFacade(final UOS uos, final UpDevice device)
 	{
 		super();
 		this.uos = uos;
 		this.device = device;
+		this.timeSync = TimeSync.from(getHoraServidor().getRight(), new Date());
 	}
-	
+
 	/**
 	 * Cria um facade (fachada) para o driver do servidor a partir do UOS passado como parâmetro.
 	 * 
@@ -104,6 +106,17 @@ public class ServerDriverFacade
 		}
 
 		return drivers;
+	}
+	
+	/**
+	 * Retorna a instância utilizada para fazer a sincronia entre
+	 * o tempo do servidor e o tempo do cliente.
+	 * @return Uma instância de {@link TimeSync} capaz de fazer a sincronia
+	 * entre o servidor e o cliente.
+	 */
+	public TimeSync getTimeSync()
+	{
+		return timeSync;
 	}
 	
 	/**

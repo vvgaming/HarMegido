@@ -19,6 +19,9 @@ public class TimeSync
 		super();
 		this.baseDate = baseDate;
 		this.toSync = toSync;
+		System.out.println("timesync sendo criado para ");
+		System.out.println("base date:  " + baseDate);
+		System.out.println("dateToSync:  " + toSync);
 	}
 	
 	/**

@@ -10,8 +10,8 @@ import android.os.AsyncTask;
 
 public class UOSFacade
 {
-	private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
-	// private static final String SERVER_IP = "192.168.0.100";
+	 private static final String SERVER_IP = "harmegido.servegame.com"; // servidor amazon
+//	private static final String SERVER_IP = "192.168.0.100";
 
 	// //////////////////////////////// UOS //////////////////////////////////
 	private static UOS uos;
@@ -45,6 +45,7 @@ public class UOSFacade
 			{
 				final ClientMode.Properties props = new ClientMode.Properties();
 				props.put("ubiquitos.driver.deploylist", ClientDriver.class.getName());
+				props.put("ubiquitos.websocket.messageBufferSize", 1 * 1024 * 1024); // 1 mb pra garantir
 				props.setServer(SERVER_IP);
 				uos.start(props);
 				uosStarted = true;

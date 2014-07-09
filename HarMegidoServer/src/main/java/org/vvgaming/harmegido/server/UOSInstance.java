@@ -8,16 +8,16 @@ import org.unbiquitous.uos.core.UOSLogging;
 
 public final class UOSInstance
 {
-	private static UOS instance; 
-	
+	private static UOS instance;
+
 	private UOSInstance()
 	{
-		//previne instanciação
+		// previne instanciação
 	}
-	
+
 	/**
 	 * Cria e inicializa uma instância do UOS. <br/>
-
+	 * 
 	 * @return Uma instância do UOS
 	 */
 	private static UOS createUOS()
@@ -26,14 +26,15 @@ public final class UOSInstance
 		UOSLogging.setLevel(Level.ALL);
 		ServerMode.Properties properties = new ServerMode.Properties();
 		properties.put("ubiquitos.driver.deploylist", ServerDriver.class.getName());
+		properties.put("ubiquitos.websocket.messageBufferSize", 2 * 1024 * 1024); // 2 mb pra garantir
+
 		toReturn.start(properties);
 		return toReturn;
 	}
-	
+
 	/**
-	 * Retorna uma instância do UOS devidamente configurada.
-	 * ATENÇÃO: Como o UOS pode demorar para iniciar, a instância pode não
-	 * estar totalmente inicializada.
+	 * Retorna uma instância do UOS devidamente configurada. ATENÇÃO: Como o UOS pode demorar para iniciar, a instância pode não estar
+	 * totalmente inicializada.
 	 * 
 	 * @return A instância do UOS
 	 */

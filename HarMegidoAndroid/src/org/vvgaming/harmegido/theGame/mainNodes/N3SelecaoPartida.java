@@ -1,7 +1,6 @@
 package org.vvgaming.harmegido.theGame.mainNodes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.vvgaming.harmegido.gameEngine.RootNode;
@@ -38,7 +37,7 @@ public class N3SelecaoPartida extends NHMMainNode
 	private NText nenhumaPartida;
 	private RandomNames rnd;
 
-	private List<NButtonText> btnsPartidas = new ArrayList<>();
+	private final List<NButtonText> btnsPartidas = new ArrayList<>();
 
 	@Override
 	public void init()
@@ -53,7 +52,7 @@ public class N3SelecaoPartida extends NHMMainNode
 		orientacao.face = font;
 		orientacao.paint.setTextAlign(Align.CENTER);
 
-		NSimpleBox hr = new NSimpleBox(0, (int) (getGameHeight(.25f)), getGameWidth(), 5, 255, 255, 255);
+		final NSimpleBox hr = new NSimpleBox(0, (int) getGameHeight(.25f), getGameWidth(), 5, 255, 255, 255);
 
 		nenhumaPartida = orientacao.clone();
 		nenhumaPartida.pos = nenhumaPartida.pos.translate(0, getGameHeight(.2f));
@@ -62,7 +61,7 @@ public class N3SelecaoPartida extends NHMMainNode
 		final NText criarPartidaTexto = nenhumaPartida.clone();
 		criarPartidaTexto.text = "Criar nova partida";
 		criarPartidaTexto.pos = new Ponto(getGameWidth(.5f), getGameHeight(.8f));
-		NButtonText criarPartidaBtn = new NButtonText(criarPartidaTexto);
+		final NButtonText criarPartidaBtn = new NButtonText(criarPartidaTexto);
 		criarPartidaBtn.setOnClickFunction(new Function0<Void>()
 		{
 			@Override
@@ -85,13 +84,13 @@ public class N3SelecaoPartida extends NHMMainNode
 			@Override
 			public Void apply()
 			{
-				for (NButtonText btn : btnsPartidas)
+				for (final NButtonText btn : btnsPartidas)
 				{
 					btn.kill();
 				}
 				btnsPartidas.clear();
 
-				List<String> partidas = getPartidas();
+				final List<String> partidas = getPartidas();
 				nenhumaPartida.setVisible(partidas.isEmpty());
 
 				if (!partidas.isEmpty())
@@ -99,7 +98,7 @@ public class N3SelecaoPartida extends NHMMainNode
 					float height = getGameHeight(.35f) - getSmallFontSize();
 					for (final String partida : partidas)
 					{
-						final NText texto = new NText(getGameWidth(.5f), height = height + (getSmallFontSize() * 1.3f), partida);
+						final NText texto = new NText(getGameWidth(.5f), height = height + getSmallFontSize() * 1.3f, partida);
 						texto.face = font;
 						texto.paint.setTextAlign(Align.CENTER);
 						final NButtonText btnPartida = new NButtonText(texto);
@@ -144,6 +143,7 @@ public class N3SelecaoPartida extends NHMMainNode
 	private List<String> getPartidas()
 	{
 		final ServerDriverFacade sdf = UOSFacade.getDriverFacade();
+
 		final Either<Exception, List<String>> partidas = sdf.listarPartidas();
 		if (partidas.isRight())
 		{
@@ -151,8 +151,18 @@ public class N3SelecaoPartida extends NHMMainNode
 		}
 		else
 		{
-			return Arrays.asList();
+			return new ArrayList<>();
 		}
 	}
+
+	// private String montaString(final List<Tuple2<TeamType, Integer>> timesQtds)
+	// {
+	// final StringBuffer retorno = new StringBuffer();
+	// for (final Tuple2<TeamType, Integer> time : timesQtds)
+	// {
+	// retorno.append(time.getVal1() + ": " + time.getVal2() + " ");
+	// }
+	// return retorno.toString().trim();
+	// }
 
 }

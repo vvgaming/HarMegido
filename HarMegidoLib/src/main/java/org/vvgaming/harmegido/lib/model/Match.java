@@ -155,6 +155,7 @@ public class Match
 	{
 //		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida);
 		//removendo para testes
+		System.out.println("TIMESYNC SENDO CHAMADO P/ " + inicioPartida);
 		return timeSync.getLocalTime(inicioPartida);
 	}
 

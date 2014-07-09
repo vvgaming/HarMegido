@@ -238,7 +238,7 @@ public class ServerDriver implements UosDriver
 			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
 			{
 				//TODO: Colocar algum código para fazer algo com o retorno
-				notifyClients(CLIENT_DRIVER_NAME, stateJson);
+				notifyClients(nomePartida, stateJson);
 			}
 		}
 	}
@@ -344,8 +344,6 @@ public class ServerDriver implements UosDriver
 	 */
 	private Either<Exception, Boolean> notifyClients(final String nomePartida, final String stateJson)
 	{
-		System.out.println("------NOTIFY SENDO CHAMADO---------");
-		
 		//A chamada genérica, a mesma para todos eles
 		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
 		call.addParameter("nomePartida", nomePartida);
@@ -367,11 +365,8 @@ public class ServerDriver implements UosDriver
 			final SetSharp<String> jogadores = SetSharp.from(partida.getJogadores()).map(lift);
 			final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
 			
-			System.out.println("NÚMERO DE DRIVERS: " + listDrivers);
-
 			for(DriverData curDriver : listDrivers)
 			{
-				System.out.println("NOME DO DRIVER: " + curDriver.getDevice().getName());
 				//TODO: Perceba que não há garantia de ser enviado para todos os jogadores.
 				//E também não é verificada a resolução da mensagem (erro ou não)
 				if (jogadores.contains(curDriver.getDevice().getName()))

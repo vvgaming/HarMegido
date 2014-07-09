@@ -331,7 +331,9 @@ public class Match
 					throw new IllegalArgumentException("Esse encantamento já existe");
 				}
 			}
-			encantamentos.add(mJogador.encantar(new Date(), pce.getEnchantmentImage()));
+			final Enchantment enchant = mJogador.encantar(new Date(), pce.getEnchantmentImage());
+			enchant.setTimeSync(timeSync);
+			encantamentos.add(enchant);
 		}
 		else if (stateChange instanceof PlayerChangeDisenchant)
 		{
@@ -345,6 +347,7 @@ public class Match
 			}
 
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
+			//TODO: Alteração no cálculo do desencantamento vai necessitar setar o timeSync
 			mJogador.desencantar(enchant, new Date());
 		}
 		else

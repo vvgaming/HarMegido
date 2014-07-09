@@ -25,4 +25,5 @@ public enum TeamType
 		}
 		return toReturn;
 	}
+	
 }

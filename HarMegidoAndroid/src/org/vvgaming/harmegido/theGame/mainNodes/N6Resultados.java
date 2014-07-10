@@ -57,7 +57,7 @@ public class N6Resultados extends NHMMainNode {
 						Either<Exception, Scoreboard> stats = UOSFacade
 								.getDriverFacade().getPontuacao(NOME_PARTIDA);
 						if (stats.isRight()) {
-							String statsTexto = "| ";
+							String statsTexto = "Partida encerrada\n\n| ";
 							for (final TeamType t : TeamType.values()) {
 								statsTexto += t.toString() + ": "
 										+ stats.getRight().getPontuacao(t)

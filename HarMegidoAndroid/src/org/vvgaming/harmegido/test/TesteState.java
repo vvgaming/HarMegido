@@ -2,6 +2,7 @@ package org.vvgaming.harmegido.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -17,6 +18,7 @@ import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.uos.ServerDriverFacade;
 import org.vvgaming.harmegido.uos.UOSFacade;
 import org.vvgaming.harmegido.util.DeviceInfo;
+import org.vvgaming.harmegido.util.MatchManager;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -114,9 +116,10 @@ public class TesteState extends Activity
 				}
 				else
 				{
+					partida = retorno.getRight();
+					MatchManager.definirPartida(partida);
 					setText(retorno.getRight().getNomePartida() + "/" + retorno.getRight().getFimPartida());
 				}
-
 			}
 		});
 
@@ -151,9 +154,9 @@ public class TesteState extends Activity
 					setText("Crie uma partida antes de encantar.");
 					return;
 				}
-				final byte[] bytes = new byte[20000];
+				final byte[] bytes = new byte[20];
 				Arrays.fill(bytes, (byte) -100);
-				final byte[] bytes2 = new byte[20000];
+				final byte[] bytes2 = new byte[20];
 				Arrays.fill(bytes2, (byte) -100);
 				
 				final EnchantmentImage enchant = EnchantmentImage.from(OpenCVMatWrapper.from(bytes, 10, 10, 0),
@@ -243,6 +246,74 @@ public class TesteState extends Activity
 					}
 					setText(theStr);
 				}
+			}
+		});
+		
+		((Button) findViewById(R.id.btnVerHorario)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				final Either<Exception, Date> retorno = sdf.getHoraServidor();
+				sdf.getTimeSync().getLocalTime(partida.getInicioPartida());
+				setText(formatarRetorno(retorno));
+			}
+		});
+		
+		((Button) findViewById(R.id.btnVerPontuacaoTodasPartidas)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				Either<Exception, List<String>> partidas = sdf.listarPartidas();
+				
+				if (partidas.isRight())
+				{
+					String toShow = "";
+					for (String partida : partidas.getRight())
+					{
+						Either<Exception, Scoreboard> pontuacao = sdf.getPontuacao(partida);
+						if (pontuacao.isRight())
+						{
+							toShow += pontuacao.getRight() + "\n";
+						}
+					}
+					setText(toShow);
+				}
+			}
+		});
+		
+		((Button) findViewById(R.id.btnVerPontuacaoTodasPartidasLocal)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				Either<Exception, List<String>> partidas = sdf.listarPartidas();
+				
+				if (partidas.isRight())
+				{
+					String toShow = "";
+					for (String partida : partidas.getRight())
+					{
+						//Adiciona o jogador
+						sdf.adicionarJogador(partida, jogador);
+						
+						Match match = sdf.encontrarPartida(jogador).getRight();
+						match.setSync(sdf.getTimeSync());
+						toShow += match.getPontuacao(TeamType.DARK) + " / " + match.getPontuacao(TeamType.LIGHT) + "\n";
+						sdf.removerJogador(partida, jogador);
+					}
+					setText(toShow);
+				}
+			}
+		});
+		
+		((Button) findViewById(R.id.btnVerPontuacaoLocal)).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				setText("Dark: " + partida.getPontuacao(TeamType.DARK) + "/ Light: " + partida.getPontuacao(TeamType.DARK));
 			}
 		});
 

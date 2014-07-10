@@ -26,7 +26,9 @@ import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.OpenCVMatWrapper;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.TeamType;
+import org.vvgaming.harmegido.theGame.objNodes.NCircleProgressBar;
 import org.vvgaming.harmegido.theGame.objNodes.NHMBackgroundPartida;
+import org.vvgaming.harmegido.theGame.objNodes.NHMCooldownController;
 import org.vvgaming.harmegido.theGame.objNodes.NHMEnchantingCam;
 import org.vvgaming.harmegido.theGame.objNodes.NHMMainNode;
 import org.vvgaming.harmegido.theGame.objNodes.NProgressBar;
@@ -37,6 +39,7 @@ import org.vvgaming.harmegido.util.MatchManager;
 import org.vvgaming.harmegido.vision.OCVUtil;
 
 import android.graphics.Paint.Align;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -50,15 +53,20 @@ import com.github.detentor.codex.product.Tuple3;
 public class N5Partida extends NHMMainNode
 {
 
+	private static final int COOL_DOWN_ENCANTAR = 30000;
+
 	private final Player player;
 
 	private NHMEnchantingCam cam;
 	private NSimpleBox greenCam;
 	private NGroupToggleButton tglGroupModo;
 	private NProgressBar progressBar;
+	private NCircleProgressBar enchantCooldownProgress;
 	private NButton btnAvancar;
 	private NText stats;
 	private NText qtdEnchants;
+	// controlador dos cooldowns de encantamento
+	private NHMCooldownController cds;
 
 	private boolean charging = false;
 	private float chargingDelay = NHMEnchantingCam.ENCANTAMENTO_CASTING_TIME;
@@ -162,9 +170,21 @@ public class N5Partida extends NHMMainNode
 		qtdEnchants.paint.setARGB(200, 255, 255, 255);
 		qtdEnchants.vAlign = VerticalAlign.BOTTOM;
 
+		// controlador de cooldowns
+		cds = new NHMCooldownController();
+		// cooldown de 30 segundos para encantar
+		cds.addCooldown(0, COOL_DOWN_ENCANTAR);
+
+		final RectF btnEncantBoundingRect = btnEncantar.getBoundingRect();
+		enchantCooldownProgress = new NCircleProgressBar(btnEncantBoundingRect.left, btnEncantBoundingRect.top,
+				btnEncantBoundingRect.width(), btnEncantBoundingRect.height());
+		enchantCooldownProgress.setARGB(100, 255, 255, 255);
+
 		// modo padrão
 		tglGroupModo.toggle(0);
 		setModoEncantar();
+
+		addSubNode(cds);
 
 		// coloca um trabalhador paralelo para ficar fazendo acesso a rede e não
 		// travar a thread principal
@@ -183,6 +203,7 @@ public class N5Partida extends NHMMainNode
 		addSubNode(stats, 5);
 
 		addSubNode(qtdEnchants, 6);
+		addSubNode(enchantCooldownProgress, 6);
 
 	}
 
@@ -226,6 +247,8 @@ public class N5Partida extends NHMMainNode
 		{
 			progressBar.setProgress(progressBar.getProgress() + 1 / chargingDelay * delta);
 		}
+
+		enchantCooldownProgress.setProgress(cds.getPercentage(0));
 
 	}
 
@@ -278,14 +301,23 @@ public class N5Partida extends NHMMainNode
 	{
 		if (modo.equals(Modo.ENCANTANDO))
 		{
+
 			switch (event.getAction())
 			{
 			case MotionEvent.ACTION_DOWN:
-				charging = true;
-				sendConsoleMsg("Encantamento sendo preparado...");
-				getGameAssetManager().vibrate(50);
+				if (cds.getPercentage(0) <= 0f)
+				{
+					charging = true;
+					sendConsoleMsg("Encantamento sendo preparado...");
+					getGameAssetManager().vibrate(50);
 
-				cam.iniciaEncantamento(callbackFimEncantamento);
+					cam.iniciaEncantamento(callbackFimEncantamento);
+				}
+				else
+				{
+					getGameAssetManager().playSound(R.raw.error);
+					sendConsoleMsg("Aguarde o carregamento da magia");
+				}
 				return true;
 			case MotionEvent.ACTION_UP:
 				charging = false;
@@ -375,6 +407,8 @@ public class N5Partida extends NHMMainNode
 					getGameAssetManager().vibrate(500);
 					charging = false;
 					progressBar.reset();
+					// renova o cooldown de encantar
+					cds.touch(0);
 
 					final Tuple2<Mat, Mat> encantTuple = encantado.get();
 

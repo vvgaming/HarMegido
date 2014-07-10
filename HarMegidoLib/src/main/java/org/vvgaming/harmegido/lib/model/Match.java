@@ -303,6 +303,17 @@ public class Match
 	 */
 	public void executarMudanca(final MatchState stateChange)
 	{
+		executarMudanca(stateChange, new Date());
+	}
+	
+	/**
+	 * Executa a mudança de estado para esta partida, a partir da mudança passada como parâmetro.
+	 * 
+	 * @param stateChange A classe que especifica qual tipo de mudança será feita nesta partida
+	 * @param changeTime O instante no tempo a ser considerado para a mudança ser feita
+	 */
+	public void executarMudanca(final MatchState stateChange, final Date changeTime)
+	{
 		// Como StateChange é um ADT, apesar de feia,
 		// essa é a maneira correta de fazer 'Match' nos tipos possíveis
 		if (stateChange instanceof PlayerChangeAdd)
@@ -334,7 +345,7 @@ public class Match
 					throw new IllegalArgumentException("Esse encantamento já existe");
 				}
 			}
-			final Enchantment enchant = mJogador.encantar(new Date(), pce.getEnchantmentImage());
+			final Enchantment enchant = mJogador.encantar(changeTime, pce.getEnchantmentImage());
 			enchant.setTimeSync(timeSync);
 			encantamentos.add(enchant);
 		}
@@ -351,7 +362,7 @@ public class Match
 
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
 			// TODO: Alteração no cálculo do desencantamento vai necessitar setar o timeSync
-			mJogador.desencantar(enchant, new Date());
+			mJogador.desencantar(enchant, changeTime);
 		}
 		else
 		{
@@ -464,7 +475,7 @@ public class Match
 			}
 		};
 	}
-
+	
 	/**
 	 * Retorna o nome associado com esta partida
 	 * 

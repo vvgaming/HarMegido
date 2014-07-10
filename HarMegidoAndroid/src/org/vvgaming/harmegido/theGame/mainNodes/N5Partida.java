@@ -238,7 +238,7 @@ public class N5Partida extends NHMMainNode
 			{
 				stats += t.toString() + ": " + partida.getPontuacao(t) + " |";
 			}
-			stats += "  " + partida.getTimeRemaining() / 1000;
+			stats += "  " + getFomarttedTime(partida.getTimeRemaining());
 			this.stats.text = stats;
 
 		}
@@ -524,5 +524,13 @@ public class N5Partida extends NHMMainNode
 			return null;
 		}
 	};
+
+	private String getFomarttedTime(final long time)
+	{
+		final long totalSeconds = time / 1000;
+		final long minutes = totalSeconds / 60;
+		final long seconds = totalSeconds % 60;
+		return minutes + ":" + String.format("%02d", seconds);
+	}
 
 }

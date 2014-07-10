@@ -4,6 +4,7 @@ import static org.vvgaming.harmegido.lib.util.JSONTransformer.fromJson;
 import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.unbiquitous.uos.core.InitialProperties;
@@ -69,6 +70,7 @@ public class ClientDriver implements UosDriver
 	{
 		final String nomePartida = call.getParameter("nomePartida").toString();
 		final MatchState state = fromJson(call.getParameter("state").toString(), MatchState.class);
+		final Date executionTime = fromJson(call.getParameter("executionTime").toString(), Date.class);
 		
 		//TODO: Aqui existe uma dependência direta do driver do cliente com o MatchManager.
 		//Analisar se é necessário remover essa dependência direta
@@ -91,7 +93,7 @@ public class ClientDriver implements UosDriver
 			//Efetua a alteração
 			synchronized(lock)
 			{
-				partida.get().executarMudanca(state);
+				partida.get().executarMudanca(state, executionTime);
 			}
 		}
 

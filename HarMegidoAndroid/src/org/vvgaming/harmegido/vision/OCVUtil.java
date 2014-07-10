@@ -29,7 +29,8 @@ import android.graphics.Bitmap.Config;
  * 
  * @author Vinicius Nogueira
  */
-public class OCVUtil {
+public class OCVUtil
+{
 
 	private final Mat empty = new Mat();
 
@@ -43,7 +44,8 @@ public class OCVUtil {
 	private final DescriptorExtractor de;
 	private final DescriptorMatcher dm;
 
-	private OCVUtil() {
+	private OCVUtil()
+	{
 		// parâmetros para o cálculo de histograma em HSV (ignorando o V)
 		channels = new MatOfInt(0, 1);
 		histSize = new MatOfInt(50, 60);
@@ -64,9 +66,12 @@ public class OCVUtil {
 	 * 
 	 * @param mats
 	 */
-	public void releaseMat(final Mat... mats) {
-		for (final Mat m : mats) {
-			if (m != null) {
+	public void releaseMat(final Mat... mats)
+	{
+		for (final Mat m : mats)
+		{
+			if (m != null)
+			{
 				m.release();
 			}
 		}
@@ -78,12 +83,12 @@ public class OCVUtil {
 	 * @param toConvert
 	 * @return o Bitmap
 	 */
-	public Bitmap toBmp(final Mat mat) {
+	public Bitmap toBmp(final Mat mat)
+	{
 
 		final Mat toConvert = mat.clone();
 
-		final Bitmap retorno = Bitmap.createBitmap(toConvert.cols(),
-				toConvert.rows(), Config.RGB_565);
+		final Bitmap retorno = Bitmap.createBitmap(toConvert.cols(), toConvert.rows(), Config.RGB_565);
 		Utils.matToBitmap(toConvert, retorno);
 
 		releaseMat(toConvert);
@@ -97,7 +102,8 @@ public class OCVUtil {
 	 * @param toConvert
 	 * @return a Mat
 	 */
-	public Mat toMat(final Bitmap toConvert) {
+	public Mat toMat(final Bitmap toConvert)
+	{
 		final Mat retorno = new Mat();
 		Utils.bitmapToMat(toConvert, retorno);
 		return retorno;
@@ -109,7 +115,8 @@ public class OCVUtil {
 	 * @param mat
 	 * @return
 	 */
-	public byte[] toByteArray(final Mat mat) {
+	public byte[] toByteArray(final Mat mat)
+	{
 		final byte[] retorno = new byte[(int) (mat.total() * mat.channels())];
 		mat.get(0, 0, retorno);
 		return retorno;
@@ -121,7 +128,8 @@ public class OCVUtil {
 	 * @param mat
 	 * @return
 	 */
-	public Mat toMat(final byte[] array, final Size size, final int cvType) {
+	public Mat toMat(final byte[] array, final Size size, final int cvType)
+	{
 		final Mat retorno = new Mat(size, cvType);
 		retorno.put(0, 0, array);
 		return retorno;
@@ -133,9 +141,9 @@ public class OCVUtil {
 	 * @param matWrapper
 	 * @return
 	 */
-	public Mat toMat(final OpenCVMatWrapper matWrapper) {
-		final Mat retorno = new Mat(matWrapper.getWidth(),
-				matWrapper.getHeight(), matWrapper.getCvType());
+	public Mat toMat(final OpenCVMatWrapper matWrapper)
+	{
+		final Mat retorno = new Mat(matWrapper.getWidth(), matWrapper.getHeight(), matWrapper.getCvType());
 		retorno.put(0, 0, matWrapper.getBytes());
 		return retorno;
 	}
@@ -146,9 +154,9 @@ public class OCVUtil {
 	 * @param mat
 	 * @return
 	 */
-	public OpenCVMatWrapper toOpenCVMatWrapper(final Mat mat) {
-		return OpenCVMatWrapper.from(toByteArray(mat), mat.rows(), mat.cols(),
-				mat.type());
+	public OpenCVMatWrapper toOpenCVMatWrapper(final Mat mat)
+	{
+		return OpenCVMatWrapper.from(toByteArray(mat), mat.rows(), mat.cols(), mat.type());
 	}
 
 	/**
@@ -158,40 +166,36 @@ public class OCVUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public OpenCVMatWrapper compactar(final OpenCVMatWrapper toCompactar)
-			throws IOException {
-		byte[] bytes = toCompactar.getBytes();
-		return OpenCVMatWrapper.from(CompressionUtils.compress(bytes),
-				toCompactar.getWidth(), toCompactar.getHeight(),
+	public OpenCVMatWrapper compactar(final OpenCVMatWrapper toCompactar) throws IOException
+	{
+		final byte[] bytes = toCompactar.getBytes();
+		return OpenCVMatWrapper.from(CompressionUtils.compress(bytes), toCompactar.getWidth(), toCompactar.getHeight(),
 				toCompactar.getCvType());
 	}
 
 	/**
-	 * Descompacta os bytes dessa Mat. Processo inverso ao do método
-	 * {@link OCVUtil#compactar(OpenCVMatWrapper)}
+	 * Descompacta os bytes dessa Mat. Processo inverso ao do método {@link OCVUtil#compactar(OpenCVMatWrapper)}
 	 * 
 	 * @param toDescompactar
 	 * @return
 	 * @throws IOException
 	 * @throws DataFormatException
 	 */
-	public OpenCVMatWrapper descompactar(final OpenCVMatWrapper toDescompactar)
-			throws IOException, DataFormatException {
-		byte[] bytes = toDescompactar.getBytes();
-		return OpenCVMatWrapper.from(CompressionUtils.decompress(bytes),
-				toDescompactar.getWidth(), toDescompactar.getHeight(),
+	public OpenCVMatWrapper descompactar(final OpenCVMatWrapper toDescompactar) throws IOException, DataFormatException
+	{
+		final byte[] bytes = toDescompactar.getBytes();
+		return OpenCVMatWrapper.from(CompressionUtils.decompress(bytes), toDescompactar.getWidth(), toDescompactar.getHeight(),
 				toDescompactar.getCvType());
 	}
 
 	/**
-	 * Calcula o histograma de H e S de uma imagem RGBA. Isto é, converte a
-	 * imagem para HSV, ignora o V e calcula o histograma
+	 * Calcula o histograma de H e S de uma imagem RGBA. Isto é, converte a imagem para HSV, ignora o V e calcula o histograma
 	 * 
-	 * @param mat
-	 *            a imagem em RGBA
+	 * @param mat a imagem em RGBA
 	 * @return o histograma
 	 */
-	public Mat calcHistHS(final Mat mat) {
+	public Mat calcHistHS(final Mat mat)
+	{
 
 		final Mat retorno = new Mat();
 		final Mat imagem = mat.clone();
@@ -201,8 +205,7 @@ public class OCVUtil {
 		Imgproc.cvtColor(imagem, imagem, Imgproc.COLOR_RGB2HSV);
 
 		// cálcula o histograma apenas de H e S
-		Imgproc.calcHist(Arrays.asList(imagem), channels, empty, retorno,
-				histSize, ranges);
+		Imgproc.calcHist(Arrays.asList(imagem), channels, empty, retorno, histSize, ranges);
 
 		// normalizando o histograma para comparar grandezas de mesmo range
 		Core.normalize(retorno, retorno, 0, 1, Core.NORM_MINMAX, -1, empty);
@@ -214,11 +217,11 @@ public class OCVUtil {
 	/**
 	 * Detecta features e computa seus descritores
 	 * 
-	 * @param mat
-	 *            a imagem em escala de CINZA
+	 * @param mat a imagem em escala de CINZA
 	 * @return os descritores
 	 */
-	public Mat extractFeatureDescriptors(final Mat mat) {
+	public Mat extractFeatureDescriptors(final Mat mat)
+	{
 		final Mat retorno = new Mat();
 		final MatOfKeyPoint kps = new MatOfKeyPoint();
 		fd.detect(mat, kps);
@@ -227,15 +230,16 @@ public class OCVUtil {
 	}
 
 	/**
-	 * Compara dois descritores extraidos em
-	 * {@link OCVUtil#extractFeatureDescriptors(Mat)}
+	 * Compara dois descritores extraidos em {@link OCVUtil#extractFeatureDescriptors(Mat)}
 	 * 
 	 * @param descs1
 	 * @param descs2
 	 * @return de 0 a 1, onde 1 é o mais "próximo"
 	 */
-	public float compareDescriptors(final Mat descs1, final Mat descs2) {
-		try {
+	public float compareDescriptors(final Mat descs1, final Mat descs2)
+	{
+		try
+		{
 
 			final float DISTANCE_THRESHOLD = 50;
 
@@ -243,18 +247,25 @@ public class OCVUtil {
 			dm.match(descs1, descs2, retorno);
 
 			float sum = 0;
-			for (final DMatch m : retorno.toArray()) {
-				if (m.distance < DISTANCE_THRESHOLD) {
+			for (final DMatch m : retorno.toArray())
+			{
+				if (m.distance < DISTANCE_THRESHOLD)
+				{
 					sum++;
 				}
 			}
 
-			if (retorno.rows() != 0) {
+			if (retorno.rows() != 0)
+			{
 				return sum / retorno.rows();
-			} else {
+			}
+			else
+			{
 				return 0.0f;
 			}
-		} catch (final CvException ignored) {
+		}
+		catch (final CvException ignored)
+		{
 			// esse ignore na exceção eu coloquei pq alguns frames da
 			// camera vem diferente e dá pau na comparação dos descritores
 			// TODO verificar como resolver esse problema "de verdade"
@@ -264,8 +275,10 @@ public class OCVUtil {
 
 	private static OCVUtil instance;
 
-	public static OCVUtil getInstance() {
-		if (instance == null) {
+	public static OCVUtil getInstance()
+	{
+		if (instance == null)
+		{
 			instance = new OCVUtil();
 		}
 		return instance;

@@ -6,7 +6,7 @@ import java.util.Date;
  * Classe base para todas as instâncias "mágicas". <br/>
  * A igualdade/hashCode da classe está definida para o jogador e timestamp que a mágica está vinculada. <br/>
  */
-public abstract class Spell
+public class Spell
 {
 	private final Player jogador;
 	private final Date timestamp;
@@ -16,6 +16,18 @@ public abstract class Spell
 		super();
 		this.jogador = jogador;
 		this.timestamp = timestamp;
+	}
+	
+	/**
+	 * Cria uma classe de Spell a partir das informações do jogador e timestamp. <br/>
+	 * Seu uso normalmente é para servir de identificador para algum encantamento
+	 * @param jogador O jogador associado com esse Spell
+	 * @param timestamp O instante no tempo que ele foi criado
+	 * @return Uma instância de Spell vinculada ao jogador e instante do tempo passados como parâmetro.
+	 */
+	public static Spell create(final Player jogador, final Date timestamp)
+	{
+		return new Spell(jogador, timestamp);
 	}
 	
 	public Player getJogador()

@@ -30,6 +30,17 @@ public class EnchantmentImage
 	}
 
 	/**
+	 * Cria uma nova imagem de encantamento vazia.
+	 * 
+	 * @return Uma imagem de encantamento que não contém dados
+	 */
+	public static EnchantmentImage createDummy()
+	{
+		final OpenCVMatWrapper empty = OpenCVMatWrapper.from(new byte[0], 0, 0, 0);
+		return from(empty, empty);
+	}
+
+	/**
 	 * Retorna o wrapper da mat da imagem representa por este encantamento
 	 * 
 	 * @return

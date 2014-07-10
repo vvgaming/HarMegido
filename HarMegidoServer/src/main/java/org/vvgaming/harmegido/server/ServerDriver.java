@@ -20,20 +20,20 @@ import org.unbiquitous.uos.core.driverManager.UosDriver;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDriver;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
+import org.vvgaming.harmegido.lib.model.Enchantment;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.lib.model.match.PlayerChange;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeDisenchant;
 import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 
-import com.github.detentor.codex.collections.mutable.SetSharp;
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
-import com.github.detentor.codex.util.Reflections;
 
 /**
  * O driver do servidor, provendo todos os seus serviços. <br/>
@@ -235,13 +235,7 @@ public class ServerDriver implements UosDriver
 			}
 
 			response.addParameter("retorno", toJson(aRetornar));
-
-			//Verifica o tipo de alteração
-			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
-			{
-				//TODO: Colocar algum código para fazer algo com o retorno
-				notifyClients(nomePartida, stateJson, executionTime);
-			}
+			notifyClients(nomePartida, (PlayerChange) state, executionTime);
 		}
 	}
 	
@@ -345,13 +339,30 @@ public class ServerDriver implements UosDriver
 	 * @param executionTime 
 	 * @return Um Either que contém uma exceção ou um boolean true
 	 */
-	private Either<Exception, Boolean> notifyClients(final String nomePartida, final String stateJson, Date executionTime)
+	private Either<Exception, Boolean> notifyClients(final String nomePartida, final PlayerChange state, Date executionTime)
 	{
-		//A chamada genérica, a mesma para todos eles
-		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
-		call.addParameter("nomePartida", nomePartida);
-		call.addParameter("state", stateJson);
-		call.addParameter("executionTime", toJson(executionTime));
+		MatchState strippedState;
+		
+		if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
+		{
+			strippedState = copyStrip(state); 
+		}
+		else
+		{
+			strippedState = state;
+		}
+		
+		//A chamada para os amigos é 'dummy'
+		final Call callFriends = new Call(CLIENT_DRIVER_NAME, "runState");
+		callFriends.addParameter("nomePartida", nomePartida);
+		callFriends.addParameter("state", toJson(strippedState));
+		callFriends.addParameter("executionTime", toJson(executionTime));
+		
+		//A chamada para os inimigos é completa
+		final Call callEnemies = new Call(CLIENT_DRIVER_NAME, "runState");
+		callEnemies.addParameter("nomePartida", nomePartida);
+		callEnemies.addParameter("state", toJson(state instanceof PlayerChangeDisenchant ? strippedState : state));
+		callEnemies.addParameter("executionTime", toJson(executionTime));
 
 		//TODO: granularizar o lock se for o caso. De qualquer forma assim está bom porquê
 		//chamadas de notify devem esperar umas às outras
@@ -365,19 +376,43 @@ public class ServerDriver implements UosDriver
 				return Either.createLeft(exception);
 			}
 			
-			final Function1<Player, String> lift = Reflections.lift(Player.class, "getIdJogador");
-			final SetSharp<String> jogadores = SetSharp.from(partida.getJogadores()).map(lift);
-			final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
+			//Cria um mapa de ids para jogadores
+			final Map<String, Player> mapJogadores = new HashMap<String, Player>();
 			
+			for (Player curJogador : partida.getJogadores())
+			{
+				mapJogadores.put(curJogador.getIdJogador(), curJogador);
+			}
+			
+			final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
+
 			for(DriverData curDriver : listDrivers)
 			{
+				final Player jogador = mapJogadores.get(curDriver.getDevice().getName());
+				
 				//TODO: Perceba que não há garantia de ser enviado para todos os jogadores.
 				//E também não é verificada a resolução da mensagem (erro ou não)
-				if (jogadores.contains(curDriver.getDevice().getName()))
+				if (jogador != null)
 				{
 					try
 					{
-						gateway.callService(curDriver.getDevice(), call);
+						if (state instanceof PlayerChangeEnchant)
+						{
+							//Amigo
+							if (state.getJogador().getTime().equals(jogador.getTime()))
+							{
+								gateway.callService(curDriver.getDevice(), callFriends);
+							}
+							else
+							{
+								gateway.callService(curDriver.getDevice(), callEnemies);
+							}
+						}
+						else
+						{
+							//Desencantamento é sempre barato, então pode chamar o callEnemies
+							gateway.callService(curDriver.getDevice(), callEnemies);
+						}
 					}
 					catch (ServiceCallException e)
 					{
@@ -388,4 +423,76 @@ public class ServerDriver implements UosDriver
 		}
 		return Either.createRight(true);
 	}
+	
+	/**
+	 * Copia a instância de PlayerChange passada como parâmetro, removendo as informações
+	 * não úteis dele
+	 * @param state O estado a ser copiado
+	 * @return Uma instância de PlayerChange com os parâmetros desnecessários removidos
+	 */
+	private MatchState copyStrip(final PlayerChange state)
+	{
+		if (state instanceof PlayerChangeEnchant)
+		{
+			final PlayerChangeEnchant pce = (PlayerChangeEnchant) state;
+			return MatchState.encantar(pce.getJogador(), EnchantmentImage.createDummy());
+		}
+		else if (state instanceof PlayerChangeDisenchant)
+		{
+			final PlayerChangeDisenchant pcd = (PlayerChangeDisenchant) state;
+			final Enchantment enchant = Enchantment.from(pcd.getEncantamento().getJogador(), pcd.getEncantamento().getTimestamp(), EnchantmentImage.createDummy());
+			return MatchState.desencantar(pcd.getJogador(), enchant);
+		}
+		throw new IllegalArgumentException("Tipo de estado não suportado :" + state.getClass());
+	}
+	
+//	/**
+//	 * Notifica todos os clientes de uma atualização no servidor
+//	 * @param executionTime 
+//	 * @return Um Either que contém uma exceção ou um boolean true
+//	 */
+//	private Either<Exception, Boolean> notifyClients(final String nomePartida, final MatchState state, Date executionTime)
+//	{
+//		//A chamada genérica, a mesma para todos eles
+//		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
+//		call.addParameter("nomePartida", nomePartida);
+//		call.addParameter("state", state);
+//		call.addParameter("executionTime", toJson(executionTime));
+//
+//		//TODO: granularizar o lock se for o caso. De qualquer forma assim está bom porquê
+//		//chamadas de notify devem esperar umas às outras
+//		synchronized(lock)
+//		{
+//			final Match partida = mapaPartidas.get(nomePartida);
+//			
+//			if (partida == null)
+//			{
+//				final Exception exception = new IllegalArgumentException("Não existe partida para o nome passado");
+//				return Either.createLeft(exception);
+//			}
+//			
+//			final Function1<Player, String> lift = Reflections.lift(Player.class, "getIdJogador");
+//			final SetSharp<String> jogadores = SetSharp.from(partida.getJogadores()).map(lift);
+//			final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
+//			
+//			for(DriverData curDriver : listDrivers)
+//			{
+//				//TODO: Perceba que não há garantia de ser enviado para todos os jogadores.
+//				//E também não é verificada a resolução da mensagem (erro ou não)
+//				if (jogadores.contains(curDriver.getDevice().getName()))
+//				{
+//					try
+//					{
+//						gateway.callService(curDriver.getDevice(), call);
+//					}
+//					catch (ServiceCallException e)
+//					{
+//						return Either.createLeft((Exception) e);
+//					}
+//				}
+//			}
+//		}
+//		return Either.createRight(true);
+//	}
+	
 }

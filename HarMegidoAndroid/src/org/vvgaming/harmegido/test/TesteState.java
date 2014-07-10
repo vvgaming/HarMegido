@@ -193,13 +193,13 @@ public class TesteState extends Activity
 					return;
 				}
 
-				if (encantamentos.isEmpty())
+				if (partida.getEncantamentos().isEmpty())
 				{
 					setText("Nenhum encantamento para desencantar.");
 					return;
 				}
 
-				final Either<Exception, Boolean> retorno = sdf.desencantarObjeto(partida.getNomePartida(), inimigo, encantamentos.get(0));
+				final Either<Exception, Boolean> retorno = sdf.desencantarObjeto(partida.getNomePartida(), inimigo, partida.getEncantamentos().get(0));
 				setText(formatarRetorno(retorno));
 			}
 		});

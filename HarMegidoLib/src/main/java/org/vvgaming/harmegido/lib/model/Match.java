@@ -337,13 +337,14 @@ public class Match
 		{
 			final PlayerChangeEnchant pce = (PlayerChangeEnchant) stateChange;
 			final Player mJogador = getJogador(pce.getJogador().getIdJogador());
-			final Spell enchantId = Spell.create(mJogador, changeTime);
-			
-			if (encantamentos.contains(enchantId))
-			{
-				throw new IllegalArgumentException("Esse encantamento já existe");
-			}
 
+			for (final Enchantment enchant : encantamentos)
+			{
+				if (enchant.getImagem().equals(pce.getEnchantmentImage()))
+				{
+					throw new IllegalArgumentException("Esse encantamento já existe");
+				}
+			}
 			final Enchantment enchant = mJogador.encantar(changeTime, pce.getEnchantmentImage());
 			enchant.setTimeSync(timeSync);
 			encantamentos.add(enchant);
@@ -399,7 +400,7 @@ public class Match
 	{
 		for (final Enchantment enchant : encantamentos)
 		{
-			if (enchant.equals(encantamento))
+			if (enchant.getImagem().equals(encantamento.getImagem()))
 			{
 				return enchant;
 			}

@@ -218,12 +218,14 @@ public class ServerDriver implements UosDriver
 		{
 			Object aRetornar = null;
 			
+			final Date executionTime = new Date();
+			
 			//Efetua a alteração
 			synchronized(lock)
 			{
 				try
 				{
-					eMatch.getRight().executarMudanca(state);
+					eMatch.getRight().executarMudanca(state, executionTime);
 					aRetornar = Either.createRight(true);
 				}
 				catch (Exception e)
@@ -238,7 +240,7 @@ public class ServerDriver implements UosDriver
 			if (state instanceof PlayerChangeEnchant || state instanceof PlayerChangeDisenchant)
 			{
 				//TODO: Colocar algum código para fazer algo com o retorno
-				notifyClients(nomePartida, stateJson);
+				notifyClients(nomePartida, stateJson, executionTime);
 			}
 		}
 	}
@@ -340,14 +342,16 @@ public class ServerDriver implements UosDriver
 	
 	/**
 	 * Notifica todos os clientes de uma atualização no servidor
+	 * @param executionTime 
 	 * @return Um Either que contém uma exceção ou um boolean true
 	 */
-	private Either<Exception, Boolean> notifyClients(final String nomePartida, final String stateJson)
+	private Either<Exception, Boolean> notifyClients(final String nomePartida, final String stateJson, Date executionTime)
 	{
 		//A chamada genérica, a mesma para todos eles
 		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
 		call.addParameter("nomePartida", nomePartida);
 		call.addParameter("state", stateJson);
+		call.addParameter("executionTime", toJson(executionTime));
 
 		//TODO: granularizar o lock se for o caso. De qualquer forma assim está bom porquê
 		//chamadas de notify devem esperar umas às outras

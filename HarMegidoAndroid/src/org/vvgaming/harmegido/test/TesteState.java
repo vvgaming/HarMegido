@@ -154,13 +154,15 @@ public class TesteState extends Activity
 					setText("Crie uma partida antes de encantar.");
 					return;
 				}
+				
+				
 				final byte[] bytes = new byte[20];
 				Arrays.fill(bytes, (byte) -100);
 				final byte[] bytes2 = new byte[20];
 				Arrays.fill(bytes2, (byte) -100);
 				
-				final EnchantmentImage enchant = EnchantmentImage.from(OpenCVMatWrapper.from(bytes, 10, 10, 0),
-						OpenCVMatWrapper.from(bytes2, 10, 10, 0));
+				final EnchantmentImage enchant = EnchantmentImage.from(OpenCVMatWrapper.from(new String(bytes), 10, 10, 0),
+						OpenCVMatWrapper.from(new String(bytes2), 10, 10, 0));
 				final Either<Exception, Boolean> retorno = sdf.encantarObjeto(partida.getNomePartida(), jogador, enchant);
 				setText(formatarRetorno(retorno));
 			}

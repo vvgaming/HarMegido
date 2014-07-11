@@ -36,7 +36,7 @@ public class EnchantmentImage
 	 */
 	public static EnchantmentImage createDummy()
 	{
-		final OpenCVMatWrapper empty = OpenCVMatWrapper.from(new byte[0], 0, 0, 0);
+		final OpenCVMatWrapper empty = OpenCVMatWrapper.from("", 0, 0, 0);
 		return from(empty, empty);
 	}
 

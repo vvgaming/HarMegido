@@ -45,7 +45,7 @@ public class UOSFacade
 			{
 				final ClientMode.Properties props = new ClientMode.Properties();
 				props.put("ubiquitos.driver.deploylist", ClientDriver.class.getName());
-				props.put("ubiquitos.websocket.messageBufferSize", 1 * 1024 * 1024); // 1 mb pra garantir
+				props.put("ubiquitos.websocket.messageBufferSize", 512 * 1024); // 512 kb pra garantir
 				props.setServer(SERVER_IP);
 				uos.start(props);
 				uosStarted = true;

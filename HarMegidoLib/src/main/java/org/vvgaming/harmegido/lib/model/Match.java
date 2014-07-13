@@ -291,6 +291,11 @@ public class Match
 	public void setSync(final TimeSync timeSync)
 	{
 		this.timeSync = timeSync;
+		
+		for (Enchantment encantamento : encantamentos)
+		{
+			encantamento.setTimeSync(timeSync);
+		}
 	}
 
 	/**

@@ -1,21 +1,24 @@
 package org.vvgaming.harmegido.gameEngine.geometry;
 
 /**
- * Classe geométrica que representa o ponto e suas operações
+ * Classe geomÃ©trica que representa o ponto e suas operaÃ§Ãµes
  * 
  * @author Vinicius Nogueira
  */
-public class Ponto {
+public class Ponto
+{
 
 	public final float x, y;
 
-	public Ponto(float x, float y) {
+	public Ponto(final float x, final float y)
+	{
 		super();
 		this.x = x;
 		this.y = y;
 	}
 
-	public Ponto translate(float x, float y) {
+	public Ponto translate(final float x, final float y)
+	{
 		return new Ponto(this.x + x, this.y + y);
 	}
 

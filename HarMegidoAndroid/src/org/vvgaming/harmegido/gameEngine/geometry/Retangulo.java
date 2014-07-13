@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
- * Classe geom�trica que representa o ret�ngulo e suas opera��es
+ * Classe geométrica que representa o retângulo e suas operações
  * 
  * @author Vinicius Nogueira
  */
@@ -14,7 +14,7 @@ public class Retangulo
 	public final Ponto origem;
 	public final float width, height;
 
-	public Retangulo(Ponto origem, float width, float height)
+	public Retangulo(final Ponto origem, final float width, final float height)
 	{
 		super();
 		this.origem = origem;
@@ -32,9 +32,9 @@ public class Retangulo
 		return new RectF(origem.x, origem.y, origem.x + width, origem.y + height);
 	}
 
-	public boolean contains(Ponto ponto)
+	public boolean contains(final Ponto ponto)
 	{
-		return (ponto.x >= origem.x && ponto.x <= (origem.x + width) && ponto.y >= origem.y && ponto.y <= (origem.y + height));
+		return ponto.x >= origem.x && ponto.x <= origem.x + width && ponto.y >= origem.y && ponto.y <= origem.y + height;
 	}
 
 	public Ponto getCenter()
@@ -42,7 +42,7 @@ public class Retangulo
 		return new Ponto(origem.x + width / 2, origem.y + height / 2);
 	}
 
-	public static Retangulo fromCenter(Ponto centro, float w, float h)
+	public static Retangulo fromCenter(final Ponto centro, final float w, final float h)
 	{
 		return new Retangulo(new Ponto(centro.x - w / 2, centro.y - h / 2), w, h);
 	}

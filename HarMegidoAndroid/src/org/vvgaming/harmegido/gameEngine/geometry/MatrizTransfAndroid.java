@@ -26,12 +26,13 @@ public class MatrizTransfAndroid
 	private boolean hFlip = false;
 	private boolean vFlip = false;
 
-	public MatrizTransfAndroid(float srcWidth, float srcHeight)
+	public MatrizTransfAndroid(final float srcWidth, final float srcHeight)
 	{
 		this(0, srcWidth, srcHeight, srcWidth, srcHeight, new Ponto(0, 0));
 	}
 
-	public MatrizTransfAndroid(float rotation, float srcWidth, float srcHeight, float dstWidth, float dstHeight, Ponto center)
+	public MatrizTransfAndroid(final float rotation, final float srcWidth, final float srcHeight, final float dstWidth,
+			final float dstHeight, final Ponto center)
 	{
 		super();
 
@@ -85,7 +86,7 @@ public class MatrizTransfAndroid
 	 */
 	public void setWidth(final float width, final boolean keepAspectRatio)
 	{
-		setDimensions(width, keepAspectRatio ? (srcHeight / srcWidth) * width : dstHeight);
+		setDimensions(width, keepAspectRatio ? srcHeight / srcWidth * width : dstHeight);
 	}
 
 	public void setHeight(final float height)
@@ -101,16 +102,16 @@ public class MatrizTransfAndroid
 	 */
 	public void setHeight(final float height, final boolean keepAspectRatio)
 	{
-		setDimensions(keepAspectRatio ? (srcWidth / srcHeight) * height : dstWidth, height);
+		setDimensions(keepAspectRatio ? srcWidth / srcHeight * height : dstWidth, height);
 	}
 
-	public void setRotation(float rotation)
+	public void setRotation(final float rotation)
 	{
 		this.rotation = rotation;
 		refreshMatrix();
 	}
 
-	public void setCenter(Ponto center)
+	public void setCenter(final Ponto center)
 	{
 		this.center = center;
 		refreshMatrix();
@@ -128,13 +129,24 @@ public class MatrizTransfAndroid
 		setScale(scale, scale);
 	}
 
-	public void sethFlip(boolean hFlip)
+	/**
+	 * seta o se a tranformação envolve um flip horizontal
+	 * 
+	 * @param hFlip
+	 */
+	public void sethFlip(final boolean hFlip)
 	{
+
 		this.hFlip = hFlip;
 		refreshMatrix();
 	}
 
-	public void setvFlip(boolean vFlip)
+	/**
+	 * seta o se a tranformação envolve um flip vertical
+	 * 
+	 * @param vFlip
+	 */
+	public void setvFlip(final boolean vFlip)
 	{
 		this.vFlip = vFlip;
 		refreshMatrix();
@@ -188,10 +200,10 @@ public class MatrizTransfAndroid
 	public RectF getBoundingRect()
 	{
 
-		float x0 = 0;
-		float y0 = 0;
+		final float x0 = 0;
+		final float y0 = 0;
 
-		float[] pts = new float[] { x0, y0, x0 + getSrcWidth(), y0, x0, y0 + getSrcHeight(), x0 + getSrcWidth(), y0 + getSrcHeight() };
+		final float[] pts = new float[] { x0, y0, x0 + getSrcWidth(), y0, x0, y0 + getSrcHeight(), x0 + getSrcWidth(), y0 + getSrcHeight() };
 		matrix.mapPoints(pts);
 
 		// procurar o maior x

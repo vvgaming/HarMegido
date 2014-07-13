@@ -61,15 +61,14 @@ public class NTimer extends GameNode
 		return timeLimit;
 	}
 
+	/**
+	 * Atribui um novo tempo limite para execução
+	 * 
+	 * @param timeLimit
+	 */
 	public void setTimeLimit(final long timeLimit)
 	{
 		this.timeLimit = timeLimit;
 	}
-
-	public NTimer setCounting(final long counter)
-	{
-		this.counter = counter;
-		return this;
-	}
-
+	
 }

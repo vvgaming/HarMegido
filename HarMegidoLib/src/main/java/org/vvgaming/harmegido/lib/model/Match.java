@@ -138,7 +138,7 @@ public class Match
 		// TODO: Não está sendo verificado a quantidade de cada lado. Assume-se que
 		// eles possuam o mesmo número de jogadores
 
-		final int nJogadores = (int) Math.ceil(jogadores.size() / 2.0f);
+		final int nJogadores = (int) Math.max(Math.ceil(jogadores.size() / 2.0f), 1);
 		// espera-se pelo menos 7 encantamentos de cada jogador
 		final int pointsPerPlayer = Enchantment.getMaxPontuacao() * 7;
 		return (duracao.ordinal() + 1) * nJogadores * pointsPerPlayer;

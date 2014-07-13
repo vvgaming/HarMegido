@@ -15,27 +15,32 @@ import com.github.detentor.codex.monads.Option;
  * 
  * @author Vinicius Nogueira
  */
-public class NGroupToggleButton extends GameNode {
+public class NGroupToggleButton extends GameNode
+{
 
-	private List<NToggleButton> btns = new ArrayList<>();
+	private final List<NToggleButton> btns = new ArrayList<>();
 	private Option<Integer> toggledIndex = Option.empty();
 
-	private Option<Function1<Option<Integer>, Void>> onToggleChange = Option
-			.empty();
+	private Option<Function1<Option<Integer>, Void>> onToggleChange = Option.empty();
 
-	public NGroupToggleButton(final NToggleButton... btns) {
+	public NGroupToggleButton(final NToggleButton... btns)
+	{
 
 		this.btns.addAll(Arrays.asList(btns));
 	}
 
 	@Override
-	public void init() {
+	public void init()
+	{
 		super.init();
-		for (final NToggleButton btn : btns) {
+		for (final NToggleButton btn : btns)
+		{
 			addSubNode(btn);
-			btn.setOnClickFunction(new Function0<Void>() {
+			btn.setOnClickFunction(new Function0<Void>()
+			{
 				@Override
-				public Void apply() {
+				public Void apply()
+				{
 					toggle(btns.indexOf(btn));
 					return null;
 				}
@@ -44,32 +49,53 @@ public class NGroupToggleButton extends GameNode {
 		}
 	}
 
-	public void toggle(final int index) {
-		int oldIndex = toggledIndex.getOrElse(-1);
-		for (NToggleButton tglingBtn : btns) {
+	/**
+	 * Força a seleção de um item do grupo
+	 * 
+	 * @param index indice do item
+	 */
+	public void toggle(final int index)
+	{
+		final int oldIndex = toggledIndex.getOrElse(-1);
+		for (final NToggleButton tglingBtn : btns)
+		{
 			tglingBtn.toggle(false);
 		}
 		btns.get(index).toggle(true);
 		toggledIndex = Option.from(index);
-		if (onToggleChange.notEmpty() && index != oldIndex) {
+		if (onToggleChange.notEmpty() && index != oldIndex)
+		{
 			onToggleChange.get().apply(toggledIndex);
 		}
 	}
 
 	@Override
-	protected void update(long delta) {
+	protected void update(final long delta)
+	{
 	}
 
-	public Option<Integer> getToggledIndex() {
+	public Option<Integer> getToggledIndex()
+	{
 		return toggledIndex;
 	}
 
-	public Option<Function1<Option<Integer>, Void>> getOnToggleChange() {
+	/**
+	 * Pega a função atribuida em {@link NGroupToggleButton#setOnToggleChange(Function1)}
+	 * 
+	 * @return
+	 */
+	public Option<Function1<Option<Integer>, Void>> getOnToggleChange()
+	{
 		return onToggleChange;
 	}
 
-	public void setOnToggleChange(
-			Function1<Option<Integer>, Void> onToggleChange) {
+	/**
+	 * Atribui uma função listener para quando trocar o item selecionado do grupo
+	 * 
+	 * @param onToggleChange a função a ser executada que recebe como parametro uma option com o indice do botão selecionado
+	 */
+	public void setOnToggleChange(final Function1<Option<Integer>, Void> onToggleChange)
+	{
 		this.onToggleChange = Option.from(onToggleChange);
 	}
 

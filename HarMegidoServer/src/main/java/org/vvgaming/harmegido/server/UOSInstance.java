@@ -22,14 +22,15 @@ public final class UOSInstance
 	 */
 	private static UOS createUOS()
 	{
-		final UOS toReturn = new UOS();
+		final UOS uosInstance = new UOS();
 		UOSLogging.setLevel(Level.ALL);
 		ServerMode.Properties properties = new ServerMode.Properties();
 		properties.put("ubiquitos.driver.deploylist", ServerDriver.class.getName());
 		properties.put("ubiquitos.websocket.messageBufferSize", 2 * 1024 * 1024); // 2 mb pra garantir
 
-		toReturn.start(properties);
-		return toReturn;
+		uosInstance.start(properties);
+		
+		return uosInstance;
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.unbiquitous.uos.core.UOS;
+import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
 import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
@@ -299,10 +300,35 @@ public class ServerDriverFacade
 				call.addParameter(curParam.getVal1(), curParam.getVal2());
 			}
 		}
-
+		
+		Either<Exception, A> curReturn = null;
+		int i = 0;
+		
+		//Tenta 3 vezes enviar a mensagem
+		while (i++ < 3)
+		{
+			curReturn = doCallService(call);
+			
+			if (curReturn.isRight() || (! (curReturn.getLeft() instanceof ServiceCallException)))
+			{
+				return curReturn;
+			}
+		}
+		
+		return curReturn;
+	}
+	
+	/**
+	 * Faz a efetiva chamada ao serviço
+	 * @param theCall
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private <A> Either<Exception, A> doCallService(final Call theCall)
+	{
 		try
 		{
-			final Response response = uos.getGateway().callService(device, call);
+			final Response response = uos.getGateway().callService(device, theCall);
 			
 			if (response.getError() == null || response.getError().isEmpty())
 			{
@@ -312,7 +338,7 @@ public class ServerDriverFacade
 				//Nesse caso, Deve-se verificar se é uma exceção, para evitar o wrap da exceção
 				if (responseData == null)
 				{
-					final String mensagem = "O serviço " + serviceName + " não possui um atributo de resposta de nome 'retorno'";
+					final String mensagem = "O serviço " + theCall.getService() + " não possui um atributo de resposta de nome 'retorno'";
 					final Exception exception = new IllegalStateException(mensagem);
 					return Either.createLeft(exception);
 				}
@@ -329,4 +355,5 @@ public class ServerDriverFacade
 			return Either.createLeft(e);
 		}
 	}
+	
 }

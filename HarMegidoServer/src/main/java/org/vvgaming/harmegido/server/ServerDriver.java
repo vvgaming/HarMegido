@@ -6,32 +6,35 @@ import static org.vvgaming.harmegido.lib.util.JSONTransformer.toJson;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import org.unbiquitous.uos.core.InitialProperties;
 import org.unbiquitous.uos.core.adaptabitilyEngine.Gateway;
-import org.unbiquitous.uos.core.adaptabitilyEngine.ServiceCallException;
 import org.unbiquitous.uos.core.applicationManager.CallContext;
 import org.unbiquitous.uos.core.driverManager.DriverData;
 import org.unbiquitous.uos.core.driverManager.UosDriver;
+import org.unbiquitous.uos.core.messageEngine.dataType.UpDevice;
 import org.unbiquitous.uos.core.messageEngine.dataType.UpDriver;
 import org.unbiquitous.uos.core.messageEngine.messages.Call;
 import org.unbiquitous.uos.core.messageEngine.messages.Response;
+import org.vvgaming.harmegido.lib.async.AsyncCall;
+import org.vvgaming.harmegido.lib.async.AsyncCallService;
+import org.vvgaming.harmegido.lib.model.EnchantmentImage;
 import org.vvgaming.harmegido.lib.model.Match;
 import org.vvgaming.harmegido.lib.model.Match.MatchDuration;
 import org.vvgaming.harmegido.lib.model.Player;
 import org.vvgaming.harmegido.lib.model.Scoreboard;
 import org.vvgaming.harmegido.lib.model.TeamType;
 import org.vvgaming.harmegido.lib.model.match.MatchState;
+import org.vvgaming.harmegido.lib.model.match.PlayerChangeEnchant;
 
-import com.github.detentor.codex.collections.mutable.SetSharp;
-import com.github.detentor.codex.function.Function1;
 import com.github.detentor.codex.monads.Either;
 import com.github.detentor.codex.product.Tuple2;
-import com.github.detentor.codex.util.Reflections;
 
 /**
  * O driver do servidor, provendo todos os seus serviços. <br/>
@@ -42,7 +45,6 @@ import com.github.detentor.codex.util.Reflections;
  */
 public class ServerDriver implements UosDriver
 {
-	private UpDriver definition;
 	//TODO: Extrair essa constante para alguma outra parte
 	private static final String DRIVER_NAME = "uos.harmegido.server";
 	private static final String CLIENT_DRIVER_NAME = "uos.harmegido.client";
@@ -52,15 +54,9 @@ public class ServerDriver implements UosDriver
 	
 	//Segura a referência ao Gateway
 	private Gateway gateway;
-	
-	//TODO:O mapa de partidas contém tanto as partidas ativas quanto as inativas
-	//deve-se fazer algum tipo de limpeza, para retirar do mapa as partidas que acabaram
+	private UpDriver definition;
+	private AsyncCallService messenger = null;
 	private Map<String, Match> mapaPartidas = new HashMap<String, Match>();
-
-	//Cria um objeto que será o "monitor" desta Thread. 
-	//Ele possui um tipo próprio para facilitar debug se houver erro
-	private static final class Lock { }
-	private final Object lock = new Lock();
 
 	public ServerDriver()
 	{
@@ -79,10 +75,12 @@ public class ServerDriver implements UosDriver
 	public void init(Gateway gateway, InitialProperties properties, String instanceId)
 	{
 		this.gateway = gateway;
+		messenger = new AsyncCallService(gateway);
 	}
 	
 	public void destroy()
 	{
+		messenger.end();
 	}
 
 	public UpDriver getDriver()
@@ -130,7 +128,7 @@ public class ServerDriver implements UosDriver
 		else //Não existe partida
 		{
 			//Efetua a alteração
-			synchronized(lock)
+			synchronized(mapaPartidas)
 			{
 				mapaPartidas.put(nomePartida, partida);
 			}
@@ -147,7 +145,7 @@ public class ServerDriver implements UosDriver
 		final String idJogador = call.getParameter("idJogador").toString();
 		Match partida = null;
 		
-		synchronized(lock)
+		synchronized(mapaPartidas)
 		{
 			for (Entry<String, Match> curEntry : mapaPartidas.entrySet())
 			{
@@ -219,7 +217,7 @@ public class ServerDriver implements UosDriver
 			final Date executionTime = new Date();
 			
 			//Efetua a alteração
-			synchronized(lock)
+			synchronized(mapaPartidas)
 			{
 				try
 				{
@@ -235,7 +233,7 @@ public class ServerDriver implements UosDriver
 			response.addParameter("retorno", toJson(aRetornar));
 
 			//Notifica todo o tipo de alteração
-			notifyClients(nomePartida, stateJson, executionTime);
+			notifyClients(nomePartida, state, executionTime);
 		}
 	}
 	
@@ -247,7 +245,7 @@ public class ServerDriver implements UosDriver
 		final List<String> listaPartidas = new ArrayList<String>();
 		
 		//Trava até terminar de ler
-		synchronized(lock)
+		synchronized(mapaPartidas)
 		{
 			for (Entry<String, Match> entry : mapaPartidas.entrySet())
 			{
@@ -271,7 +269,7 @@ public class ServerDriver implements UosDriver
 				new ArrayList<Tuple2<String,List<Tuple2<TeamType,Integer>>>>();
 		
 		//Trava até terminar de ler
-		synchronized(lock)
+		synchronized(mapaPartidas)
 		{
 			for (Match match : mapaPartidas.values())
 			{
@@ -310,7 +308,7 @@ public class ServerDriver implements UosDriver
 	{
 		Match theMatch;
 		
-		synchronized(lock)
+		synchronized(mapaPartidas)
 		{
 			theMatch = mapaPartidas.get(nomePartida);
 		}
@@ -323,7 +321,7 @@ public class ServerDriver implements UosDriver
 		else if ((theMatch.getFimPartida().getTime() + CLEANUP_TIME) < new Date().getTime())
 		{
 			//A partida existia, mas já terminou faz tempo. Nesse caso, deve-se removê-la
-			synchronized(lock)
+			synchronized(mapaPartidas)
 			{
 				theMatch = mapaPartidas.remove(nomePartida);
 			}
@@ -339,47 +337,141 @@ public class ServerDriver implements UosDriver
 	 * @param executionTime 
 	 * @return Um Either que contém uma exceção ou um boolean true
 	 */
-	private Either<Exception, Boolean> notifyClients(final String nomePartida, final String stateJson, Date executionTime)
+	private void notifyClients(final String nomePartida, final MatchState state, Date executionTime)
 	{
+		final List<Tuple2<Player, UpDevice>> jogadoresNotificar = getPlayersToNotify(nomePartida);
+		final Set<AsyncCall> callsToDo = new HashSet<AsyncCall>();
+		
+		for (Tuple2<Player, UpDevice> curJogador : jogadoresNotificar)
+		{
+			final Call theCall = getCall(nomePartida, executionTime, state, curJogador.getVal1());
+			callsToDo.add(AsyncCall.from(curJogador.getVal2(), theCall));
+		}
+
+		//Dispara as mensagens assíncronamente
+		messenger.addCalls(callsToDo);
+	}
+	
+	/**
+	 * Retorna um conjunto de jogadores a serem notificados sobre a alteração na partida passada como parâmetro
+	 * @param nomePartida O nome da partida que os jogadores devem pertencer
+	 * @return Um conjunto de jogadores a serem notificados sobre alterações nesta partida
+	 */
+	private List<Tuple2<Player, UpDevice>> getPlayersToNotify(final String nomePartida)
+	{
+		Match partida = null;
+		
+		synchronized(mapaPartidas)
+		{
+			partida = mapaPartidas.get(nomePartida);
+		}
+		
+		//Não existe partida com o nome, sai
+		if (partida == null)
+		{
+			return new ArrayList<Tuple2<Player,UpDevice>>();
+		}
+		
+		List<Player> listaJogadores = new ArrayList<Player>();
+		
+		synchronized (mapaPartidas)
+		{
+			listaJogadores = partida.getJogadores();
+		}
+		
+		final Map<String, Player> mapaJogadores = new HashMap<String, Player>();
+		
+		for (Player jogador : listaJogadores)
+		{
+			mapaJogadores.put(jogador.getIdJogador(), jogador);
+		}
+		
+		final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
+		final List<Tuple2<Player, UpDevice>> playersToCall = new ArrayList<Tuple2<Player,UpDevice>>();
+		
+		for (DriverData curDriver : listDrivers)
+		{
+			final String idJogador = curDriver.getDevice().getName();
+			Player jogador = mapaJogadores.get(idJogador);
+			
+			if (jogador != null)
+			{
+				playersToCall.add(Tuple2.from(jogador, curDriver.getDevice()));
+			}
+		}
+		
+		return playersToCall;
+	}
+	
+	/**
+	 * Retorna uma chamada específica
+	 * @param nomePartida
+	 * @param executionTime
+	 * @param state
+	 * @param forPlayer
+	 * @return
+	 */
+	private Call getCall(final String nomePartida, final Date executionTime, final MatchState state, final Player forPlayer)
+	{
+		MatchState novoEstado = state;
+		
+		if (state instanceof PlayerChangeEnchant)
+		{
+			final PlayerChangeEnchant pce = (PlayerChangeEnchant) state;
+			final TeamType timeJogador = pce.getJogador().getTime();
+
+			//Se o time for igual, é amigo, daí remove a informação do encantamento
+			if (forPlayer.getTime().equals(timeJogador))
+			{
+				novoEstado = pce.createCopy(EnchantmentImage.dummy);
+			}
+		}
+		
 		//A chamada genérica, a mesma para todos eles
 		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
 		call.addParameter("nomePartida", nomePartida);
-		call.addParameter("state", stateJson);
 		call.addParameter("executionTime", toJson(executionTime));
-
-		//TODO: granularizar o lock se for o caso. De qualquer forma assim está bom porquê
-		//chamadas de notify devem esperar umas às outras
-		synchronized(lock)
-		{
-			final Match partida = mapaPartidas.get(nomePartida);
-			
-			if (partida == null)
-			{
-				final Exception exception = new IllegalArgumentException("Não existe partida para o nome passado");
-				return Either.createLeft(exception);
-			}
-			
-			final Function1<Player, String> lift = Reflections.lift(Player.class, "getIdJogador");
-			final SetSharp<String> jogadores = SetSharp.from(partida.getJogadores()).map(lift);
-			final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
-			
-			for(DriverData curDriver : listDrivers)
-			{
-				//TODO: Perceba que não há garantia de ser enviado para todos os jogadores.
-				//E também não é verificada a resolução da mensagem (erro ou não)
-				if (jogadores.contains(curDriver.getDevice().getName()))
-				{
-					try
-					{
-						gateway.callService(curDriver.getDevice(), call);
-					}
-					catch (ServiceCallException e)
-					{
-						return Either.createLeft((Exception) e);
-					}
-				}
-			}
-		}
-		return Either.createRight(true);
+		call.addParameter("state", toJson(novoEstado));
+		
+		return call;
 	}
+	
+//	private final static Function1<Player, String> lift = Reflections.lift(Player.class, "getIdJogador");
+	
+//	/**
+//	 * Notifica todos os clientes de uma atualização no servidor
+//	 * @param executionTime 
+//	 * @return Um Either que contém uma exceção ou um boolean true
+//	 */
+//	private void notifyClients(final String nomePartida, final String stateJson, Date executionTime)
+//	{
+//		//A chamada genérica, a mesma para todos eles
+//		final Call call = new Call(CLIENT_DRIVER_NAME, "runState");
+//		call.addParameter("nomePartida", nomePartida);
+//		call.addParameter("state", stateJson);
+//		call.addParameter("executionTime", toJson(executionTime));
+//
+//		final Match partida = mapaPartidas.get(nomePartida);
+//		
+//		//Não existe partida com o nome, sai
+//		if (partida == null)
+//		{
+//			return;
+//		}
+//		
+//		final SetSharp<String> jogadores = SetSharp.from(partida.getJogadores()).map(lift);
+//		final List<DriverData> listDrivers = gateway.listDrivers(CLIENT_DRIVER_NAME);
+//		final Set<AsyncCall> callsToDo = new HashSet<AsyncCall>();
+//		
+//		for(DriverData curDriver : listDrivers)
+//		{
+//			if (jogadores.contains(curDriver.getDevice().getName()))
+//			{
+//				callsToDo.add(AsyncCall.from(curDriver.getDevice(), call));
+//			}
+//		}
+//		
+//		//Dispara as mensagens assíncronamente
+//		messenger.addCalls(callsToDo);
+//	}
 }

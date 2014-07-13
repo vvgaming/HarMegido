@@ -153,8 +153,6 @@ public class Match
 	 */
 	public Date getInicioPartida()
 	{
-//		System.out.println("TIMESYNC == null ? " + (timeSync == null));
-//		System.out.println("TIMESYNC SENDO CHAMADO P/ " + inicioPartida);
 		return timeSync == null ? new Date(inicioPartida.getTime()) : timeSync.getLocalTime(inicioPartida);
 	}
 
@@ -277,7 +275,6 @@ public class Match
 
 		for (final Enchantment enchant : encantamentos)
 		{
-
 			if (!enchant.getJogador().getTime().equals(theTeam))
 			{
 				toReturn.add(enchant.copy());
@@ -337,14 +334,12 @@ public class Match
 		{
 			final PlayerChangeEnchant pce = (PlayerChangeEnchant) stateChange;
 			final Player mJogador = getJogador(pce.getJogador().getIdJogador());
-
-			for (final Enchantment enchant : encantamentos)
+			
+			if (encantamentos.contains(Enchantment.createDummy(mJogador, changeTime)))
 			{
-				if (enchant.getImagem().equals(pce.getEnchantmentImage()))
-				{
-					throw new IllegalArgumentException("Esse encantamento já existe");
-				}
+				throw new IllegalArgumentException("Esse encantamento já existe");
 			}
+
 			final Enchantment enchant = mJogador.encantar(changeTime, pce.getEnchantmentImage());
 			enchant.setTimeSync(timeSync);
 			encantamentos.add(enchant);
@@ -361,7 +356,6 @@ public class Match
 			}
 
 			// não precisa guardar porque o encantamento é desencantado como 'side-effect'
-			// TODO: Alteração no cálculo do desencantamento vai necessitar setar o timeSync
 			mJogador.desencantar(enchant, changeTime);
 		}
 		else
@@ -400,7 +394,7 @@ public class Match
 	{
 		for (final Enchantment enchant : encantamentos)
 		{
-			if (enchant.getImagem().equals(encantamento.getImagem()))
+			if (enchant.equals(encantamento))
 			{
 				return enchant;
 			}

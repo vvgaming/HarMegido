@@ -9,6 +9,10 @@ public class EnchantmentImage
 	// ATENÇÃO: SE MUDAR REESCREVA O EQUALS E O HASHCODE
 	private final OpenCVMatWrapper imagem;
 	private final OpenCVMatWrapper features;
+	
+	//referência ao encantamento dummy
+	public static final EnchantmentImage dummy = from(OpenCVMatWrapper.from("", 0, 0, 0), OpenCVMatWrapper.from("", 0, 0, 0));
+	
 
 	public EnchantmentImage(final OpenCVMatWrapper imagem, final OpenCVMatWrapper features)
 	{
@@ -27,17 +31,6 @@ public class EnchantmentImage
 	public static EnchantmentImage from(final OpenCVMatWrapper imagem, final OpenCVMatWrapper features)
 	{
 		return new EnchantmentImage(imagem, features);
-	}
-
-	/**
-	 * Cria uma nova imagem de encantamento vazia.
-	 * 
-	 * @return Uma imagem de encantamento que não contém dados
-	 */
-	public static EnchantmentImage createDummy()
-	{
-		final OpenCVMatWrapper empty = OpenCVMatWrapper.from("", 0, 0, 0);
-		return from(empty, empty);
 	}
 
 	/**

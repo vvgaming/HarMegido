@@ -20,4 +20,16 @@ public class PlayerChangeEnchant extends PlayerChange
 	{
 		return enchantImage;
 	}
+	
+	/**
+	 * Cria uma cópia desta classe modificando a imagem do encantamento para a imagem
+	 * passada como parâmetro. 
+	 * @param novaImagem A nova imagem para o encantamento
+	 * @return Um cópia desta classe, com o valor do encantamento substituído pelo encantamento
+	 * passado como parâmetro
+	 */
+	public PlayerChangeEnchant createCopy(final EnchantmentImage novaImagem)
+	{
+		return new PlayerChangeEnchant(this.getJogador(), novaImagem);
+	}
 }

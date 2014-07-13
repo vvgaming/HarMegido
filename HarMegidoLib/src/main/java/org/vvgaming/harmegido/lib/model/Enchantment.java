@@ -12,7 +12,7 @@ import com.github.detentor.codex.monads.Option;
  */
 public class Enchantment extends Spell implements Copyable
 {
-	private final EnchantmentImage imagem; // Informação necessária para desencantar
+	private EnchantmentImage imagem; // Informação necessária para desencantar
 	private Option<Disenchantment> desencantamento = Option.empty();
 	private transient TimeSync timeSync;
 
@@ -36,9 +36,23 @@ public class Enchantment extends Spell implements Copyable
 	{
 		return new Enchantment(jogador, timestamp, imagem);
 	}
+	
+	/**
+	 * Cria um encantamento dummy (sem imagem vinculada) para o jogador e hora passados como parâmetro. <br/>
+	 * Em particular, será salvo o estado do jogador quando ele fez o encantamento. <br>
+	 * 
+	 * @param jogador O jogador que fez o encantamento
+	 * @param timestamp A data/hora que o encantamento foi feito
+	 * @return O encantamento dummy feito pelo jogador na data/hora passados como parâmetro
+	 */
+	public static Enchantment createDummy(final Player jogador, final Date timestamp)
+	{
+		return from(jogador, timestamp, EnchantmentImage.dummy);
+	}
 
 	/**
 	 * Desencanta este encantamento. <br/>
+	 * Qualquer informação prévia da imagem do encantamento será transformada em imagem dummy.
 	 * 
 	 * @param oDesencantamento O desencantamento vinculado a este encantamento
 	 * @throws IllegalStateException Se o método for chamado mais de uma vez
@@ -50,6 +64,7 @@ public class Enchantment extends Spell implements Copyable
 			throw new IllegalStateException("Este encantamento já foi desencantado");
 		}
 		this.desencantamento = Option.from(oDesencantamento);
+		this.imagem = EnchantmentImage.dummy;
 	}
 	
 	/**

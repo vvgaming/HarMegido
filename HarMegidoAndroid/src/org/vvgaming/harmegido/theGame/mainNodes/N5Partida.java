@@ -331,6 +331,21 @@ public class N5Partida extends NHMMainNode
 
 	}
 
+	@Override
+	protected void end()
+	{
+		// na hora de fechar, se a partida ainda estiver aqui, retira lá do server
+		final Option<Match> partida = getPartidaEmAndamento();
+		if (partida.notEmpty())
+		{
+			// retira o jogador lá no server
+			UOSFacade.getDriverFacade().removerJogador(partida.get().getNomePartida(), player);
+			// e localmente também
+			MatchManager.limparPartida();
+		}
+		super.end();
+	}
+
 	private final Function1<Option<Integer>, Void> tglGroupModoFunction = new Function1<Option<Integer>, Void>()
 	{
 		@Override
@@ -377,7 +392,12 @@ public class N5Partida extends NHMMainNode
 
 			sendConsoleMsg(txtSaindo);
 
-			RootNode.getInstance().changeMainNode(new N6Resultados(part.get().getNomePartida()));
+			final String nomePartida = part.get().getNomePartida();
+
+			// retira o jogador lá no server
+			UOSFacade.getDriverFacade().removerJogador(nomePartida, player);
+
+			RootNode.getInstance().changeMainNode(new N6Resultados(nomePartida));
 
 			MatchManager.limparPartida();
 			return Option.empty();

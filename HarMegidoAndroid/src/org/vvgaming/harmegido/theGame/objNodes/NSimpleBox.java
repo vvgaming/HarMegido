@@ -72,4 +72,9 @@ public class NSimpleBox extends GameNode
 		this.visible = visible;
 	}
 
+	public Retangulo getRetClone()
+	{
+		return Retangulo.fromCenter(ret.getCenter(), ret.width, ret.height);
+	}
+
 }

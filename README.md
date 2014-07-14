@@ -37,10 +37,15 @@ O conflito entre essas forças no nosso mundo perturba o equilíbrio, transforma
 
 **Estética**
 
-O jogo utilizará gráficos 2D, principalmente interpolados sobre a imagem da câmera. 
-A interação com o jogo visa misturar a realidade com o mundo do jogo onde ele poderá interagir (através da câmera) com objetos reais. 
+O jogo utilizará gráficos em duas dimensões (2D), interpolados com a imagem da câmera do dispositivo.   
 
-Efeitos sonoros serão explorados como parte integrante da mecânica, e também para auxiliar na imersão.
+A câmera do dispositivo cria uma simulação de realidade aumentada ao se "encantar" objetos do mundo real, tornando o meio da interação (o dispositivo) transparente nas ações efetuadas pelo jogador.  
+
+A interação do jogo se dá através de indicadores na tela que indicam a ação dos dois grupos.  
+
+Um retorno tátil (vibração) é utilizado para aprimorar a experiência e possibilitar maior imersão.  
+
+Efeitos sonoros serão explorados para auxiliar na imersão.  
 
 
 **Tecnologia**

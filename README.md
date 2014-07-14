@@ -50,22 +50,24 @@ Efeitos sonoros serão explorados para auxiliar na imersão.
 
 **Tecnologia**
 
-O jogo utilizará o middleware uOS para, mas não limitado a:
-- Promover conectividade entre os dispositivos através de rede Wi-Fi, usando um controlador central;
-- Possibilitar o controle de tela de dispositivos dentro da rede onde o jogo acontece (PC, Celular, etc.);
-- Possibilitar o controle de áudio de dispostivos dentro da rede do middleware.
+O jogo consiste em duas aplicações: uma rodando em um ambiente fixo (o servidor do jogo), e outra no dispositivo dos jogadores.  
 
-O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos reais [1].
+O jogo utilizará visão computacional como parte fundamental de sua mecânica, permitindo a interação com objetos do mundo real [1].
 
-Sendo n jogadores, com n > 1, são necessários no mínimo:
-- n dispositivos onde o uOS possa ser executado, com recurso de câmera, tela e áudio (um dispositivo para cada jogador);
-- 1 dispositivo onde o uOS possa ser executado, para servir como servidor central.
 
-Havendo mais dispositivos disponíveis do que jogadores, os dispositivos restantes serão utilizados para prover maior integração e recursos de realidade aumentada para o jogo. Os recursos neutros de áudio e vídeo serão utilizados para prover ambiência, reproduzindo sons e imagens que te remetem a atual situação da partida.
+Ambiente:
 
-O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima.
+O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima.  
 
-As aplicações executadas nos dispositivos pessoais proverão serviços equivalente às ações do jogo: encantar, desencantar e etc.
+Dispositivo:
+
+- O jogo requer um computador (PC) com acesso à Internet para ser o servidor do jogo
+- Os jogadores necessitam de dispositivos com sistema operacional Android que tenham acesso à Internet e possuam câmera.
+
+
+Recursos e Serviços:
+
+Os recursos do jogo são aqueles necessários para prover as ações do jogo, tais como Encantar, Desencantar, Listar Jogadores, Calcular Pontuação, Listar Partidas, Entrar na Partida, etc.   
 
 
 **Mecânica**

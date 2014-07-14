@@ -1,12 +1,8 @@
 package org.vvgaming.harmegido.theGame;
 
-import org.opencv.core.Mat;
 import org.vvgaming.harmegido.vision.JavaCameraFrame;
 
-import android.graphics.Bitmap;
-
 import com.github.detentor.codex.monads.Option;
-import com.github.detentor.codex.product.Tuple2;
 
 /**
  * Uma especificação de câmera que tem a capacidade de capturar determinados frames e compará-los ao atuais. <br/>

@@ -45,7 +45,7 @@ A interação do jogo se dá através de indicadores na tela que indicam a açã
 
 Um retorno tátil (vibração) é utilizado para aprimorar a experiência e possibilitar maior imersão.  
 
-Efeitos sonoros serão explorados para auxiliar na imersão.  
+Efeitos sonoros são explorados para auxiliar na imersão.  
 
 
 **Tecnologia**
@@ -57,12 +57,12 @@ O jogo utilizará visão computacional como parte fundamental de sua mecânica, 
 
 Ambiente:
 
-O SmartSpace do jogo pode ser qualquer local com rede e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis quando estiverem disponível sem prejuízo à experiência mínima.  
+O SmartSpace do jogo pode ser qualquer local com acesso à internet e objetos reais espalhados (esses objetos podem ser quaisquer: canetas, computadores, sapato, cadeira e etc), ou seja, o jogo busca ser o mais ubíquo possível utilizando os recursos disponíveis sem prejuízo à experiência.  
 
 Dispositivo:
 
-- O jogo requer um computador (PC) com acesso à Internet para ser o servidor do jogo
-- Os jogadores necessitam de dispositivos com sistema operacional Android que tenham acesso à Internet e possuam câmera.
+- O jogo requer um computador (PC) com acesso à internet para ser o servidor do jogo
+- Os jogadores necessitam de dispositivos com sistema operacional Android que tenham acesso à internet e possuam câmera.
 
 
 Recursos e Serviços:

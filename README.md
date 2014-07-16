@@ -79,7 +79,7 @@ Para o servidor, foram criados os seguintes serviços:
 - Listar Jogadores: lista todos os jogadores conectados a uma partida específica;
 - Recuperar a hora do servidor: Retorna o horário do servidor, para fins de sincronização de tempo entre o cliente e o servidor.
 
-Para o cliente, foi criado o serviço de Executar Alteração de Estado, com as mesmas características do swerviço do servidor.
+Para o cliente, foi criado o serviço de Executar Alteração de Estado, com as mesmas características do serviço do servidor.
 
 
 **Mecânica**

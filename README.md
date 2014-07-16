@@ -71,18 +71,15 @@ Os serviços criados do jogo são aqueles necessários para prover as ações do
 
 Para o servidor, foram criados os seguintes serviços:
 
-- Criar Partida: Cria uma nova partida;
-- Encontrar Partida: Encontra uma partida a partir de seu nome;
-- Retornar Pontuação: Retorna a pontuação de uma partida a partir de seu nome;
-- Executar Alteração de Estado: Faz a alteração no estado de uma partida. Essa alteração engloba encantamentos, desencantamentos, inclusão de jogadores na partida, exclusão de jogadores na partida, e troca do time de um jogador;
-- Listar Partidas: Lista todas as partidas ativas no momento;
-- Listar Jogadores: Lista todos os jogadores conectados a uma partida específica;
+- Criar Partida: cria uma nova partida;
+- Encontrar Partida: encontra uma partida a partir de seu nome;
+- Retornar Pontuação: retorna a pontuação de uma partida a partir de seu nome;
+- Executar Alteração de Estado: faz a alteração no estado de uma partida. Essa alteração engloba encantamentos, desencantamentos, inclusão de jogadores na partida, exclusão de jogadores na partida, e troca do time de um jogador;
+- Listar Partidas: lista todas as partidas ativas no momento;
+- Listar Jogadores: lista todos os jogadores conectados a uma partida específica;
 - Recuperar a hora do servidor: Retorna o horário do servidor, para fins de sincronização de tempo entre o cliente e o servidor.
 
-Para o cliente, foi criados o seguinte serviço:
-
-- Executar Alteração de Estado: Faz a alteração no estado de uma partida. Essa alteração engloba encantamentos, desencantamentos, inclusão de jogadores na partida, exclusão de jogadores na partida, e troca do time de um jogador;
-- Listar Partidas: Lista todas as partidas ativas no momento;
+Para o cliente, foi criado o serviço de Executar Alteração de Estado, com as mesmas características do servidor.
 
 
 **Mecânica**

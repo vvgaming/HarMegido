@@ -37,7 +37,7 @@ O conflito entre essas forças no nosso mundo perturba o equilíbrio, transforma
 
 **Estética**
 
-O jogo utilizará gráficos em duas dimensões (2D), interpolados com a imagem da câmera do dispositivo.   
+O jogo utiliza gráficos em duas dimensões (2D), interpolados com a imagem da câmera do dispositivo.   
 
 A câmera do dispositivo cria uma simulação de realidade aumentada ao se "encantar" objetos do mundo real, tornando o meio da interação (o dispositivo) transparente nas ações efetuadas pelo jogador.  
 
